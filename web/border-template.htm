@@ -1,0 +1,73 @@
+<html>
+    <head>
+        #if ($title)
+        <title>SICAP $title</title>
+        #end
+        <link rel="stylesheet" type="text/css" href="$context/css/style.css" title="Style"/>
+    </head>
+    <body>
+
+        <script>
+            function waitPage() {
+                document.getElementById("divProcess").style.display = "block";
+                document.getElementById("divForm").style.display = "none";
+            }
+
+            function stopWaiting() {
+                document.getElementById("divProcess").style.display = "none";
+                document.getElementById("divForm").style.display = "block";
+            }
+        </script>
+
+        #if ($rootMenu)
+        $rootMenu
+        #end
+
+        #if ($forwardForm)
+        $forwardForm
+        #end
+
+        #if ($backwardForm)
+        $backwardForm
+        #end
+
+
+        #if ($message)
+        <a>$message</a>
+        #end
+
+        <div id="divProcess" style="display: none;width: 150px;height: 200px;margin-left: auto;margin-right: auto">
+            <br/>
+            <br/>
+            <img src="img/block-loading.gif"/>
+            <br/>
+            <br/>
+            <a>Procesando...</a>
+        </div>
+
+        <div id="divForm" style="display:block">
+            <center>
+                #if ($title)
+                <h3 id="title" style="width: 100%;font-size:1.3em">$title</h3>
+                #end
+            </center>
+
+            #if ($login)
+            <div id="loginContainer">
+                #parse($path)
+            </div>
+            #else
+            <br/>
+            <div style="width: max-content" id="container">
+                #parse($path)
+            </div>
+            #end
+        </div>
+        <br/>
+    <center>
+        <img src="img/banco.png" id="logoBancoPage"/>
+    </center>
+
+
+</body>
+</html> 

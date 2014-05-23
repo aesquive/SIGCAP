@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 5/05/2014 10:56:03 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="db.pojos.Calificacion" table="calificacion" catalog="prueba">
+        <id name="idCalificacion" type="java.lang.Integer">
+            <column name="IdCalificacion" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="calificadora" class="db.pojos.Calificadora" fetch="select">
+            <column name="IdCalificadora" />
+        </many-to-one>
+        <property name="calificacion" type="string">
+            <column name="Calificacion" />
+        </property>
+        <set name="valoresesForIdCalificacion3" table="valores" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="IdCalificacion3" />
+            </key>
+            <one-to-many class="db.pojos.Valores" />
+        </set>
+        <set name="valoresesForIdCalificacion1" table="valores" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="IdCalificacion1" />
+            </key>
+            <one-to-many class="db.pojos.Valores" />
+        </set>
+        <set name="valoresesForIdCalificacion2" table="valores" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="IdCalificacion2" />
+            </key>
+            <one-to-many class="db.pojos.Valores" />
+        </set>
+    </class>
+</hibernate-mapping>
