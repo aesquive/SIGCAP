@@ -50,15 +50,16 @@ body {
     border-radius: 25px;
     border-color: #FF7519;
     color: white;
-    font-size: 1.5em;
+    font-size: 1em;
 }
 
 #rootMenu ul li{
-    padding-top: 1em;
-    display: inline;
-    padding-right: 2em;
+    padding-bottom: 2.2em;
+    display: inline-table;
+    padding-right: .5em;
 }
 
+   
 #rootMenu ul li a
 {
     border-radius: 5px;
@@ -67,7 +68,7 @@ body {
     font-weight: bolder;
     border-style: solid ;
     border-color: white;
-    font-size: .7em;
+    font-size: .8em;
 }
 
 #rootMenu ul li a:hover

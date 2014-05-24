@@ -1,5 +1,5 @@
 package db.pojos;
-// Generated 5/05/2014 10:56:00 PM by Hibernate Tools 3.6.0
+// Generated 24/05/2014 05:59:47 PM by Hibernate Tools 3.6.0
 
 
 import java.util.HashSet;
@@ -16,6 +16,7 @@ public class User  implements java.io.Serializable {
      private String user;
      private String password;
      private Set regcuentausers = new HashSet(0);
+     private Set trackings = new HashSet(0);
 
     public User() {
     }
@@ -24,11 +25,12 @@ public class User  implements java.io.Serializable {
     public User(String user) {
         this.user = user;
     }
-    public User(Tipousuario tipousuario, String user, String password, Set regcuentausers) {
+    public User(Tipousuario tipousuario, String user, String password, Set regcuentausers, Set trackings) {
        this.tipousuario = tipousuario;
        this.user = user;
        this.password = password;
        this.regcuentausers = regcuentausers;
+       this.trackings = trackings;
     }
    
     public Integer getIduser() {
@@ -65,6 +67,13 @@ public class User  implements java.io.Serializable {
     
     public void setRegcuentausers(Set regcuentausers) {
         this.regcuentausers = regcuentausers;
+    }
+    public Set getTrackings() {
+        return this.trackings;
+    }
+    
+    public void setTrackings(Set trackings) {
+        this.trackings = trackings;
     }
 
 

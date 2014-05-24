@@ -1,5 +1,5 @@
 package db.pojos;
-// Generated 5/05/2014 10:56:00 PM by Hibernate Tools 3.6.0
+// Generated 24/05/2014 05:59:47 PM by Hibernate Tools 3.6.0
 
 
 import java.util.Date;
@@ -22,6 +22,7 @@ public class Regcuenta  implements java.io.Serializable,Cloneable {
      private Set regcuentausers = new HashSet(0);
      private Set cuentas = new HashSet(0);
      private Set captacions = new HashSet(0);
+     private Set validacionproyectos = new HashSet(0);
 
     public Regcuenta() {
     }
@@ -30,7 +31,7 @@ public class Regcuenta  implements java.io.Serializable,Cloneable {
     public Regcuenta(String desRegCuenta) {
         this.desRegCuenta = desRegCuenta;
     }
-    public Regcuenta(String desRegCuenta, Date fecha, Set disponibilidads, Set carteracomercials, Set valoreses, Set tarjetacreditos, Set regcuentausers, Set cuentas, Set captacions) {
+    public Regcuenta(String desRegCuenta, Date fecha, Set disponibilidads, Set carteracomercials, Set valoreses, Set tarjetacreditos, Set regcuentausers, Set cuentas, Set captacions, Set validacionproyectos) {
        this.desRegCuenta = desRegCuenta;
        this.fecha = fecha;
        this.disponibilidads = disponibilidads;
@@ -40,6 +41,7 @@ public class Regcuenta  implements java.io.Serializable,Cloneable {
        this.regcuentausers = regcuentausers;
        this.cuentas = cuentas;
        this.captacions = captacions;
+       this.validacionproyectos = validacionproyectos;
     }
    
     public Integer getIdRegCuenta() {
@@ -112,6 +114,13 @@ public class Regcuenta  implements java.io.Serializable,Cloneable {
     public void setCaptacions(Set captacions) {
         this.captacions = captacions;
     }
+    public Set getValidacionproyectos() {
+        return this.validacionproyectos;
+    }
+    
+    public void setValidacionproyectos(Set validacionproyectos) {
+        this.validacionproyectos = validacionproyectos;
+    }
 
 
      @Override
@@ -124,6 +133,8 @@ public class Regcuenta  implements java.io.Serializable,Cloneable {
         return super.clone();
     }
     
+
+
 
 
 

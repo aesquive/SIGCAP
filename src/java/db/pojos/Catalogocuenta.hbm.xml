@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 5/05/2014 10:56:03 PM by Hibernate Tools 3.6.0 -->
+<!-- Generated 24/05/2014 05:59:50 PM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
     <class name="db.pojos.Catalogocuenta" table="catalogocuenta" catalog="prueba">
         <id name="idCatalogoCuenta" type="java.lang.Long">
@@ -9,7 +9,7 @@
             <generator class="identity" />
         </id>
         <property name="desCatalogoCuenta" type="string">
-            <column name="desCatalogoCuenta" length="400" not-null="true" />
+            <column name="desCatalogoCuenta" length="600" not-null="true" />
         </property>
         <set name="operacions" table="operacion" inverse="true" lazy="true" fetch="select">
             <key>

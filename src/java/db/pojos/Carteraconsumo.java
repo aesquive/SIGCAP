@@ -1,5 +1,5 @@
 package db.pojos;
-// Generated 5/05/2014 10:56:00 PM by Hibernate Tools 3.6.0
+// Generated 24/05/2014 05:59:47 PM by Hibernate Tools 3.6.0
 
 
 
@@ -9,18 +9,18 @@ package db.pojos;
 public class Carteraconsumo  implements java.io.Serializable {
 
 
-     private Integer id;
+     private Integer idCarteraConsumo;
 
     public Carteraconsumo() {
     }
 
    
-    public Integer getId() {
-        return this.id;
+    public Integer getIdCarteraConsumo() {
+        return this.idCarteraConsumo;
     }
     
-    public void setId(Integer id) {
-        this.id = id;
+    public void setIdCarteraConsumo(Integer idCarteraConsumo) {
+        this.idCarteraConsumo = idCarteraConsumo;
     }
 
 

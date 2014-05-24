@@ -3,16 +3,16 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 24/05/2014 05:59:50 PM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
-    <class name="db.pojos.Regcuentauser" table="regcuentauser" catalog="prueba">
-        <id name="idRegCuentaUser" type="java.lang.Integer">
-            <column name="IdRegCuentaUser" />
+    <class name="db.pojos.Tracking" table="tracking" catalog="prueba">
+        <id name="idTracking" type="java.lang.Integer">
+            <column name="IdTracking" />
             <generator class="identity" />
         </id>
-        <many-to-one name="regcuenta" class="db.pojos.Regcuenta" fetch="select">
-            <column name="IdRegCuenta" not-null="true" />
-        </many-to-one>
         <many-to-one name="user" class="db.pojos.User" fetch="select">
-            <column name="IdUser" not-null="true" />
+            <column name="IdUser" />
         </many-to-one>
+        <property name="des" type="string">
+            <column name="Des" length="400" />
+        </property>
     </class>
 </hibernate-mapping>
