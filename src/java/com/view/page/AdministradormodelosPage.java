@@ -11,9 +11,7 @@ import db.pojos.Cuenta;
 import db.pojos.Regcuenta;
 import db.pojos.Regcuentauser;
 import db.pojos.User;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import manager.session.SessionController;
@@ -77,6 +75,7 @@ public class AdministradormodelosPage extends BorderPage {
                 }
                 ModelExecutor m = new ModelExecutor(manager.configuration.Configuration.getValue("baseModelo"),regCta, false);
                 m.start();
+                DAO.saveRecordt(user, "Proceso del Modelo "+regCta.getDesRegCuenta());
                 setRedirect(IcapPage.class);
                 return true;
             } catch (Exception ex) {
@@ -99,6 +98,7 @@ public class AdministradormodelosPage extends BorderPage {
                         regCta = rc;
                     }
                 }
+                DAO.saveRecordt(user, "Modelo "+regCta.getDesRegCuenta()+" eliminado");
                 DAO.delete(regCta);
                 setRedirect(IcapPage.class);
                 return true;

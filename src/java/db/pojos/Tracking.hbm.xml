@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 24/05/2014 05:59:50 PM by Hibernate Tools 3.6.0 -->
+<!-- Generated 1/06/2014 08:36:27 AM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
     <class name="db.pojos.Tracking" table="tracking" catalog="prueba">
         <id name="idTracking" type="java.lang.Integer">
@@ -13,6 +13,9 @@
         </many-to-one>
         <property name="des" type="string">
             <column name="Des" length="400" />
+        </property>
+        <property name="fecha" type="timestamp">
+            <column name="Fecha" length="19" />
         </property>
     </class>
 </hibernate-mapping>

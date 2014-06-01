@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import manager.session.SessionController;
 import org.apache.click.control.FileField;
 import org.apache.click.control.Form;
 import org.apache.click.control.Option;
@@ -30,6 +31,7 @@ import org.apache.click.control.Submit;
 import org.apache.click.control.TextField;
 import org.apache.click.extras.control.DateField;
 import org.apache.commons.fileupload.FileItem;
+import util.UserManager;
 
 /**
  *
@@ -46,7 +48,6 @@ public class WarehousePage extends BorderPage {
     FileField fileTarjetaCredito;
     FileField fileCatalogoMinimo;
     TextField name;
-    Select userSelect;
     DateField dateField;
 
     @Override
@@ -73,14 +74,7 @@ public class WarehousePage extends BorderPage {
         fileCatalogoMinimo = new FileField("fileCatalogo", "Catalogo Minimo", true);
         form.add(fileCatalogoMinimo);
 
-        userSelect = new Select("selectUser", "Usuarios permitidos", true);
-        userSelect.setMultiple(true);
-        List<User> createQuery = DAO.createQuery(User.class, null);
-        for (User u : createQuery) {
-            userSelect.add(new Option(u.getUser()));
-        }
-        form.add(userSelect);
-        Submit sub=new Submit("sub", "Procesar", this, "procesarClicked");
+        Submit sub = new Submit("sub", "Procesar", this, "procesarClicked");
         javaScriptProcess(sub);
         form.add(sub);
 
@@ -99,13 +93,16 @@ public class WarehousePage extends BorderPage {
                     return false;
                 }
                 Regcuenta regCuenta = saveProject();
-                saveUserRelation(regCuenta);
-                saveCuenta(regCuenta,dataCatalogoMinimo);
-                message="";
+                SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
+                User user = (User) controller.getVariable("user").getValue();
+                saveUserRelation(regCuenta,user);
+                saveCuenta(regCuenta, dataCatalogoMinimo);
+                message = "";
+                DAO.saveRecordt(user, "Alta del ejercicio " + regCuenta.getDesRegCuenta());
                 setRedirect(AdministradormodelosPage.class);
                 return true;
             } catch (Exception ex) {
-                message="Algun error ha ocurrido";
+                message = "Algun error ha ocurrido";
                 Logger.getLogger(WarehousePage.class.getName()).log(Level.INFO, null, ex);
                 return false;
             }
@@ -142,35 +139,29 @@ public class WarehousePage extends BorderPage {
         return regcuenta;
     }
 
-    private void saveUserRelation(Regcuenta regCuenta) {
-        List<String> selectedValues = userSelect.getSelectedValues();
-        List<User> createQuery = DAO.createQuery(User.class, null);
-        for (User u : createQuery) {
-            if (selectedValues.contains(u.getUser())) {
-                Regcuentauser rcu = new Regcuentauser(regCuenta, u);
-                DAO.save(rcu);
-            }
-        }
+    private void saveUserRelation(Regcuenta regCuenta,User user) {
+        Regcuentauser regcuentauser=new Regcuentauser(regCuenta, user);
+        DAO.save(regcuentauser);
     }
 
-    private void saveCuenta(Regcuenta regCuenta,List<String> dataCatalogoMinimo) {
-        Map<String,Catalogocuenta> catalogos=new HashMap<String, Catalogocuenta>();
+    private void saveCuenta(Regcuenta regCuenta, List<String> dataCatalogoMinimo) {
+        Map<String, Catalogocuenta> catalogos = new HashMap<String, Catalogocuenta>();
         List<Catalogocuenta> createQuery = DAO.createQuery(Catalogocuenta.class, null);
-        for(Catalogocuenta c:createQuery){
+        for (Catalogocuenta c : createQuery) {
             catalogos.put(c.getIdCatalogoCuenta().toString(), c);
         }
-        Map<String,Moneda> monedas=new HashMap<String, Moneda>();
+        Map<String, Moneda> monedas = new HashMap<String, Moneda>();
         List<Moneda> qmon = DAO.createQuery(Moneda.class, null);
-        for(Moneda m:qmon){
+        for (Moneda m : qmon) {
             monedas.put(m.getIdMoneda().toString(), m);
         }
-        for(String c:dataCatalogoMinimo){
+        for (String c : dataCatalogoMinimo) {
             String[] split = c.split(";");
-            Cuenta cta=new Cuenta();
+            Cuenta cta = new Cuenta();
             cta.setRegcuenta(regCuenta);
             cta.setStatus(0);
             cta.setCatalogocuenta(catalogos.get(split[0]));
-            String number=quitarRelleno(split[3]);
+            String number = quitarRelleno(split[3]);
             cta.setValor(Double.parseDouble(number));
             cta.setMoneda(monedas.get(split[2]));
             DAO.save(cta);
@@ -178,11 +169,11 @@ public class WarehousePage extends BorderPage {
     }
 
     private String quitarRelleno(String string) {
-        while(string.length()>0 && string.charAt(0)=='0'){
-            string=string.substring(1);
+        while (string.length() > 0 && string.charAt(0) == '0') {
+            string = string.substring(1);
         }
-        if(string.length()==0){
-            string="0";
+        if (string.length() == 0) {
+            string = "0";
         }
         return string;
     }

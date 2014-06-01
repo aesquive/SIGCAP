@@ -3,12 +3,11 @@ package com.view.page;
 import db.controller.DAO;
 import db.pojos.Cuenta;
 import db.pojos.Regcuenta;
+import db.pojos.User;
 import interpreter.MathInterpreterException;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
@@ -133,9 +132,11 @@ public class SimulacionPage extends BorderPage {
     public boolean simularClicked() throws IOException {
         try {
             Regcuenta regcuenta = data.get(0).getRegcuenta();
-            
-            ModelExecutor modelExecutor = new ModelExecutor(manager.configuration.Configuration.getValue("baseModelo"),regcuenta, true);
+            SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
+            User user = (User) controller.getVariable("user").getValue();
+            ModelExecutor modelExecutor = new ModelExecutor(manager.configuration.Configuration.getValue("baseModelo"), regcuenta, true);
             modelExecutor.start();
+            DAO.saveRecordt(user,"Generó simulación de "+regcuenta.getDesRegCuenta());
             cambiarPantalla(data.get(0).getRegcuenta());
             return true;
         } catch (MathInterpreterException ex) {

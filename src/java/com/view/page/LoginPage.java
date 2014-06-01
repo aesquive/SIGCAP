@@ -29,7 +29,8 @@ public class LoginPage extends Page {
     private TextField userField;
     public String title;
     public String message;
-    public boolean login=true;
+    public boolean login = true;
+
     /**
      * obtienes la parte del estilo de la pagina
      */
@@ -39,19 +40,20 @@ public class LoginPage extends Page {
     }
 
     /**
-     *genera el constructor del login
-     * */
+     * genera el constructor del login
+     *
+     */
     public LoginPage() {
         getContext().removeSessionAttribute("user");
         init();
         //como es la pagina de login limpiamos toda la sesion pasada
-        
+
         //agregamos el form a la pantalla
         addControl(loginForm);
         //le damos el setup al form
         loginForm.add(userField);
         loginForm.add(passwordField);
-        Submit submit=new Submit("okSubmit", " Accesar ", this, "okClicked");
+        Submit submit = new Submit("okSubmit", " Accesar ", this, "okClicked");
         loginForm.add(submit);
         submit.setAttribute("onclick", "waitPageLogin();");
     }
@@ -70,12 +72,13 @@ public class LoginPage extends Page {
 
     /**
      * evento al dar click en OK para loggear
-     * @return 
+     *
+     * @return
      */
     public boolean okClicked() {
         if (!loginForm.isValid()) {
             message = "Favor de completar los campos";
-            
+
             return false;
         }
         User user = verifyUser(userField.getValue(), passwordField.getValue());
@@ -83,17 +86,20 @@ public class LoginPage extends Page {
             message = "Usuario y/o password incorrecto";
             return false;
         }
-        SessionController sessionController=new SessionController();
+        SessionController sessionController = new SessionController();
         sessionController.addVariable("user", new Variable("user", user, String.class), true);
-        getContext().setSessionAttribute("user",user.getIduser());
+        getContext().setSessionAttribute("user", user.getIduser());
         redireccionar(sessionController);
+        DAO.saveRecordt(user,user.getUser()+" ingreso al sistema");
         return true;
     }
+
     /**
      * revisa que elk usuario loggeado este dado de alta
+     *
      * @param user
      * @param pass
-     * @return 
+     * @return
      */
     private User verifyUser(String user, String pass) {
         List<User> createQuery = DAO.createQuery(User.class, new Criterion[]{Restrictions.and(
@@ -108,18 +114,18 @@ public class LoginPage extends Page {
      * este METODO DEBE MODIFICARSE PARA ENVIAR AL MENU PRINCIPAL PRIMERO
      */
     private void redireccionar(SessionController controller) {
-        List<Cuenta> createQuery = DAO.createQuery(Cuenta.class,null);
-        List<Cuenta> data=new LinkedList<Cuenta>();
-        for(Cuenta c:createQuery){
-            if(c.getCatalogocuenta().getIdCatalogoCuenta()==1){
+        List<Cuenta> createQuery = DAO.createQuery(Cuenta.class, null);
+        List<Cuenta> data = new LinkedList<Cuenta>();
+        for (Cuenta c : createQuery) {
+            if (c.getCatalogocuenta().getIdCatalogoCuenta() == 1) {
                 data.add(c);
             }
         }
-        controller.addVariable("data",new Variable("data", data, List.class),true);
+        controller.addVariable("data", new Variable("data", data, List.class), true);
         ContextManager userContext = UserManager.addUserContext(Integer.parseInt(getContext().getSessionAttribute("user").toString()));
         userContext.cleanMap();
         userContext.addSessionController(controller);
-        setRedirect(IcapPage.class);  
+        setRedirect(IcapPage.class);
     }
 
 }

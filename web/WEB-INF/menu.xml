@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menu>
-    <menu label="Salir" path="redirect.html"/>
-    <menu label="Gestión de Capital" path="icap.htm"/>
-    <menu label="Simulador de Capital" path="whatif.htm"/>
     <menu label="DataWarehouse" path="warehouse.htm"/> 
     <menu label="Administrador Modelos" path="administradormodelos.htm"/>
+    <menu label="Gestión de Capital" path="icap.htm"/>
+    <menu label="Simulador de Capital" path="whatif.htm"/>
     <menu label="Generador de RC´s" path="reportes.htm"/>
     <menu label="Auditor" path="auditor.htm"/>
+    <menu label="Configuración" path="configuracion.htm"/>
+    <menu label="Salir" path="redirect.html"/>
+
 </menu>

@@ -113,9 +113,17 @@ public class WhatifPage extends BorderPage {
             Regcuentauser regctauser = new Regcuentauser(regCuenta, user);
             DAO.save(regctauser);
             copiarCuentas(regCuenta);
+            Regcuenta selected = null;
+            List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
+            for (Regcuenta rc : createQuery) {
+                if (Integer.parseInt(selectProject.getValue()) == rc.getIdRegCuenta()) {
+                    selected = (Regcuenta) rc.clone();
+                }
+            }
+            DAO.saveRecordt(user, "Creo una copia de "+selected.getDesRegCuenta()+" llamada "+regCuenta.getDesRegCuenta());
             cambiarPantalla(regCuenta);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(WhatifPage.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(WhatifPage.class.getName()).log(Level.FINE, null, ex);
         }
     }
 
@@ -180,6 +188,5 @@ public class WhatifPage extends BorderPage {
         userContext.addSessionController(controller);
         setRedirect(SimulacionPage.class);
     }
-
 
 }

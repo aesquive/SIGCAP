@@ -1,14 +1,13 @@
 package db.controller;
 
 import db.pojos.Calificadora;
-import db.pojos.Cuenta;
-import db.pojos.Regcuenta;
+import db.pojos.Tracking;
+import db.pojos.User;
+import java.util.Calendar;
 import java.util.List;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.TransientObjectException;
 import org.hibernate.criterion.Criterion;
 
 /**
@@ -43,6 +42,11 @@ public class DAO {
 
         return list;
     }
+    
+    public static void saveRecordt(User user , String text){
+        Tracking tracking= new Tracking(user, text, Calendar.getInstance().getTime());
+        save(tracking);
+    }
 
     /**
      * verifica la sesion y la abre si es necesario
@@ -74,6 +78,7 @@ public class DAO {
     }
 
     public static void main(String[] args) {
+        
         List<Calificadora> createQuery = DAO.createQuery(Calificadora.class, null);
         System.out.println(createQuery.get(0).getDesCalificadora());
     }
