@@ -1,6 +1,5 @@
 package db.controller;
 
-import db.pojos.Calificadora;
 import db.pojos.Tracking;
 import db.pojos.User;
 import java.util.Calendar;
@@ -79,8 +78,6 @@ public class DAO {
 
     public static void main(String[] args) {
         
-        List<Calificadora> createQuery = DAO.createQuery(Calificadora.class, null);
-        System.out.println(createQuery.get(0).getDesCalificadora());
     }
 
     public static void delete(Object object) {

@@ -1,27 +1,15 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 24/05/2014 05:59:50 PM by Hibernate Tools 3.6.0 -->
+<!-- Generated 4/06/2014 10:53:47 PM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
-    <class name="db.pojos.Valores" table="valores" catalog="prueba">
+    <class  name="db.pojos.Valores" table="valores" catalog="prueba">
         <id name="idTenencia" type="java.lang.Integer">
             <column name="IdTenencia" />
             <generator class="identity" />
         </id>
-        <many-to-one name="calificacionByIdCalificacion3" class="db.pojos.Calificacion" fetch="select">
-            <column name="IdCalificacion3" />
-        </many-to-one>
-        <many-to-one name="calificacionByIdCalificacion2" class="db.pojos.Calificacion" fetch="select">
-            <column name="IdCalificacion2" />
-        </many-to-one>
-        <many-to-one name="tipotasa" class="db.pojos.Tipotasa" fetch="select">
-            <column name="IdTipoTasa" />
-        </many-to-one>
         <many-to-one name="regcuenta" class="db.pojos.Regcuenta" fetch="select">
             <column name="IdRegCuenta" />
-        </many-to-one>
-        <many-to-one name="calificacionByIdCalificacion1" class="db.pojos.Calificacion" fetch="select">
-            <column name="IdCalificacion1" />
         </many-to-one>
         <property name="fecha" type="timestamp">
             <column name="Fecha" length="19" />
@@ -52,6 +40,21 @@
         </property>
         <property name="tasa" type="java.lang.Double">
             <column name="Tasa" precision="10" scale="5" />
+        </property>
+        <property name="tipoTasa" type="string">
+            <column name="TipoTasa" />
+        </property>
+        <property name="calificacionMoodys" type="string">
+            <column name="CalificacionMoodys" />
+        </property>
+        <property name="calificacionSp" type="string">
+            <column name="CalificacionSP" />
+        </property>
+        <property name="calificacionFitch" type="string">
+            <column name="CalificacionFitch" />
+        </property>
+        <property name="calificacionHr" type="string">
+            <column name="CalificacionHR" />
         </property>
     </class>
 </hibernate-mapping>

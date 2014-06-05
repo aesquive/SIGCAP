@@ -1,44 +1,22 @@
 package com.view.page;
 
-import db.controller.DAO;
-import db.pojos.Calificacion;
-import db.pojos.Regvector;
-import db.pojos.Tipotasa;
-import file.uploader.vector.Vector;
-import file.uploader.vector.VectorPIPReader;
-import file.uploader.vector.VectorReader;
-import java.io.File;
-import static java.lang.Double.parseDouble;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import manager.session.SessionController;
-import manager.session.Variable;
-import org.apache.click.control.Form;
-import org.apache.click.control.Label;
-import org.apache.click.control.Option;
-import org.apache.click.control.Select;
-import org.apache.click.control.Submit;
-import org.apache.click.control.TextField;
-import org.apache.click.element.JsScript;
-import util.ContextManager;
-import util.Reflector;
-import util.UserManager;
-
 /**
  *
  * @author Admin
  */
 public class MapeoagregarPage extends BorderPage {
 
+    @Override
+    public void init() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /*
+    
     private String criterioBusqueda;
     private Vector vectorSeleccionado;
     private Form dataForm;
 
-//    private Form formActuales;
-    //  private Select selectInstrumentosActuales;
-    //private List<Vector> instrumentosActuales;
     private Form formVectores;
     private Select selectInstrumentosVector;
     private List<Vector> instrumentosVector;
@@ -74,10 +52,6 @@ public class MapeoagregarPage extends BorderPage {
         addControl(searchForm);
     }
 
-    /**
-     * se llena el formulario de busqueda
-     *
-     */
     private void searchForm() {
         searchForm = new Form("searchForm");
         searchField = new TextField("Buscar ");
@@ -89,11 +63,6 @@ public class MapeoagregarPage extends BorderPage {
         sub.setListener(this, "searchClicked");
     }
 
-    /**
-     * evento que registra la busqueda de elementos
-     *
-     * @return
-     */
     public boolean searchClicked() {
         if (searchField.getValue().equals("")) {
             message = "Se debe elegir criterio de busqueda";
@@ -110,10 +79,6 @@ public class MapeoagregarPage extends BorderPage {
         }
     }
 
-    /**
-     * nos sirve para obtener las variables que se meten en sesion para la
-     * busqueda
-     */
     private void getVariables() {
         SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
         if (controller != null) {
@@ -217,7 +182,6 @@ public class MapeoagregarPage extends BorderPage {
      setRedirect(MapeoagregarPage.class);
      return true;
      }
-     */
 
     public boolean okInstrumentosVector() {
         Vector selected = null;
@@ -489,4 +453,5 @@ public class MapeoagregarPage extends BorderPage {
         userContext.addSessionController(controller);
     }
 
+    */
 }

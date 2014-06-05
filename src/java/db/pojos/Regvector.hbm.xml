@@ -1,13 +1,16 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 24/05/2014 05:59:50 PM by Hibernate Tools 3.6.0 -->
+<!-- Generated 4/06/2014 10:53:47 PM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
-    <class name="db.pojos.Regvector" table="regvector" catalog="prueba">
+    <class  name="db.pojos.Regvector" table="regvector" catalog="prueba">
         <id name="idRegVector" type="java.lang.Integer">
             <column name="IdRegVector" />
             <generator class="identity" />
         </id>
+        <many-to-one name="regcuenta" class="db.pojos.Regcuenta" fetch="select">
+            <column name="IdRegCuenta" />
+        </many-to-one>
         <property name="fecha" type="timestamp">
             <column name="Fecha" length="19" />
         </property>

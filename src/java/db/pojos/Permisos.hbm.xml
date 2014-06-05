@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 4/06/2014 10:53:47 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="db.pojos.Permisos" table="permisos" catalog="prueba">
+        <id name="idPermiso" type="java.lang.Integer">
+            <column name="IdPermiso" />
+            <generator class="identity" />
+        </id>
+        <property name="desPermiso" type="string">
+            <column name="DesPermiso" />
+        </property>
+        <set name="permisosusers" table="permisosuser" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="IdPermiso" />
+            </key>
+            <one-to-many class="db.pojos.Permisosuser" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,5 +1,5 @@
 package db.pojos;
-// Generated 24/05/2014 05:59:47 PM by Hibernate Tools 3.6.0
+// Generated 4/06/2014 10:53:47 PM by Hibernate Tools 3.6.0
 
 
 import java.util.Date;
@@ -11,11 +11,7 @@ public class Valores  implements java.io.Serializable {
 
 
      private Integer idTenencia;
-     private Calificacion calificacionByIdCalificacion3;
-     private Calificacion calificacionByIdCalificacion2;
-     private Tipotasa tipotasa;
      private Regcuenta regcuenta;
-     private Calificacion calificacionByIdCalificacion1;
      private Date fecha;
      private Long idCuentaContable;
      private String descripcion;
@@ -26,16 +22,17 @@ public class Valores  implements java.io.Serializable {
      private Date fechaVencimiento;
      private Double precioLimpio;
      private Double tasa;
+     private String tipoTasa;
+     private String calificacionMoodys;
+     private String calificacionSp;
+     private String calificacionFitch;
+     private String calificacionHr;
 
     public Valores() {
     }
 
-    public Valores(Calificacion calificacionByIdCalificacion3, Calificacion calificacionByIdCalificacion2, Tipotasa tipotasa, Regcuenta regcuenta, Calificacion calificacionByIdCalificacion1, Date fecha, Long idCuentaContable, String descripcion, Integer numeroTitulos, String tipoValor, String emision, String serie, Date fechaVencimiento, Double precioLimpio, Double tasa) {
-       this.calificacionByIdCalificacion3 = calificacionByIdCalificacion3;
-       this.calificacionByIdCalificacion2 = calificacionByIdCalificacion2;
-       this.tipotasa = tipotasa;
+    public Valores(Regcuenta regcuenta, Date fecha, Long idCuentaContable, String descripcion, Integer numeroTitulos, String tipoValor, String emision, String serie, Date fechaVencimiento, Double precioLimpio, Double tasa, String tipoTasa, String calificacionMoodys, String calificacionSp, String calificacionFitch, String calificacionHr) {
        this.regcuenta = regcuenta;
-       this.calificacionByIdCalificacion1 = calificacionByIdCalificacion1;
        this.fecha = fecha;
        this.idCuentaContable = idCuentaContable;
        this.descripcion = descripcion;
@@ -46,6 +43,11 @@ public class Valores  implements java.io.Serializable {
        this.fechaVencimiento = fechaVencimiento;
        this.precioLimpio = precioLimpio;
        this.tasa = tasa;
+       this.tipoTasa = tipoTasa;
+       this.calificacionMoodys = calificacionMoodys;
+       this.calificacionSp = calificacionSp;
+       this.calificacionFitch = calificacionFitch;
+       this.calificacionHr = calificacionHr;
     }
    
     public Integer getIdTenencia() {
@@ -55,40 +57,12 @@ public class Valores  implements java.io.Serializable {
     public void setIdTenencia(Integer idTenencia) {
         this.idTenencia = idTenencia;
     }
-    public Calificacion getCalificacionByIdCalificacion3() {
-        return this.calificacionByIdCalificacion3;
-    }
-    
-    public void setCalificacionByIdCalificacion3(Calificacion calificacionByIdCalificacion3) {
-        this.calificacionByIdCalificacion3 = calificacionByIdCalificacion3;
-    }
-    public Calificacion getCalificacionByIdCalificacion2() {
-        return this.calificacionByIdCalificacion2;
-    }
-    
-    public void setCalificacionByIdCalificacion2(Calificacion calificacionByIdCalificacion2) {
-        this.calificacionByIdCalificacion2 = calificacionByIdCalificacion2;
-    }
-    public Tipotasa getTipotasa() {
-        return this.tipotasa;
-    }
-    
-    public void setTipotasa(Tipotasa tipotasa) {
-        this.tipotasa = tipotasa;
-    }
     public Regcuenta getRegcuenta() {
         return this.regcuenta;
     }
     
     public void setRegcuenta(Regcuenta regcuenta) {
         this.regcuenta = regcuenta;
-    }
-    public Calificacion getCalificacionByIdCalificacion1() {
-        return this.calificacionByIdCalificacion1;
-    }
-    
-    public void setCalificacionByIdCalificacion1(Calificacion calificacionByIdCalificacion1) {
-        this.calificacionByIdCalificacion1 = calificacionByIdCalificacion1;
     }
     public Date getFecha() {
         return this.fecha;
@@ -159,6 +133,41 @@ public class Valores  implements java.io.Serializable {
     
     public void setTasa(Double tasa) {
         this.tasa = tasa;
+    }
+    public String getTipoTasa() {
+        return this.tipoTasa;
+    }
+    
+    public void setTipoTasa(String tipoTasa) {
+        this.tipoTasa = tipoTasa;
+    }
+    public String getCalificacionMoodys() {
+        return this.calificacionMoodys;
+    }
+    
+    public void setCalificacionMoodys(String calificacionMoodys) {
+        this.calificacionMoodys = calificacionMoodys;
+    }
+    public String getCalificacionSp() {
+        return this.calificacionSp;
+    }
+    
+    public void setCalificacionSp(String calificacionSp) {
+        this.calificacionSp = calificacionSp;
+    }
+    public String getCalificacionFitch() {
+        return this.calificacionFitch;
+    }
+    
+    public void setCalificacionFitch(String calificacionFitch) {
+        this.calificacionFitch = calificacionFitch;
+    }
+    public String getCalificacionHr() {
+        return this.calificacionHr;
+    }
+    
+    public void setCalificacionHr(String calificacionHr) {
+        this.calificacionHr = calificacionHr;
     }
 
 

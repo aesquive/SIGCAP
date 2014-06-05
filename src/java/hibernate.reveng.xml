@@ -1,28 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd">
 <hibernate-reverse-engineering>
-  <schema-selection match-catalog="prueba"/>
-  <table-filter match-name="regcuentauser"/>
-  <table-filter match-name="regvector"/>
-  <table-filter match-name="cuenta"/>
-  <table-filter match-name="disponibilidad"/>
-  <table-filter match-name="user"/>
-  <table-filter match-name="regcuenta"/>
-  <table-filter match-name="valores"/>
-  <table-filter match-name="tipotasa"/>
-  <table-filter match-name="tipousuario"/>
-  <table-filter match-name="tracking"/>
-  <table-filter match-name="regreportes"/>
-  <table-filter match-name="carteraconsumo"/>
-  <table-filter match-name="tipoinstrumento"/>
+  <schema-selection/>
   <table-filter match-name="carteracomercial"/>
-  <table-filter match-name="calificacion"/>
+  <table-filter match-name="regvector"/>
   <table-filter match-name="tarjetacredito"/>
-  <table-filter match-name="operacion"/>
-  <table-filter match-name="calificadora"/>
-  <table-filter match-name="configuracion"/>
-  <table-filter match-name="captacion"/>
-  <table-filter match-name="moneda"/>
   <table-filter match-name="catalogocuenta"/>
-  <table-filter match-name="validacionproyecto"/>
+  <table-filter match-name="captacion"/>
+  <table-filter match-name="regcuentauser"/>
+  <table-filter match-name="valores"/>
+  <table-filter match-name="carteraconsumo"/>
+  <table-filter match-name="regcuenta"/>
+  <table-filter match-name="permisosuser"/>
+  <table-filter match-name="configuracion"/>
+  <table-filter match-name="tracking"/>
+  <table-filter match-name="permisos"/>
+  <table-filter match-name="user"/>
+  <table-filter match-name="disponibilidad"/>
+  <table-filter match-name="regreportes"/>
+  <table-filter match-name="cuenta"/>
+  <table-filter match-name="operacion"/>
+  <table-filter match-name="moneda"/>
 </hibernate-reverse-engineering>

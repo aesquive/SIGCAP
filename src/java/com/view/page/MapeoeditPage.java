@@ -1,28 +1,17 @@
 package com.view.page;
 
-import db.controller.DAO;
-import db.pojos.Calificacion;
-import db.pojos.Tipotasa;
-import file.uploader.vector.Vector;
-import java.util.List;
-import manager.session.SessionController;
-import manager.session.Variable;
-import org.apache.click.control.Form;
-import org.apache.click.control.Label;
-import org.apache.click.control.Option;
-import org.apache.click.control.Select;
-import org.apache.click.control.Submit;
-import org.apache.click.control.TextField;
-import util.ContextManager;
-import util.UserManager;
-
 /**
  *
  * @author Admin
  */
 public class MapeoeditPage extends BorderPage {
 
-    private Vector vectorSeleccionado;
+    @Override
+    public void init() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /*
     private Form dataForm;
     private TextField tipoInstrumento;
     private TextField emisora;
@@ -290,5 +279,5 @@ public class MapeoeditPage extends BorderPage {
         controller.addVariable("selectedVectorVector", new Variable("selectedVectorVector", null, String.class), true);
         userContext.addSessionController(controller);
     }
-
+*/
 }

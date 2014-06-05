@@ -1,5 +1,5 @@
 package db.pojos;
-// Generated 1/06/2014 08:36:24 AM by Hibernate Tools 3.6.0
+// Generated 4/06/2014 10:53:47 PM by Hibernate Tools 3.6.0
 
 
 import java.util.HashSet;
@@ -12,11 +12,11 @@ public class User  implements java.io.Serializable {
 
 
      private Integer iduser;
-     private Tipousuario tipousuario;
      private String user;
      private String password;
      private Set regcuentausers = new HashSet(0);
      private Set trackings = new HashSet(0);
+     private Set permisosusers = new HashSet(0);
 
     public User() {
     }
@@ -25,12 +25,12 @@ public class User  implements java.io.Serializable {
     public User(String user) {
         this.user = user;
     }
-    public User(Tipousuario tipousuario, String user, String password, Set regcuentausers, Set trackings) {
-       this.tipousuario = tipousuario;
+    public User(String user, String password, Set regcuentausers, Set trackings, Set permisosusers) {
        this.user = user;
        this.password = password;
        this.regcuentausers = regcuentausers;
        this.trackings = trackings;
+       this.permisosusers = permisosusers;
     }
    
     public Integer getIduser() {
@@ -39,13 +39,6 @@ public class User  implements java.io.Serializable {
     
     public void setIduser(Integer iduser) {
         this.iduser = iduser;
-    }
-    public Tipousuario getTipousuario() {
-        return this.tipousuario;
-    }
-    
-    public void setTipousuario(Tipousuario tipousuario) {
-        this.tipousuario = tipousuario;
     }
     public String getUser() {
         return this.user;
@@ -74,6 +67,13 @@ public class User  implements java.io.Serializable {
     
     public void setTrackings(Set trackings) {
         this.trackings = trackings;
+    }
+    public Set getPermisosusers() {
+        return this.permisosusers;
+    }
+    
+    public void setPermisosusers(Set permisosusers) {
+        this.permisosusers = permisosusers;
     }
 
 

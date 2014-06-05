@@ -169,7 +169,7 @@ public class SimulacionPage extends BorderPage {
                     }
                 }
                 newContext();
-                setTitle(ref.getDescripcion());
+                setTitle(ref.getDetalle());
                 UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext).addVariable("data", new Variable("data", newData, List.class), true);
                 UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext).addVariable("page", new Variable("page", this.getClass(), List.class), true);
                 setRedirect(SimulacionPage.class);

@@ -172,10 +172,6 @@ public class ModelExecutor {
         String interp = MathInterpreter.interp(operacion.getValOperacion(), valores);
         interp = interp == null ? "0.0" : interp;
         Cuenta nueva = new Cuenta(null, regCuenta, operacion.getCatalogocuenta(), Double.valueOf(interp), ctasRef, 0);
-        if (isSimulation) {
-            nueva = cuentas.get(operacion.getCatalogocuenta().getIdCatalogoCuenta().toString());
-            nueva.setValor(Double.valueOf(interp));
-        }
         guardarCuenta(nueva);
         cuentas.put(operacion.getCatalogocuenta().getIdCatalogoCuenta().toString(), nueva);
         valores.put(operacion.getCatalogocuenta().getIdCatalogoCuenta().toString(), Double.valueOf(interp));

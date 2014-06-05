@@ -1,5 +1,5 @@
 package db.pojos;
-// Generated 24/05/2014 05:59:47 PM by Hibernate Tools 3.6.0
+// Generated 4/06/2014 10:53:47 PM by Hibernate Tools 3.6.0
 
 
 import java.util.Date;
@@ -11,13 +11,15 @@ public class Regvector  implements java.io.Serializable {
 
 
      private Integer idRegVector;
+     private Regcuenta regcuenta;
      private Date fecha;
      private String ruta;
 
     public Regvector() {
     }
 
-    public Regvector(Date fecha, String ruta) {
+    public Regvector(Regcuenta regcuenta, Date fecha, String ruta) {
+       this.regcuenta = regcuenta;
        this.fecha = fecha;
        this.ruta = ruta;
     }
@@ -28,6 +30,13 @@ public class Regvector  implements java.io.Serializable {
     
     public void setIdRegVector(Integer idRegVector) {
         this.idRegVector = idRegVector;
+    }
+    public Regcuenta getRegcuenta() {
+        return this.regcuenta;
+    }
+    
+    public void setRegcuenta(Regcuenta regcuenta) {
+        this.regcuenta = regcuenta;
     }
     public Date getFecha() {
         return this.fecha;
