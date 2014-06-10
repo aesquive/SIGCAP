@@ -14,10 +14,7 @@ import org.apache.click.control.ActionLink;
 import org.apache.click.control.Form;
 import org.apache.click.control.Submit;
 import org.apache.click.extras.control.Menu;
-import org.apache.click.extras.control.MenuFactory;
-import org.apache.click.extras.security.AccessController;
 import org.apache.click.extras.security.RoleAccessController;
-import org.hibernate.Hibernate;
 import util.ContextManager;
 import util.UserManager;
 
@@ -33,7 +30,6 @@ public abstract class BorderPage extends Page {
     public ContextManager context;
 
     public BorderPage() {
-        System.out.println("la sesion que lo pidio " + getContext().getSessionAttribute("user").toString());
         addCommonControls();
         checkSessionVars();
         init();
@@ -91,15 +87,15 @@ public abstract class BorderPage extends Page {
         }
         Collections.sort(listPermisos);
         String[] label = new String[]{"DataWarehouse", "Administrador de Modelos", "Gestion de Capital", "Simulador de Capital",
-            "Generador de RC´s", "Auditor", "Configuración"};
+            "Generador de RC´s", "Auditor", "Administrador de Usuarios"};
         String[] path = new String[]{"warehouse.htm", "administradormodelos.htm", "icap.htm", "whatif.htm", "reportes.htm",
-            "auditor.htm", "configuracion.htm"};
+            "auditor.htm", "controlusuarios.htm"};
         for (int t = 0; t < label.length; t++) {
             if ( listPermisos.size() > t && listPermisos.get(t).getValor() == 1) {
                 rootMenu.add(createMenu(label[t], path[t]));
             }
         }
-        rootMenu.add(createMenu("Salir", "redirect.html"));
+        rootMenu.add(createMenu("Salir", "salir.htm"));
         addControl(rootMenu);
 
         try {

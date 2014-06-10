@@ -14,6 +14,11 @@
         <property name="password" type="string">
             <column name="password" length="45" />
         </property>
+                <property name="activo" type="java.lang.Integer">
+            <column name="activo">
+                <comment>0 sin permiso , 1 ver , 2 editar</comment>
+            </column>
+        </property>
         <set name="regcuentausers" table="regcuentauser" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="IdUser" not-null="true" />

@@ -14,6 +14,7 @@ public class User  implements java.io.Serializable {
      private Integer iduser;
      private String user;
      private String password;
+     private Integer activo;
      private Set regcuentausers = new HashSet(0);
      private Set trackings = new HashSet(0);
      private Set permisosusers = new HashSet(0);
@@ -31,6 +32,7 @@ public class User  implements java.io.Serializable {
        this.regcuentausers = regcuentausers;
        this.trackings = trackings;
        this.permisosusers = permisosusers;
+       this.activo=0;
     }
    
     public Integer getIduser() {
@@ -74,6 +76,20 @@ public class User  implements java.io.Serializable {
     
     public void setPermisosusers(Set permisosusers) {
         this.permisosusers = permisosusers;
+    }
+
+    /**
+     * @return the activo
+     */
+    public Integer getActivo() {
+        return activo;
+    }
+
+    /**
+     * @param activo the activo to set
+     */
+    public void setActivo(Integer activo) {
+        this.activo = activo;
     }
 
 

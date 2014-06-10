@@ -6,7 +6,6 @@
 package com.view.page;
 
 import db.controller.DAO;
-import db.pojos.Configuracion;
 import db.pojos.Cuenta;
 import db.pojos.Regcuenta;
 import db.pojos.Regreportes;
@@ -14,7 +13,6 @@ import db.pojos.User;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +22,6 @@ import org.apache.click.control.Form;
 import org.apache.click.control.Option;
 import org.apache.click.control.Select;
 import org.apache.click.control.Submit;
-import org.apache.click.element.JsScript;
 import reports.excelmaker.ExcelMaker;
 import util.UserManager;
 

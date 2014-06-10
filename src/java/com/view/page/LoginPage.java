@@ -86,6 +86,12 @@ public class LoginPage extends Page {
             message = "Usuario y/o password incorrecto";
             return false;
         }
+        if(user.getActivo()>0){
+            message="El usuario esta actualmente conectado";
+            return false;
+        }
+        user.setActivo(1);
+        DAO.update(user);
         SessionController sessionController = new SessionController();
         sessionController.addVariable("user", new Variable("user", user, String.class), true);
         getContext().setSessionAttribute("user", user.getIduser());
