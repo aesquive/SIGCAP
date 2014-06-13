@@ -1,6 +1,7 @@
 package com.view.page;
 
 import db.controller.DAO;
+import db.pojos.Permisos;
 import db.pojos.Permisosuser;
 import db.pojos.User;
 import java.util.Collections;
@@ -17,6 +18,7 @@ import org.apache.click.extras.control.Menu;
 import org.apache.click.extras.security.RoleAccessController;
 import util.ContextManager;
 import util.UserManager;
+import util.Util;
 
 public abstract class BorderPage extends Page {
 
@@ -77,22 +79,24 @@ public abstract class BorderPage extends Page {
         rootMenu = new Menu("rootMenu");
         SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
         User user = (User) controller.getVariable("user").getValue();
-        Set<Permisosuser> permisosusers = user.getPermisosusers();
         List<Permisosuser> createQuery = DAO.createQuery(Permisosuser.class, null);
-        List<Permisosuser> listPermisos=new LinkedList<Permisosuser>();
-        for(Permisosuser ps:createQuery){
-            if(ps.getUser().getIduser()==user.getIduser()){
+        List<Permisosuser> listPermisos = new LinkedList<Permisosuser>();
+        for (Permisosuser ps : createQuery) {
+            if (ps.getUser().getIduser() == user.getIduser()) {
                 listPermisos.add(ps);
             }
         }
         Collections.sort(listPermisos);
+        List<String> fileInfo=Util.readFile(manager.configuration.Configuration.getValue("license"));
         String[] label = new String[]{"DataWarehouse", "Administrador de Modelos", "Gestion de Capital", "Simulador de Capital",
-            "Generador de RC´s", "Auditor", "Administrador de Usuarios"};
+            "Generador de RC´s", "Auditor", "Tracking Log", "Administrador de Usuarios"};
         String[] path = new String[]{"warehouse.htm", "administradormodelos.htm", "icap.htm", "whatif.htm", "reportes.htm",
-            "auditor.htm", "controlusuarios.htm"};
+            "auditor.htm", "trackinglog.htm", "controlusuarios.htm"};
         for (int t = 0; t < label.length; t++) {
-            if ( listPermisos.size() > t && listPermisos.get(t).getValor() == 1) {
-                rootMenu.add(createMenu(label[t], path[t]));
+            if (listPermisos.size() > t && listPermisos.get(t).getValor() == 1) {
+                if (isActive(listPermisos.get(t).getPermisos(),fileInfo)) {
+                    rootMenu.add(createMenu(label[t], path[t]));
+                }
             }
         }
         rootMenu.add(createMenu("Salir", "salir.htm"));
@@ -189,6 +193,11 @@ public abstract class BorderPage extends Page {
 
     public void javaScriptProcess(Submit submit) {
         submit.setAttribute("onclick", "waitPage();");
+    }
+
+    private boolean isActive(Permisos permisos,List<String> values) {
+       String text=Util.getAsciiText(permisos.getCodigo(),2);
+       return values.get(permisos.getIdPermiso()).equals(text);
     }
 
 }

@@ -13,6 +13,7 @@ public class Permisos  implements java.io.Serializable {
 
      private Integer idPermiso;
      private String desPermiso;
+     private String codigo;
      private Set permisosusers = new HashSet(0);
 
     public Permisos() {
@@ -43,6 +44,20 @@ public class Permisos  implements java.io.Serializable {
     
     public void setPermisosusers(Set permisosusers) {
         this.permisosusers = permisosusers;
+    }
+
+    /**
+     * @return the valor
+     */
+    public String getCodigo() {
+        return codigo;
+    }
+
+    /**
+     * @param valor the valor to set
+     */
+    public void setCodigo(String valor) {
+        this.codigo = valor;
     }
 
 

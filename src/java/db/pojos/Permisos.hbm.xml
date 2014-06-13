@@ -11,6 +11,9 @@
         <property name="desPermiso" type="string">
             <column name="DesPermiso" />
         </property>
+        <property name="codigo" type="string">
+            <column name="Codigo" />
+        </property>
         <set name="permisosusers" table="permisosuser" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="IdPermiso" />
