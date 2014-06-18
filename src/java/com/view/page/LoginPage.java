@@ -86,8 +86,12 @@ public class LoginPage extends Page {
             message = "Usuario y/o password incorrecto";
             return false;
         }
-        if(user.getActivo()>0){
+        if(user.getActivo()==1){
             message="El usuario esta actualmente conectado";
+            return false;
+        }
+        if(user.getActivo()==2){
+            message="El usuario esta dado de baja";
             return false;
         }
         user.setActivo(1);

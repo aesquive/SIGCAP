@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.view.page;
 
 import db.controller.DAO;
@@ -32,6 +27,7 @@ import org.apache.click.control.TextField;
 import org.apache.click.extras.control.DateField;
 import org.apache.commons.fileupload.FileItem;
 import util.UserManager;
+import util.Util;
 
 /**
  *
@@ -49,10 +45,15 @@ public class WarehousePage extends BorderPage {
     FileField fileCatalogoMinimo;
     TextField name;
     DateField dateField;
+    private static int numPer = 0;
 
     @Override
     public void init() {
         this.form = new Form("form");
+        if (!Util.getAsciiText(per.get(numPer).getCodigo(), 2).equals(lic.get(numPer))) {
+            setRedirect(NocontratadoPage.class);
+            return;
+        }
         name = new TextField("name", "Nombre del Ejercicio", true);
         dateField = new DateField("dateField", "Fecha de Ejercicio (dd/MM/aaaa)", true);
         dateField.setFormatPattern("dd/MM/yyyy");
@@ -95,7 +96,7 @@ public class WarehousePage extends BorderPage {
                 Regcuenta regCuenta = saveProject();
                 SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
                 User user = (User) controller.getVariable("user").getValue();
-                saveUserRelation(regCuenta,user);
+                saveUserRelation(regCuenta, user);
                 saveCuenta(regCuenta, dataCatalogoMinimo);
                 message = "";
                 DAO.saveRecordt(user, "Alta del ejercicio " + regCuenta.getDesRegCuenta());
@@ -139,8 +140,8 @@ public class WarehousePage extends BorderPage {
         return regcuenta;
     }
 
-    private void saveUserRelation(Regcuenta regCuenta,User user) {
-        Regcuentauser regcuentauser=new Regcuentauser(regCuenta, user);
+    private void saveUserRelation(Regcuenta regCuenta, User user) {
+        Regcuentauser regcuentauser = new Regcuentauser(regCuenta, user);
         DAO.save(regcuentauser);
     }
 

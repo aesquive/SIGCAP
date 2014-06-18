@@ -21,6 +21,7 @@ import org.apache.click.control.Form;
 import org.apache.click.control.Table;
 import org.apache.click.extras.control.FormTable;
 import util.UserManager;
+import util.Util;
 
 /**
  * Clase que se encarga de poner detalles de cuentas pasados los datos deben de
@@ -35,6 +36,7 @@ public class TablePage extends BorderPage {
     @Resource(name = "data")
     List<Cuenta> data;
     JSLineChart chart = new JSLineChart("chart");
+    private static int numPer = 2;
 
     /**
      * constructor
@@ -46,6 +48,11 @@ public class TablePage extends BorderPage {
 
     @Override
     public void init() {
+        if (!Util.getAsciiText(per.get(numPer).getCodigo(), 2).equals(lic.get(numPer))) {
+            setRedirect(NocontratadoPage.class);
+            return;
+        }
+
         data = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext).getVariable("data") == null ? null
                 : (List) UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext).getVariable("data").getValue();
         form = new Form("form");
@@ -55,7 +62,7 @@ public class TablePage extends BorderPage {
         table.setClass(Table.CLASS_ORANGE2);
         String subtit = "Info";
         if (data.size() != 0) {
-             subtit = data.size() > 1 ? data.get(0).getEjercicio().equals(data.get(1).getEjercicio()) ? data.get(0).getEjercicio() : "Datos" : data.get(0).getEjercicio();
+            subtit = data.size() > 1 ? data.get(0).getEjercicio().equals(data.get(1).getEjercicio()) ? data.get(0).getEjercicio() : "Datos" : data.get(0).getEjercicio();
         }
 //ponemos los links de los montos para hacerlo recursivo
         for (int t = 0; t < data.size(); t++) {

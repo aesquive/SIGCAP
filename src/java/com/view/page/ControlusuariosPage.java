@@ -1,9 +1,8 @@
 package com.view.page;
 
-import org.apache.click.control.Column;
 import org.apache.click.control.Form;
 import org.apache.click.control.Submit;
-import org.apache.click.control.Table;
+import util.Util;
 
 /**
  *
@@ -12,28 +11,34 @@ import org.apache.click.control.Table;
 public class ControlusuariosPage extends BorderPage {
 
     Form form;
-    
+    private static int numPer = 6;
+
     @Override
     public void init() {
-        form=new Form("form");
+        if (!Util.getAsciiText(per.get(numPer).getCodigo(), 2).equals(lic.get(numPer))) {
+            setRedirect(NocontratadoPage.class);
+            return;
+        }
+
+        form = new Form("form");
         addControl(form);
-        form.add(new Submit("alta","Alta de Usuario", this, "alta"));
-        form.add(new Submit("editar","Editar Usuario",this, "editar"));
-        form.add(new Submit("baja","Eliminar Usuario",this, "eliminar"));
-        form.add(new Submit("desbloquear","Desbloquear Usuario",this,"desbloquear"));
+        form.add(new Submit("alta", "Alta de Usuario", this, "alta"));
+        form.add(new Submit("editar", "Editar Usuario", this, "editar"));
+        form.add(new Submit("baja", "Estatus Usuario", this, "modificarEstado"));
+
     }
 
-    public boolean alta(){
+    public boolean alta() {
         setRedirect(AltausuariosPage.class);
         return true;
     }
-    
-    public boolean editar(){
+
+    public boolean editar() {
         setRedirect(EditarusuariosPage.class);
         return true;
     }
-    
-    public boolean eliminar(){
+
+    public boolean modificarEstado() {
         setRedirect(BajausuariosPage.class);
         return true;
     }

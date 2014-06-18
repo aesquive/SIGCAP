@@ -56,10 +56,12 @@ public class ModelComparator {
         Row row = sheet.getRow(cr.getRow());
         Cell cell = row.getCell(cr.getCol());
         Map<String, Catalogocuenta> ctas = mapCuentas(DAO.createQuery(Catalogocuenta.class, null));
+        int numberRows=0;
         for (int t = 0; t < map.size(); t++) {
             NDimensionVector vals = map.get(t);
             List values = vals.getValues();
             int data = 4;
+            
             for (int d = 0; d < values.size(); d++) {
                 int mod = d % data;
                 Object value = values.get(d);
@@ -74,6 +76,7 @@ public class ModelComparator {
                             cell.setCellValue(catCta.getIdCatalogoCuenta());
                             cell = row.getCell(2);
                             cell.setCellValue(catCta.getDesCatalogoCuenta());
+                            numberRows++;
                         }
                         break;
                     case 1:
@@ -97,7 +100,6 @@ public class ModelComparator {
                         break;
                     case 3:
                         Double valor4 = (Double) value;
-                        System.out.println(valor4);
                         if (valor4.isNaN() || valor4.isInfinite()) {
                             cell = row.getCell(7);
                             cell.setCellValue("NA");
@@ -119,12 +121,19 @@ public class ModelComparator {
             }
             row = sheet.getRow(cell.getRowIndex() + 1);
         }
+        int lastRow=7+numberRows;
+        row=sheet.getRow(lastRow);
+        while(row!=null){
+            sheet.removeRow(row);
+            lastRow++;
+            row=sheet.getRow(lastRow);
+        }
         File fileOutput = new File(manager.configuration.Configuration.getValue("Ruta Reportes") + "comparativo-" + first.getIdRegCuenta().toString() + "-" + second.getIdRegCuenta() + ".xlsx");
         FileOutputStream fileOut = new FileOutputStream(fileOutput);
         wb.write(fileOut);
         fileOut.flush();
         fileOut.close();
-        return first.getIdRegCuenta().toString() + "-" + second.getIdRegCuenta() + ".xlsx";
+        return "comparativo-" + first.getIdRegCuenta().toString() + "-" + second.getIdRegCuenta() + ".xlsx";
     }
 
     private static Map<String, Catalogocuenta> mapCuentas(List<Catalogocuenta> createQuery) {

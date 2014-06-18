@@ -22,6 +22,7 @@ import org.apache.click.control.Submit;
 import org.apache.click.control.TextField;
 import util.ContextManager;
 import util.UserManager;
+import util.Util;
 
 /**
  *
@@ -37,6 +38,7 @@ public class WhatifPage extends BorderPage {
     TextField nameSimulation;
     boolean onceClicked;
     User user;
+    private static int numPer = 3;
 
     public WhatifPage() {
         super();
@@ -44,6 +46,10 @@ public class WhatifPage extends BorderPage {
 
     @Override
     public void init() {
+        if (!Util.getAsciiText(per.get(numPer).getCodigo(), 2).equals(lic.get(numPer))) {
+            setRedirect(NocontratadoPage.class);
+            return;
+        }
         form = new Form("form");
         formView = new Form("formView");
         onceClicked = true;
@@ -120,7 +126,7 @@ public class WhatifPage extends BorderPage {
                     selected = (Regcuenta) rc.clone();
                 }
             }
-            DAO.saveRecordt(user, "Creo una copia de "+selected.getDesRegCuenta()+" llamada "+regCuenta.getDesRegCuenta());
+            DAO.saveRecordt(user, "Creo una copia de " + selected.getDesRegCuenta() + " llamada " + regCuenta.getDesRegCuenta());
             cambiarPantalla(regCuenta);
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(WhatifPage.class.getName()).log(Level.FINE, null, ex);

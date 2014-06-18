@@ -35,7 +35,7 @@ public class EditarpermisosPage extends BorderPage {
     private PasswordField checkPassword;
     private User user;
     private String userNameRequest;
-    
+
     @Override
     public void init() {
         userNameRequest = (String) getContext().getSessionAttribute("userEdit");
@@ -60,7 +60,7 @@ public class EditarpermisosPage extends BorderPage {
             fsp.add(c);
         }
         form.add(fsp);
-        Submit sub=new Submit("guardar", "Guardar", this, "guardar");
+        Submit sub = new Submit("guardar", "Guardar", this, "guardar");
         form.add(sub);
     }
 
@@ -68,9 +68,7 @@ public class EditarpermisosPage extends BorderPage {
         permisos = new LinkedList<PermisosCheck>();
         List<Permisosuser> createQuery = DAO.createQuery(Permisosuser.class, null);
         for (Permisosuser p : createQuery) {
-            if (user == null) {
-                permisos.add(new PermisosCheck(p.getPermisos().getDesPermiso(), false));
-            } else if (p.getUser().getIduser() == user.getIduser()) {
+            if (p.getUser().getIduser() == user.getIduser()) {
                 boolean value = p.getValor() > 0 ? true : false;
                 permisos.add(new PermisosCheck(p.getPermisos().getDesPermiso(), value));
             }

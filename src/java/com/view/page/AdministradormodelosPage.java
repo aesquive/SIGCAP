@@ -15,6 +15,7 @@ import org.apache.click.control.Option;
 import org.apache.click.control.Select;
 import org.apache.click.control.Submit;
 import util.UserManager;
+import util.Util;
 
 /**
  *
@@ -25,10 +26,15 @@ public class AdministradormodelosPage extends BorderPage {
     Form form;
     Select selectProject;
     User user;
+    private static int numPer = 1;
 
     @Override
     public void init() {
         form = new Form("form");
+        if (!Util.getAsciiText(per.get(numPer).getCodigo(), 2).equals(lic.get(numPer))) {
+            setRedirect(NocontratadoPage.class);
+            return;
+        }
         selectProject = new Select("selectProject", "Ejercicio", true);
         SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
         user = (User) controller.getVariable("user").getValue();
@@ -84,7 +90,6 @@ public class AdministradormodelosPage extends BorderPage {
     public boolean deleteModel() {
         if (form.isValid()) {
             try {
-
                 Regcuenta regCta = null;
                 List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
                 for (Regcuenta rc : createQuery) {

@@ -70,7 +70,7 @@ public class AltausuariosPage extends BorderPage {
 
     private void initComponents() {
         form = new Form("form");
-        nameUser = new TextField("nameUser", "Nombre de Usuario", true);
+        nameUser = new TextField("nameUser", "Nombre de Usuario", 15,true);
         password = new PasswordField("password", "Password", true);
         checkPassword = new PasswordField("checkPassword", "Verificar Password", true);
     }

@@ -1,16 +1,13 @@
 package com.view.page;
 
-import db.pojos.User;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
+import edu.stanford.ejalbert.BrowserLauncher;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import manager.session.SessionController;
+import manager.configuration.Configuration;
 import org.apache.click.control.Form;
 import org.apache.click.control.Submit;
 import org.apache.click.extras.control.DateField;
-import util.UserManager;
 
 /**
  *
@@ -36,27 +33,18 @@ public class TrackinglogPage extends BorderPage {
     public boolean generateTracking() {
         if (form.isValid()) {
             try {
-                if(initDate.getDate().compareTo(endDate.getDate())>0){
-                    message="La Fecha Inicial debe ser menor a la Fecha Final";
+                if (initDate.getDate().compareTo(endDate.getDate()) > 0) {
+                    message = "La Fecha Inicial debe ser menor a la Fecha Final";
                     return false;
                 }
-                Date dateIn = initDate.getDate();
-                Date dateEn=endDate.getDate();
-                Calendar cin=Calendar.getInstance();
-                Calendar cen=Calendar.getInstance();
-                cin.setTime(dateIn);
-                cen.setTime(dateEn);
-                cin.set(Calendar.HOUR, 0);
-                cen.set(Calendar.HOUR, 0);
-                SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
-                User user = (User) controller.getVariable("user").getValue();
-                String generateReport = trackinglog.TrackingLogReporter.generateReport("tracking-"+user.getIduser()+".xlsx",cin.getTime(), cen.getTime());
-                setRedirect("/reportes/"+generateReport);
+                SimpleDateFormat format = new SimpleDateFormat("ddMMyyyy");
+                BrowserLauncher browser = new BrowserLauncher();
+                browser.setNewWindowPolicy(true);
+                browser.openURLinBrowser(Configuration.getValue("direccionReportes") + "?typ=1&ini=" + format.format(initDate.getDate()) + "&end=" + format.format(endDate.getDate()));
                 return true;
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(TrackinglogPage.class.getName()).log(Level.INFO, null, ex);
-                message="Hubo algun error al procesar el Tracking Log";
-                return false;
+                message="Algun error sucedio";
             }
         }
         return false;

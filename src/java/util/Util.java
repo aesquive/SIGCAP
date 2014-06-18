@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package util;
 
@@ -15,30 +10,33 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.click.Control;
+import org.apache.click.control.Form;
+import org.apache.click.control.Label;
 
 /**
  *
  * @author Admin
  */
 public class Util {
-
+    
     public static List<Double> sortDoubleValues(Set<Double> keySet) {
-        List<Double> list=new LinkedList<Double>();
-        for(Double d:keySet){
-            list.add(d);
+        List<Double> list = new LinkedList<Double>();
+        for (Double d : keySet) {
+            list.add(Math.abs(d));
         }
         Collections.sort(list);
         return list;
     }
-
+    
     public static List<String> readFile(String fileName) {
         try {
-            List<String> values=new LinkedList<String>();
-            BufferedReader reader=new BufferedReader(new FileReader(fileName));
+            List<String> values = new LinkedList<String>();
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
             String readLine = reader.readLine();
-            while(readLine!=null && !readLine.equals("")){
+            while (readLine != null && !readLine.equals("")) {
                 values.add(readLine);
-                readLine=reader.readLine();
+                readLine = reader.readLine();
             }
             reader.close();
             return values;
@@ -47,18 +45,18 @@ public class Util {
         }
         return null;
     }
-
+    
     public static String getAsciiText(String valor, int numbersPerLetter) {
-        String cad="";
-        if(valor==null){
+        String cad = "";
+        if (valor == null) {
             return "";
         }
-        for(int t=0;t<valor.length();t=t+2){
-            if(t+2>valor.length()){
+        for (int t = 0; t < valor.length(); t = t + 2) {
+            if (t + 2 > valor.length()) {
                 return "";
             }
-            String subs=valor.substring(t, t+2);
-            cad=cad+ String.valueOf(Character.toChars(Integer.parseInt(subs)));
+            String subs = valor.substring(t, t + 2);
+            cad = cad + String.valueOf(Character.toChars(Integer.parseInt(subs)));
         }
         return cad;
     }

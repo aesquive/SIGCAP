@@ -7,7 +7,6 @@ import db.pojos.User;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import manager.session.SessionController;
 import manager.session.Variable;
 import org.apache.click.Page;
@@ -30,8 +29,12 @@ public abstract class BorderPage extends Page {
     public Form forwardForm;
     public Form backwardForm;
     public ContextManager context;
-
+    public boolean showPage;
+    public static List<String> lic=Util.readFile(manager.configuration.Configuration.getValue("license"));
+    public static List<Permisos> per=DAO.createQuery(Permisos.class, null);
+    
     public BorderPage() {
+        showPage=false;
         addCommonControls();
         checkSessionVars();
         init();
@@ -87,16 +90,15 @@ public abstract class BorderPage extends Page {
             }
         }
         Collections.sort(listPermisos);
-        List<String> fileInfo=Util.readFile(manager.configuration.Configuration.getValue("license"));
         String[] label = new String[]{"DataWarehouse", "Administrador de Modelos", "Gestion de Capital", "Simulador de Capital",
-            "Generador de RC´s", "Auditor", "Tracking Log", "Administrador de Usuarios"};
+            "Generador de RC´s", "Auditor", "Administrador de Usuarios"};
         String[] path = new String[]{"warehouse.htm", "administradormodelos.htm", "icap.htm", "whatif.htm", "reportes.htm",
-            "auditor.htm", "trackinglog.htm", "controlusuarios.htm"};
+            "auditor.htm", "controlusuarios.htm"};
         for (int t = 0; t < label.length; t++) {
             if (listPermisos.size() > t && listPermisos.get(t).getValor() == 1) {
-                if (isActive(listPermisos.get(t).getPermisos(),fileInfo)) {
+                //if (isActive(listPermisos.get(t).getPermisos(),fileInfo)) {
                     rootMenu.add(createMenu(label[t], path[t]));
-                }
+                //}
             }
         }
         rootMenu.add(createMenu("Salir", "salir.htm"));

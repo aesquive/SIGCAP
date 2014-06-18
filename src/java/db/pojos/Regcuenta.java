@@ -156,7 +156,7 @@ public class Regcuenta  implements java.io.Serializable,Cloneable {
             Cuenta compareValue = compareCuentas.get(numberCount);
             Double value1 = ownValue == null ? Double.NaN : ownValue.getValor();
             Double value2 = compareValue == null ? Double.NaN : compareValue.getValor();
-            Double compare = value1 == Double.NaN || value2 == Double.NaN ? Double.NaN : (value2 / value1) - 1;
+            Double compare = value1 == Double.NaN || value2 == Double.NaN ? Double.NaN : Math.abs((value2 / value1) - 1);
             mapping.put(numberCount, new NDimensionVector(value1, value2, compare));
             if (sortly.get(compare) == null) {
                 sortly.put(compare, new NDimensionVector<Double>());
@@ -171,12 +171,10 @@ public class Regcuenta  implements java.io.Serializable,Cloneable {
         int maxRegisters = numberRegisters < 0 ? sortedCompare.size() : numberRegisters;
         int actualRegisters=0;
         int counter = 0;
-        System.out.println("left" + maxRegisters);
         //empezamos a meter solo los registros que nececitamos
         while (maxRegisters > 0 && counter < sortedCompare.size()) {
             Double compareVal = sortedCompare.get(sortedCompare.size() - 1 - counter);
             if (compareVal >= minVariance || !compareVal.isNaN()) {
-                System.out.println("compareval" + compareVal);
                 NDimensionVector numberCounts = sortly.get(compareVal);
                 NDimensionVector newVector = new NDimensionVector();
                 List<String> values = numberCounts.getValues();
