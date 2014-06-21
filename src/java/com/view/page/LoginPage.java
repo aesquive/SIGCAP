@@ -44,6 +44,7 @@ public class LoginPage extends Page {
      *
      */
     public LoginPage() {
+        getContext().removeSessionAttribute("msg");
         getContext().removeSessionAttribute("user");
         init();
         //como es la pagina de login limpiamos toda la sesion pasada

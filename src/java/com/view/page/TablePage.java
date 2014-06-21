@@ -48,11 +48,12 @@ public class TablePage extends BorderPage {
 
     @Override
     public void init() {
-        if (!Util.getAsciiText(per.get(numPer).getCodigo(), 2).equals(lic.get(numPer))) {
+        
+        if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer))&& dte.get(numPer)==true) {
+            System.out.println("Pagina valida");
             setRedirect(NocontratadoPage.class);
             return;
         }
-
         data = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext).getVariable("data") == null ? null
                 : (List) UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext).getVariable("data").getValue();
         form = new Form("form");

@@ -1,12 +1,15 @@
 package db.controller;
 
+import db.pojos.Permisos;
 import db.pojos.Tracking;
 import db.pojos.User;
 import java.util.Calendar;
 import java.util.List;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 
 /**
@@ -85,5 +88,22 @@ public class DAO {
         session.flush();
         session.clear();
     
+    }
+
+    public static void executeSQL(String string) {
+        System.out.println("el sql que correra el dao "+string);
+        Transaction tr=session.beginTransaction();
+        SQLQuery createSQLQuery = session.createSQLQuery(string);
+        int executeUpdate = createSQLQuery.executeUpdate();
+        tr.commit();
+        session.flush();
+        session.clear();
+        session.close();
+        session=null;
+        checkSession();
+    }
+
+    public static void refresh(Object obj){
+        session.refresh(obj);
     }
 }

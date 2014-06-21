@@ -6,7 +6,6 @@
 package com.view.page;
 
 import static com.view.page.BorderPage.lic;
-import static com.view.page.BorderPage.per;
 import org.apache.click.control.Form;
 import org.apache.click.control.Submit;
 import util.Util;
@@ -22,7 +21,8 @@ public class AuditorPage extends BorderPage {
 
     @Override
     public void init() {
-        if (!Util.getAsciiText(per.get(numPer).getCodigo(), 2).equals(lic.get(numPer))) {
+        
+        if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer))&& dte.get(numPer)==true) {
             setRedirect(NocontratadoPage.class);
             return;
         }

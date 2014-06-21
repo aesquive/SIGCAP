@@ -4,9 +4,14 @@ import db.controller.DAO;
 import db.pojos.Permisos;
 import db.pojos.Permisosuser;
 import db.pojos.User;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import manager.session.SessionController;
 import manager.session.Variable;
 import org.apache.click.Page;
@@ -30,11 +35,13 @@ public abstract class BorderPage extends Page {
     public Form backwardForm;
     public ContextManager context;
     public boolean showPage;
-    public static List<String> lic=Util.readFile(manager.configuration.Configuration.getValue("license"));
-    public static List<Permisos> per=DAO.createQuery(Permisos.class, null);
-    
+    public static List<String> lic = Util.readFile(manager.configuration.Configuration.getValue("license"));
+    public List<String> per;
+    public Map<Integer, Boolean> dte;
+
     public BorderPage() {
-        showPage=false;
+        showPage = false;
+        checkLic();
         addCommonControls();
         checkSessionVars();
         init();
@@ -86,6 +93,7 @@ public abstract class BorderPage extends Page {
         List<Permisosuser> listPermisos = new LinkedList<Permisosuser>();
         for (Permisosuser ps : createQuery) {
             if (ps.getUser().getIduser() == user.getIduser()) {
+                DAO.refresh(ps);
                 listPermisos.add(ps);
             }
         }
@@ -97,7 +105,7 @@ public abstract class BorderPage extends Page {
         for (int t = 0; t < label.length; t++) {
             if (listPermisos.size() > t && listPermisos.get(t).getValor() == 1) {
                 //if (isActive(listPermisos.get(t).getPermisos(),fileInfo)) {
-                    rootMenu.add(createMenu(label[t], path[t]));
+                rootMenu.add(createMenu(label[t], path[t]));
                 //}
             }
         }
@@ -197,9 +205,41 @@ public abstract class BorderPage extends Page {
         submit.setAttribute("onclick", "waitPage();");
     }
 
-    private boolean isActive(Permisos permisos,List<String> values) {
-       String text=Util.getAsciiText(permisos.getCodigo(),2);
-       return values.get(permisos.getIdPermiso()).equals(text);
+    private boolean isActive(Permisos permisos, List<String> values) {
+        String text = Util.getAsciiText(permisos.getCodigo(), 2);
+        return values.get(permisos.getIdPermiso()).equals(text);
+    }
+
+    private void checkLic() {
+        List<Permisos> createQuery = DAO.createQuery(Permisos.class, null);
+        dte = new HashMap<Integer, Boolean>();
+        per = new LinkedList<String>();
+        for (Permisos p : createQuery) {
+            if (p.getCodigo() != null) {
+                try {
+                    SimpleDateFormat form = new SimpleDateFormat("yyyyddMM");
+                    String asciiText = Util.getAsciiText(p.getCodigo().substring(p.getCodigo().length() - 16, p.getCodigo().length()), 2);
+                    System.out.println("lo que se pretende parsear " + asciiText);
+                    Date parse = form.parse(asciiText);
+                    System.out.println("la date " + parse);
+                    if (parse.compareTo(Calendar.getInstance().getTime()) < 0) {
+                        dte.put(p.getIdPermiso(), false);
+                        per.add(null);
+                    } else {
+                        per.add(p.getCodigo().substring(0, p.getCodigo().length() - 18));
+                        dte.put(p.getIdPermiso(), true);
+                    }
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                    dte.put(p.getIdPermiso(), true);
+                    per.add(p.getCodigo());
+                }
+            } else {
+                dte.put(p.getIdPermiso(), false);
+                per.add("");
+            }
+            System.out.println("la licencia de " + p.getDesPermiso() + " " + per.get(p.getIdPermiso()) + " " + dte.get(p.getIdPermiso()));
+        }
     }
 
 }

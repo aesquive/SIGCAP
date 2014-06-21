@@ -4,7 +4,10 @@ package util;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -61,9 +64,13 @@ public class Util {
         return cad;
     }
     
-    public static void main(String[] args) {
-        String asciiText = Util.getAsciiText("677980806976876582", 2);
+    public static void main(String[] args) throws ParseException {
+        String asciiText = Util.getAsciiText("5048495250504854", 2);
         System.out.println(asciiText);
+        String algo="20142206";
+        SimpleDateFormat sd=new SimpleDateFormat("yyyyddMM");
+        Date parse = sd.parse(asciiText);
+        System.out.println(parse);
     }
     
     

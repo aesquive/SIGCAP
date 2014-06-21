@@ -31,7 +31,8 @@ public class AdministradormodelosPage extends BorderPage {
     @Override
     public void init() {
         form = new Form("form");
-        if (!Util.getAsciiText(per.get(numPer).getCodigo(), 2).equals(lic.get(numPer))) {
+        
+        if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer))&& dte.get(numPer)==true) {
             setRedirect(NocontratadoPage.class);
             return;
         }
