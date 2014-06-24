@@ -56,7 +56,7 @@ public class BajausuariosPage extends BorderPage {
                 }
             }
             user.setActivo(Integer.parseInt(accion.getValue()));
-            String texto=Integer.parseInt(accion.getValue())==0 ? " habilito al usuario " : " dio de baja al usuario "; 
+            String texto=Integer.parseInt(accion.getValue())==0 ? " desbloqueó al usuario " : " dio de baja al usuario "; 
             DAO.update(user);
             SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
             User userSess = (User) controller.getVariable("user").getValue();

@@ -9,20 +9,15 @@ import db.controller.DAO;
 import db.pojos.Regcuenta;
 import db.pojos.Regcuentauser;
 import edu.stanford.ejalbert.BrowserLauncher;
-import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
-import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import manager.configuration.Configuration;
-import model.comparator.ModelComparator;
+import org.apache.click.control.ActionLink;
 import org.apache.click.control.Form;
 import org.apache.click.control.Option;
 import org.apache.click.control.Select;
 import org.apache.click.control.Submit;
 import org.apache.click.extras.control.DoubleField;
 import org.apache.click.extras.control.IntegerField;
-import org.apache.click.extras.control.NumberField;
 
 /**
  *
@@ -35,7 +30,7 @@ public class ReportecambiosPage extends BorderPage {
     private Select project2;
     private DoubleField minVariance;
     private IntegerField numberFields;
-
+    
     @Override
     public void init() {
         form = new Form("form");
@@ -59,9 +54,25 @@ public class ReportecambiosPage extends BorderPage {
 
     public boolean reporteCambios() throws Exception {
         if (form.isValid()) {
-            BrowserLauncher browser = new BrowserLauncher();
-            browser.setNewWindowPolicy(true);
-            browser.openURLinBrowser(Configuration.getValue("direccionReportes") + "?typ=2&pra=" + project1.getValue() + "&prb=" + project2.getValue()+"&var="+minVariance.getDouble()/100+"&num="+numberFields.getInteger());
+            getContext().setSessionAttribute("compareC-0", new String[]{"1"});
+            List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class,null);
+            Regcuenta r1=null;
+            Regcuenta r2=null;
+            for(Regcuenta r:createQuery){
+                if(r.getIdRegCuenta().toString().equals(project1.getValue())){
+                    r1=r;
+                }
+                if(r.getIdRegCuenta().toString().equals(project2.getValue())){
+                    r2=r;
+                }
+            }
+            getContext().setSessionAttribute("counter", 0);
+            getContext().setSessionAttribute("minVariance", minVariance.getDouble());
+            getContext().setSessionAttribute("numRegs", numberFields.getInteger());
+            getContext().setSessionAttribute("maxCounter", 0);
+            getContext().setSessionAttribute("ex1-0",r1);
+            getContext().setSessionAttribute("ex2-0",r2);
+            setRedirect(ComparePage.class);
             return true;
         }
         return false;

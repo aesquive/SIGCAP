@@ -101,7 +101,7 @@ public class LoginPage extends Page {
         sessionController.addVariable("user", new Variable("user", user, String.class), true);
         getContext().setSessionAttribute("user", user.getIduser());
         redireccionar(sessionController);
-        DAO.saveRecordt(user,user.getUser()+" ingreso al sistema");
+        DAO.saveRecordt(user,user.getUser()+" ingresó al sistema");
         return true;
     }
 
@@ -136,7 +136,8 @@ public class LoginPage extends Page {
         ContextManager userContext = UserManager.addUserContext(Integer.parseInt(getContext().getSessionAttribute("user").toString()));
         userContext.cleanMap();
         userContext.addSessionController(controller);
-        setRedirect(IcapPage.class);
+        //setRedirect(IcapPage.class);
+        setRedirect(BienvenidaPage.class);
     }
 
 }

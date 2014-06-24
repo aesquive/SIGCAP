@@ -39,11 +39,17 @@ public class IcapPage extends BorderPage {
                 }
             }
         }
-        controller.addVariable("data", new Variable("data", data, List.class), true);
-        setTitle("");
-        ContextManager userContext = UserManager.addUserContext(Integer.parseInt(getContext().getSessionAttribute("user").toString()));
-        userContext.cleanMap();
-        userContext.addSessionController(controller);
+        addSessionVar("icapCounter", 0);
+        addSessionVar("icapMaxCounter", 0);
+        addSessionVar("icapData-0", data);
+        addSessionVar("title-0", "");
+        addSessionVar("regCta-0", "");
+                
+//controller.addVariable("data", new Variable("data", data, List.class), true);
+        //setTitle("");
+        //ContextManager userContext = UserManager.addUserContext(Integer.parseInt(getContext().getSessionAttribute("user").toString()));
+        //userContext.cleanMap();
+        //userContext.addSessionController(controller);
         setRedirect(TablePage.class);
     }
 }

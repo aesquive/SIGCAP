@@ -55,14 +55,14 @@ public class WarehousePage extends BorderPage {
             return;
         }
         name = new TextField("name", "Nombre del Ejercicio", true);
-        dateField = new DateField("dateField", "Fecha de Ejercicio (dd/MM/aaaa)", true);
+        dateField = new DateField("dateField", "Fecha de Ejercicio (dd/mm/aaaa)", true);
         dateField.setFormatPattern("dd/MM/yyyy");
         fileTenencia = new FileField("fileTenencia", "Tenencia  ", false);
         fileCaptacion = new FileField("fileCaptacion", "Captación   ", false);
         fileCarteraComercial = new FileField("fileComercial", "Cartera Comercial  ", false);
         fileDisponibilidades = new FileField("fileDisponibilidades", "Disponibilidades  ", false);
         fileCarteraConsumo = new FileField("fileConsumo", "Cartera Consumo   ", false);
-        fileTarjetaCredito = new FileField("fileTarjeta", "Tarjeta de Credito   ", false);
+        fileTarjetaCredito = new FileField("fileTarjeta", "Tarjeta de Crédito   ", false);
         form.add(name);
         form.add(dateField);
         form.add(fileTenencia);
@@ -72,7 +72,7 @@ public class WarehousePage extends BorderPage {
         form.add(fileDisponibilidades);
         form.add(fileTarjetaCredito);
 
-        fileCatalogoMinimo = new FileField("fileCatalogo", "Catalogo Minimo", true);
+        fileCatalogoMinimo = new FileField("fileCatalogo", "Catálogo Mínimo", true);
         form.add(fileCatalogoMinimo);
 
         Submit sub = new Submit("sub", "Procesar", this, "procesarClicked");
@@ -99,11 +99,11 @@ public class WarehousePage extends BorderPage {
                 saveUserRelation(regCuenta, user);
                 saveCuenta(regCuenta, dataCatalogoMinimo);
                 message = "";
-                DAO.saveRecordt(user, "Alta del ejercicio " + regCuenta.getDesRegCuenta());
+                DAO.saveRecordt(user, user.getUser() +"generó alta del ejercicio " + regCuenta.getDesRegCuenta());
                 setRedirect(AdministradormodelosPage.class);
                 return true;
             } catch (Exception ex) {
-                message = "Algun error ha ocurrido";
+                message = "Algún error ha ocurrido";
                 Logger.getLogger(WarehousePage.class.getName()).log(Level.INFO, null, ex);
                 return false;
             }

@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -98,7 +99,7 @@ public abstract class BorderPage extends Page {
             }
         }
         Collections.sort(listPermisos);
-        String[] label = new String[]{"DataWarehouse", "Administrador de Modelos", "Gestion de Capital", "Simulador de Capital",
+        String[] label = new String[]{"DataWarehouse", "Administrador de Modelos", "Gestión de Capital", "Simulador de Capital",
             "Generador de RC´s", "Auditor", "Administrador de Usuarios"};
         String[] path = new String[]{"warehouse.htm", "administradormodelos.htm", "icap.htm", "whatif.htm", "reportes.htm",
             "auditor.htm", "controlusuarios.htm"};
@@ -219,9 +220,7 @@ public abstract class BorderPage extends Page {
                 try {
                     SimpleDateFormat form = new SimpleDateFormat("yyyyddMM");
                     String asciiText = Util.getAsciiText(p.getCodigo().substring(p.getCodigo().length() - 16, p.getCodigo().length()), 2);
-                    System.out.println("lo que se pretende parsear " + asciiText);
                     Date parse = form.parse(asciiText);
-                    System.out.println("la date " + parse);
                     if (parse.compareTo(Calendar.getInstance().getTime()) < 0) {
                         dte.put(p.getIdPermiso(), false);
                         per.add(null);
@@ -238,8 +237,29 @@ public abstract class BorderPage extends Page {
                 dte.put(p.getIdPermiso(), false);
                 per.add("");
             }
-            System.out.println("la licencia de " + p.getDesPermiso() + " " + per.get(p.getIdPermiso()) + " " + dte.get(p.getIdPermiso()));
         }
     }
 
+    public void addSessionVar(String nameVar,Object value){
+        getContext().setSessionAttribute(nameVar, value);
+    }
+    
+    public Object getSessionVar(String name){
+        return getContext().getSessionAttribute(name);
+    }
+    
+    public void removeSessionVar(String nameVar){
+        getContext().removeSessionAttribute(nameVar);
+    }
+    
+    public void cleanSession(){
+        Enumeration<String> attributeNames = getContext().getSession().getAttributeNames();
+        List<String> elms=new LinkedList<String>();
+        while(attributeNames.hasMoreElements()){
+            elms.add(attributeNames.nextElement());
+        }
+        for(String s:elms){
+            removeSessionVar(s);
+        }
+    }
 }

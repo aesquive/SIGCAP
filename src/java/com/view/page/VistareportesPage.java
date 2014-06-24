@@ -97,7 +97,7 @@ public class VistareportesPage extends Page {
         }
         SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
         User user = (User) controller.getVariable("user").getValue();
-        DAO.saveRecordt(user, "Genero reporte " + selectedReport.getDesReportes());
+        DAO.saveRecordt(user, user.getUser() + " generó reporte " + selectedReport.getDesReportes());
         setRedirect("/reportes/" + selected.getIdRegCuenta().toString() + "-" + selectedReport.getIdRegReportes().toString() + ".xlsx");
         return true;
     }
@@ -119,7 +119,7 @@ public class VistareportesPage extends Page {
             setRedirect("/reportes/" + compareWriteFile);
             SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
             User user = (User) controller.getVariable("user").getValue();
-            DAO.saveRecordt(user, "Genero reporte comparativo de " + reg1.getDesRegCuenta() + " y " + reg2.getDesRegCuenta());
+            DAO.saveRecordt(user, user.getUser()+ " generó reporte comparativo de " + reg1.getDesRegCuenta() + " y " + reg2.getDesRegCuenta());
         } catch (IOException ex) {
             Logger.getLogger(VistareportesPage.class.getName()).log(Level.INFO, null, ex);
         }
@@ -139,7 +139,7 @@ public class VistareportesPage extends Page {
             cen.set(Calendar.HOUR, 0);
             SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
             User user = (User) controller.getVariable("user").getValue();
-            DAO.saveRecordt(user, "Genero reporte Tracking Log");
+            DAO.saveRecordt(user, user.getUser()+ " generó reporte Tracking Log");
             String generateReport = trackinglog.TrackingLogReporter.generateReport("tracking-" + user.getIduser() + ".xlsx", cin.getTime(), cen.getTime());
             setRedirect("/reportes/" + generateReport);
         } catch (Exception ex) {

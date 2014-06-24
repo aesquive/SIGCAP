@@ -136,7 +136,7 @@ public class SimulacionPage extends BorderPage {
             User user = (User) controller.getVariable("user").getValue();
             ModelExecutor modelExecutor = new ModelExecutor(manager.configuration.Configuration.getValue("baseModelo"), regcuenta, true);
             modelExecutor.start();
-            DAO.saveRecordt(user,"Generó simulación de "+regcuenta.getDesRegCuenta());
+            DAO.saveRecordt(user,user.getUser()+" generó simulación de "+regcuenta.getDesRegCuenta());
             cambiarPantalla(data.get(0).getRegcuenta());
             return true;
         } catch (MathInterpreterException ex) {

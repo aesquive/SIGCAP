@@ -2,16 +2,10 @@ package com.view.page;
 
 import db.controller.DAO;
 import db.pojos.Cuenta;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.Resource;
 import manager.session.Variable;
-import net.sf.click.extras.graph.JSLineChart;
 import org.apache.click.Context;
 import org.apache.click.control.ActionLink;
 import org.apache.click.control.Column;
@@ -35,8 +29,10 @@ public class TablePage extends BorderPage {
     Form form;
     @Resource(name = "data")
     List<Cuenta> data;
-    JSLineChart chart = new JSLineChart("chart");
     private static int numPer = 2;
+    String titlePage;
+    private Integer counter;
+    private String regCta;
 
     /**
      * constructor
@@ -48,23 +44,22 @@ public class TablePage extends BorderPage {
 
     @Override
     public void init() {
-        
-        if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer))&& dte.get(numPer)==true) {
+        if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer)) && dte.get(numPer) == true) {
             System.out.println("Pagina valida");
             setRedirect(NocontratadoPage.class);
             return;
         }
-        data = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext).getVariable("data") == null ? null
-                : (List) UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext).getVariable("data").getValue();
+        counter = (Integer) getSessionVar("icapCounter");
+        data = (List<Cuenta>) getSessionVar("data-" + counter);
+        regCta = (String) getSessionVar("regCta-" + counter);
+        titlePage = (String) getSessionVar("title-" + counter);
         form = new Form("form");
         table = new FormTable("table", form);
         table.setName("dataTable");
         table.setPageNumber(0);
         table.setClass(Table.CLASS_ORANGE2);
-        String subtit = "Info";
-        if (data.size() != 0) {
-            subtit = data.size() > 1 ? data.get(0).getEjercicio().equals(data.get(1).getEjercicio()) ? data.get(0).getEjercicio() : "Datos" : data.get(0).getEjercicio();
-        }
+        title = titlePage;
+        
 //ponemos los links de los montos para hacerlo recursivo
         for (int t = 0; t < data.size(); t++) {
             ActionLink actionLink = new ActionLink("link" + data.get(t).getIdCuenta(), data.get(t).getResultado(), this, "onLinkClick");
@@ -72,23 +67,8 @@ public class TablePage extends BorderPage {
             data.get(t).setActionLink(actionLink);
             addControl(actionLink);
         }
-//ponemos las primeras columnas
-        String[] columnsTmp = Cuenta.getColumns();
-        String[] columns = null;
-        if (subtit.equals("Datos")) {
-            columns = columnsTmp;
-        } else {
-            String[] subArray = new String[columnsTmp.length - 1];
-            for (int t = 0; t < subArray.length; t++) {
-                subArray[t] = columnsTmp[t + 1];
-            }
-            columns = subArray;
-        }
-
-        if (subtit.equals("Datos")) {
-            makeGraph();
-        }
-
+        //ponemos las primeras columnas
+        String[] columns = Cuenta.getColumns();
         for (String c : columns) {
             Column col = new Column(c);
             col.setWidth("900 px");
@@ -108,10 +88,9 @@ public class TablePage extends BorderPage {
             table.addColumn(col);
         }
         //pegamos todo en nuestro fieldset
-        FieldSet fs = new FieldSet(subtit);
+        FieldSet fs = new FieldSet(regCta);
         form.add(fs);
         fs.add(table);
-        //System.out.println("la cantidad de links " + links.length);
         addControl(form);
     }
 
@@ -155,26 +134,6 @@ public class TablePage extends BorderPage {
             }
         }
         return true;
-    }
-
-    private void makeGraph() {
-        chart = new JSLineChart("chart");
-        chart.setChartHeight(350);
-        chart.setChartWidth(350);
-        Map<Date, Cuenta> cuentas = new HashMap<Date, Cuenta>();
-        List<Date> dates = new LinkedList<Date>();
-        for (Cuenta c : data) {
-            Date fecha = c.getRegcuenta().getFecha();
-            cuentas.put(fecha, c);
-            dates.add(fecha);
-        }
-        Collections.sort(dates);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-yyyy");
-        //for (Date d : dates) {
-        chart.addPoint("1", 2);
-
-//     chart.addPoint("1", cuentas.get(d).getValor().intValue());
-        //}
     }
 
 }

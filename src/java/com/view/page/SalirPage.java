@@ -30,7 +30,7 @@ public class SalirPage extends BorderPage {
         }
         userQ.setActivo(0);
         DAO.update(userQ);
-        DAO.saveRecordt(userQ, userQ.getUser()+" salio del sistema");
+//        DAO.saveRecordt(userQ, userQ.getUser()+" salió del sistema");
         setRedirect("redirect.html");
     }
 

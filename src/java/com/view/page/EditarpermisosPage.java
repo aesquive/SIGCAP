@@ -121,7 +121,7 @@ public class EditarpermisosPage extends BorderPage {
             }
             SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
             User userSess = (User) controller.getVariable("user").getValue();
-            DAO.saveRecordt(userSess, userSess.getUser() + " modifico permisos del usuario " + user.getUser());
+            DAO.saveRecordt(userSess, userSess.getUser() + " modificó permisos del usuario " + user.getUser());
             setRedirect(ControlusuariosPage.class);
             return true;
         }

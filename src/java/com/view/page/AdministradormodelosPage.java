@@ -76,7 +76,7 @@ public class AdministradormodelosPage extends BorderPage {
                 }
                 ModelExecutor m = new ModelExecutor(manager.configuration.Configuration.getValue("baseModelo"),regCta, false);
                 m.start();
-                DAO.saveRecordt(user, "Proceso del Modelo "+regCta.getDesRegCuenta());
+                DAO.saveRecordt(user, user.getUser()+ " calculó el ICAP de "+regCta.getDesRegCuenta());
                 setRedirect(IcapPage.class);
                 return true;
             } catch (Exception ex) {
@@ -98,7 +98,7 @@ public class AdministradormodelosPage extends BorderPage {
                         regCta = rc;
                     }
                 }
-                DAO.saveRecordt(user, "Modelo "+regCta.getDesRegCuenta()+" eliminado");
+                DAO.saveRecordt(user,user.getUser()+" eliminó la información del "+regCta.getDesRegCuenta());
                 DAO.delete(regCta);
                 setRedirect(IcapPage.class);
                 return true;
