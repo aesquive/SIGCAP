@@ -29,7 +29,7 @@ public class IcapPage extends BorderPage {
             Iterator<Regcuentauser> iterator = regcuenta.getRegcuentausers().iterator();
             while (iterator.hasNext()) {
                 Regcuentauser next = iterator.next();
-                if (next.getUser().getIduser() == varUser.getIduser() && c.getCatalogocuenta().getIdCatalogoCuenta() == 1) {
+                if (c.getCatalogocuenta().getIdCatalogoCuenta() == 1) {
                     data.add(c);
                 }
             }

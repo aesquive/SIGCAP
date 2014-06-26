@@ -34,12 +34,13 @@ public class ReportecambiosPage extends BorderPage {
     @Override
     public void init() {
         form = new Form("form");
-        minVariance = new DoubleField("var", "% de Variación Mínima", 6, true);
-        numberFields = new IntegerField("fie", "Número de Registros", 5, true);
+        minVariance = new DoubleField("var", "% de Tolerancia", 3, true);
+        //numberFields = new IntegerField("fie", "Número de Registros", 5, true);
         project1 = new Select("project1", "Primer Ejercicio", true);
         project2 = new Select("project2", "Segundo Ejercicio", true);
         List<Regcuentauser> createQuery = DAO.createQuery(Regcuentauser.class, null);
-        project1.setDefaultOption(new Option("Seleccione"));
+        project1.setDefaultOption(new Option("-1","Seleccione"));
+        project2.setDefaultOption(new Option("-1","Seleccione"));
         for (Regcuentauser ru : createQuery) {
             project1.add(new Option(ru.getRegcuenta(), ru.getRegcuenta().getDesRegCuenta()));
             project2.add(new Option(ru.getRegcuenta(), ru.getRegcuenta().getDesRegCuenta()));
@@ -47,7 +48,7 @@ public class ReportecambiosPage extends BorderPage {
         form.add(project1);
         form.add(project2);
         form.add(minVariance);
-        form.add(numberFields);
+        //form.add(numberFields);
         form.add(new Submit("sub", "Generar reporte", this, "reporteCambios"));
         addControl(form);
     }
@@ -66,9 +67,14 @@ public class ReportecambiosPage extends BorderPage {
                     r2=r;
                 }
             }
+            if(r1==null || r2==null){
+                message="Favor de elegir un ejercicio válido";
+                return false;
+            }
             getContext().setSessionAttribute("counterCompare", 0);
             getContext().setSessionAttribute("minVariance", minVariance.getDouble());
-            getContext().setSessionAttribute("numRegs", numberFields.getInteger());
+            //getContext().setSessionAttribute("numRegs", numberFields.getInteger());
+            getContext().setSessionAttribute("numRegs", -1);
             getContext().setSessionAttribute("maxCounterCompare", 0);
             getContext().setSessionAttribute("ex1-0",r1);
             getContext().setSessionAttribute("ex2-0",r2);

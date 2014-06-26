@@ -151,13 +151,13 @@ public class Regcuenta implements java.io.Serializable, Cloneable {
      * requeridos
      *
      */
-    public Map compareProjects(Regcuenta comparable, double minVariance, int numberRegisters) {
+    public Map compareProjects(Regcuenta comparable, double minVariance, int numberRegisters,Collection<Cuenta> ownCuentasParam,Collection<Cuenta> otherCuentasParam) {
         // sacamos los valores de las cuentas y los comparamos
         List<Catalogocuenta> createQuery = DAO.createQuery(Catalogocuenta.class, null);
         Map<String, NDimensionVector> mapping = new HashMap<String, NDimensionVector>();
         Map<Double, NDimensionVector> sortly = new HashMap<Double, NDimensionVector>();
-        Map<String, Cuenta> ownCuentas = mapCuentas(this);
-        Map<String, Cuenta> compareCuentas = mapCuentas(comparable);
+        Map<String, Cuenta> ownCuentas = mapCuentas(this,ownCuentasParam);
+        Map<String, Cuenta> compareCuentas = mapCuentas(comparable,otherCuentasParam);
         for (Catalogocuenta count : createQuery) {
             String numberCount = count.getIdCatalogoCuenta().toString();
             Cuenta ownValue = ownCuentas.get(numberCount);
@@ -205,8 +205,8 @@ public class Regcuenta implements java.io.Serializable, Cloneable {
     public static void main(String[] args) {
         List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
         Regcuenta get = createQuery.get(0);
-        Map<Integer, NDimensionVector> compareProjects = get.compareProjects(createQuery.get(1), 0.0, -1);
-        System.out.println(compareProjects.get(2).getValues());
+//        Map<Integer, NDimensionVector> compareProjects = get.compareProjects(createQuery.get(1), 0.0, -1);
+//        System.out.println(compareProjects.get(2).getValues());
     }
 
     @Override
@@ -219,10 +219,9 @@ public class Regcuenta implements java.io.Serializable, Cloneable {
         return super.clone();
     }
 
-    private Map<String, Cuenta> mapCuentas(Regcuenta regCta) {
+    private Map<String, Cuenta> mapCuentas(Regcuenta regCta,Collection<Cuenta> cuentas) {
         Map<String, Cuenta> ans = new HashMap<String, Cuenta>();
-        Set<Cuenta> cuentas1 = regCta.getCuentas();
-        for (Cuenta c : cuentas1) {
+        for (Cuenta c : cuentas) {
             ans.put(c.getCatalogocuenta().getIdCatalogoCuenta().toString(), c);
         }
         return ans;

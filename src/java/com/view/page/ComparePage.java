@@ -202,7 +202,6 @@ public class ComparePage extends BorderPage {
     }
 
     public boolean makeReport() {
-        System.out.println("haciendo reporte");
         try {
             BrowserLauncher browser = new BrowserLauncher();
             browser.setNewWindowPolicy(true);

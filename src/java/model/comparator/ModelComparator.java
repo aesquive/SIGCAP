@@ -2,11 +2,13 @@ package model.comparator;
 
 import db.controller.DAO;
 import db.pojos.Catalogocuenta;
+import db.pojos.Cuenta;
 import db.pojos.Regcuenta;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,15 +25,15 @@ import util.NDimensionVector;
  */
 public class ModelComparator {
 
-    public static String compareWriteFile(String baseName, Regcuenta first, Regcuenta second, Double minVariance, int numberRegisters) throws IOException {
+    public static String compareWriteFile(String baseName,String newFileName, Regcuenta first,Collection<Cuenta> cuentasFirst, Regcuenta second,Collection<Cuenta> cuentasSecond, Double minVariance, int numberRegisters) throws IOException {
         Map<Integer, NDimensionVector> compareProjects = null;
         if (first != null && second != null) {
-            compareProjects = first.compareProjects(second, minVariance, numberRegisters);
+            compareProjects = first.compareProjects(second, minVariance, numberRegisters,cuentasFirst,cuentasSecond);
         }
-        return writeFile(baseName, compareProjects, first, second);
+        return writeFile(baseName,newFileName, compareProjects, first, second);
     }
 
-    private static String writeFile(String baseName, Map<Integer, NDimensionVector> map, Regcuenta first, Regcuenta second) throws IOException {
+    private static String writeFile(String baseName,String newFileName,Map<Integer, NDimensionVector> map, Regcuenta first, Regcuenta second) throws IOException {
         File file = new File(baseName);
         FileInputStream fis = new FileInputStream(file);
         XSSFWorkbook wb = new XSSFWorkbook(fis);
@@ -128,12 +130,12 @@ public class ModelComparator {
             lastRow++;
             row=sheet.getRow(lastRow);
         }
-        File fileOutput = new File(manager.configuration.Configuration.getValue("Ruta Reportes") + "comparativo-" + first.getIdRegCuenta().toString() + "-" + second.getIdRegCuenta() + ".xlsx");
+        File fileOutput = new File(manager.configuration.Configuration.getValue("Ruta Reportes") + newFileName+"-" + first.getIdRegCuenta().toString() + "-" + second.getIdRegCuenta() + ".xlsx");
         FileOutputStream fileOut = new FileOutputStream(fileOutput);
         wb.write(fileOut);
         fileOut.flush();
         fileOut.close();
-        return "comparativo-" + first.getIdRegCuenta().toString() + "-" + second.getIdRegCuenta() + ".xlsx";
+        return newFileName+"-" + first.getIdRegCuenta().toString() + "-" + second.getIdRegCuenta() + ".xlsx";
     }
 
     private static Map<String, Catalogocuenta> mapCuentas(List<Catalogocuenta> createQuery) {
@@ -146,7 +148,7 @@ public class ModelComparator {
 
     public static void main(String[] args) throws IOException {
         List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
-        ModelComparator.compareWriteFile(manager.configuration.Configuration.getValue("baseAnalisisComparativo"), createQuery.get(0), createQuery.get(1), 0.0, -1);
+        //ModelComparator.compareWriteFile(manager.configuration.Configuration.getValue("baseAnalisisComparativo"), createQuery.get(0), createQuery.get(1), 0.0, -1);
     }
 
 }
