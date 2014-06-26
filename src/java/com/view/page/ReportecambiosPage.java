@@ -66,10 +66,10 @@ public class ReportecambiosPage extends BorderPage {
                     r2=r;
                 }
             }
-            getContext().setSessionAttribute("counter", 0);
+            getContext().setSessionAttribute("counterCompare", 0);
             getContext().setSessionAttribute("minVariance", minVariance.getDouble());
             getContext().setSessionAttribute("numRegs", numberFields.getInteger());
-            getContext().setSessionAttribute("maxCounter", 0);
+            getContext().setSessionAttribute("maxCounterCompare", 0);
             getContext().setSessionAttribute("ex1-0",r1);
             getContext().setSessionAttribute("ex2-0",r2);
             setRedirect(ComparePage.class);

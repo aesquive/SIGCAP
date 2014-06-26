@@ -5,8 +5,6 @@ import db.pojos.Cuenta;
 import db.pojos.User;
 import java.util.LinkedList;
 import java.util.List;
-import manager.session.SessionController;
-import manager.session.Variable;
 import org.apache.click.Page;
 import org.apache.click.control.Form;
 import org.apache.click.control.PasswordField;
@@ -14,8 +12,6 @@ import org.apache.click.control.Submit;
 import org.apache.click.control.TextField;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
-import util.ContextManager;
-import util.UserManager;
 
 /**
  * Clase que maneja toda la seccion del Login
@@ -97,11 +93,9 @@ public class LoginPage extends Page {
         }
         user.setActivo(1);
         DAO.update(user);
-        SessionController sessionController = new SessionController();
-        sessionController.addVariable("user", new Variable("user", user, String.class), true);
-        getContext().setSessionAttribute("user", user.getIduser());
-        redireccionar(sessionController);
+        getContext().setSessionAttribute("user", user);
         DAO.saveRecordt(user,user.getUser()+" ingresó al sistema");
+        setRedirect(BienvenidaPage.class);
         return true;
     }
 
@@ -121,23 +115,6 @@ public class LoginPage extends Page {
         return createQuery.get(0);
     }
 
-    /**
-     * este METODO DEBE MODIFICARSE PARA ENVIAR AL MENU PRINCIPAL PRIMERO
-     */
-    private void redireccionar(SessionController controller) {
-        List<Cuenta> createQuery = DAO.createQuery(Cuenta.class, null);
-        List<Cuenta> data = new LinkedList<Cuenta>();
-        for (Cuenta c : createQuery) {
-            if (c.getCatalogocuenta().getIdCatalogoCuenta() == 1) {
-                data.add(c);
-            }
-        }
-        controller.addVariable("data", new Variable("data", data, List.class), true);
-        ContextManager userContext = UserManager.addUserContext(Integer.parseInt(getContext().getSessionAttribute("user").toString()));
-        userContext.cleanMap();
-        userContext.addSessionController(controller);
-        //setRedirect(IcapPage.class);
-        setRedirect(BienvenidaPage.class);
-    }
+    
 
 }

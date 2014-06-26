@@ -13,15 +13,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import manager.session.SessionController;
-import manager.session.Variable;
 import org.apache.click.control.Form;
 import org.apache.click.control.Option;
 import org.apache.click.control.Select;
 import org.apache.click.control.Submit;
 import org.apache.click.control.TextField;
-import util.ContextManager;
-import util.UserManager;
 import util.Util;
 
 /**
@@ -38,7 +34,7 @@ public class WhatifPage extends BorderPage {
     TextField nameSimulation;
     boolean onceClicked;
     User user;
-    private static int numPer = 3;
+    private static int numPer = 5;
 
     public WhatifPage() {
         super();
@@ -58,8 +54,7 @@ public class WhatifPage extends BorderPage {
         nameSimulation = new TextField("Nombre de la Simulación");
         selectProject.setId("selectwhatif");
         nameSimulation.setRequired(true);
-        SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
-        user = (User) controller.getVariable("user").getValue();
+        user = (User) getSessionVar("user");
         List<Regcuentauser> createQuery = DAO.createQuery(Regcuentauser.class, null);
         for (Regcuentauser ru : createQuery) {
             if (ru.getUser().getIduser() == user.getIduser()) {
@@ -178,7 +173,6 @@ public class WhatifPage extends BorderPage {
     }
 
     private void cambiarPantalla(Regcuenta regCuenta) {
-        SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
         List<Cuenta> data = new LinkedList<Cuenta>();
         List<Cuenta> createQuery = DAO.createQuery(Cuenta.class, null);
         for (Cuenta c : createQuery) {
@@ -187,11 +181,8 @@ public class WhatifPage extends BorderPage {
                 break;
             }
         }
-        controller.addVariable("data", new Variable("data", data, List.class), true);
-        setTitle("");
-        ContextManager userContext = UserManager.addUserContext(Integer.parseInt(getContext().getSessionAttribute("user").toString()));
-        userContext.cleanMap();
-        userContext.addSessionController(controller);
+        addSessionVar("dataSimulacion",data);
+        addSessionVar("title","");
         setRedirect(SimulacionPage.class);
     }
 

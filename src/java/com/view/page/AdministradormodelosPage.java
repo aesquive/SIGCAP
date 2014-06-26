@@ -8,13 +8,11 @@ import db.pojos.User;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import manager.session.SessionController;
 import model.executor.ModelExecutor;
 import org.apache.click.control.Form;
 import org.apache.click.control.Option;
 import org.apache.click.control.Select;
 import org.apache.click.control.Submit;
-import util.UserManager;
 import util.Util;
 
 /**
@@ -31,14 +29,13 @@ public class AdministradormodelosPage extends BorderPage {
     @Override
     public void init() {
         form = new Form("form");
-        
-        if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer))&& dte.get(numPer)==true) {
+
+        if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer)) && dte.get(numPer) == true) {
             setRedirect(NocontratadoPage.class);
             return;
         }
         selectProject = new Select("selectProject", "Ejercicio", true);
-        SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
-        user = (User) controller.getVariable("user").getValue();
+        user = (User) getSessionVar("user");
         List<Regcuentauser> createQuery = DAO.createQuery(Regcuentauser.class, null);
         selectProject.setDefaultOption(new Option("Seleccione"));
         for (Regcuentauser ru : createQuery) {
@@ -74,9 +71,9 @@ public class AdministradormodelosPage extends BorderPage {
                         update = true;
                     }
                 }
-                ModelExecutor m = new ModelExecutor(manager.configuration.Configuration.getValue("baseModelo"),regCta, false);
+                ModelExecutor m = new ModelExecutor(manager.configuration.Configuration.getValue("baseModelo"), regCta, false);
                 m.start();
-                DAO.saveRecordt(user, user.getUser()+ " calculó el ICAP de "+regCta.getDesRegCuenta());
+                DAO.saveRecordt(user, user.getUser() + " calculó el ICAP de " + regCta.getDesRegCuenta());
                 setRedirect(IcapPage.class);
                 return true;
             } catch (Exception ex) {
@@ -98,7 +95,7 @@ public class AdministradormodelosPage extends BorderPage {
                         regCta = rc;
                     }
                 }
-                DAO.saveRecordt(user,user.getUser()+" eliminó la información del "+regCta.getDesRegCuenta());
+                DAO.saveRecordt(user, user.getUser() + " eliminó la información del " + regCta.getDesRegCuenta());
                 DAO.delete(regCta);
                 setRedirect(IcapPage.class);
                 return true;

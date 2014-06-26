@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
-import manager.session.SessionController;
-import manager.session.Variable;
 import model.executor.ModelExecutor;
 import org.apache.click.Context;
 import org.apache.click.control.ActionLink;
@@ -23,8 +21,6 @@ import org.apache.click.control.Form;
 import org.apache.click.control.Submit;
 import org.apache.click.control.Table;
 import org.apache.click.extras.control.FormTable;
-import util.ContextManager;
-import util.UserManager;
 
 /**
  *
@@ -47,10 +43,7 @@ public class SimulacionPage extends BorderPage {
 
     @Override
     public void init() {
-        data = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext).getVariable("data") == null ? null
-                : (List) UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext).getVariable("data").getValue();
-
-        UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext).addVariable("page", new Variable("page", this.getClass(), Class.class), true);
+        data =(List<Cuenta>)getSessionVar("dataSim");
         form = new Form("form");
         table = new FormTable("table", form);
         table.setName("dataTable");
@@ -132,8 +125,7 @@ public class SimulacionPage extends BorderPage {
     public boolean simularClicked() throws IOException {
         try {
             Regcuenta regcuenta = data.get(0).getRegcuenta();
-            SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
-            User user = (User) controller.getVariable("user").getValue();
+            User user = (User) getSessionVar("user");
             ModelExecutor modelExecutor = new ModelExecutor(manager.configuration.Configuration.getValue("baseModelo"), regcuenta, true);
             modelExecutor.start();
             DAO.saveRecordt(user,user.getUser()+" generó simulación de "+regcuenta.getDesRegCuenta());
@@ -168,10 +160,6 @@ public class SimulacionPage extends BorderPage {
                         }
                     }
                 }
-                newContext();
-                setTitle(ref.getDetalle());
-                UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext).addVariable("data", new Variable("data", newData, List.class), true);
-                UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext).addVariable("page", new Variable("page", this.getClass(), List.class), true);
                 setRedirect(SimulacionPage.class);
                 return true;
             }
@@ -187,8 +175,6 @@ public class SimulacionPage extends BorderPage {
     public boolean onEditClick() {
         for (int t = 0; t < data.size(); t++) {
             if (data.get(t).getEditLink().isClicked()) {
-                newContext();
-                UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext).addVariable("ctaEdit", new Variable("ctaEdit", data.get(t), List.class), true);
                 setRedirect(EditsimulationPage.class);
                 return true;
             }
@@ -197,7 +183,6 @@ public class SimulacionPage extends BorderPage {
     }
 
     private void cambiarPantalla(Regcuenta regCuenta) {
-        SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
         List<Cuenta> data = new LinkedList<Cuenta>();
         List<Cuenta> createQuery = DAO.createQuery(Cuenta.class, null);
         for (Cuenta c : createQuery) {
@@ -206,11 +191,8 @@ public class SimulacionPage extends BorderPage {
                 break;
             }
         }
-        controller.addVariable("data", new Variable("data", data, List.class), true);
-        setTitle("");
-        ContextManager userContext = UserManager.addUserContext(Integer.parseInt(getContext().getSessionAttribute("user").toString()));
-        userContext.cleanMap();
-        userContext.addSessionController(controller);
+        addSessionVar("dataSimulacion", data);
+        addSessionVar("titleSimulacion","");
         setRedirect(SimulacionPage.class);
     }
 }

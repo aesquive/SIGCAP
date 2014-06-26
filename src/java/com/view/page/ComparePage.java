@@ -13,7 +13,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
 import manager.configuration.Configuration;
-import manager.session.Variable;
 import org.apache.click.Context;
 import org.apache.click.control.ActionLink;
 import org.apache.click.control.Column;
@@ -24,8 +23,6 @@ import org.apache.click.control.Submit;
 import org.apache.click.control.Table;
 import org.apache.click.extras.control.FormTable;
 import util.CuentaWrapper;
-import util.UserManager;
-import util.Util;
 
 /**
  * Clase que se encarga de poner detalles de cuentas pasados los datos deben de
@@ -59,12 +56,12 @@ public class ComparePage extends BorderPage {
         table.setName("dataTable");
         table.setPageNumber(0);
         table.setClass(Table.CLASS_ORANGE2);
-        Integer counter = (Integer) getContext().getSessionAttribute("counter");
+        Integer counter = (Integer) getContext().getSessionAttribute("counterCompare");
         String[] compareCount = (String[]) getContext().getSessionAttribute("compareC-" + counter);
         regCuentaUno = (Regcuenta) getContext().getSessionAttribute("ex1-" + counter);
         regCuentaDos = (Regcuenta) getContext().getSessionAttribute("ex2-" + counter);
         obtenerWrappers(compareCount);
-        checkBackForward(counter, (Integer) getContext().getSessionAttribute("maxCounter"));
+        checkBackForward(counter, (Integer) getContext().getSessionAttribute("maxCounterCompare"));
         for (int t = 0; t < cuentas.size(); t++) {
             CuentaWrapper wrapper = cuentas.get(t);
             ActionLink actionLinkUno = new ActionLink("link" + wrapper.getPrimerCuenta().getIdCuenta().toString(), wrapper.getPrimerCuenta().getResultado(), this, "onLinkClick");
@@ -135,12 +132,12 @@ public class ComparePage extends BorderPage {
                     String[] array = new String[l.size()];
                     String[] toArray = l.toArray(array);
                     System.out.println("llega aca");
-                    Integer counter = (Integer) getContext().getSessionAttribute("counter");
+                    Integer counter = (Integer) getContext().getSessionAttribute("counterCompare");
                     int newcounter = counter + 1;
-                    Integer maxCounter = (Integer) getContext().getSessionAttribute("maxCounter");
+                    Integer maxCounter = (Integer) getContext().getSessionAttribute("maxCounterCompare");
                     int newMaxCounter = newcounter > maxCounter ? newcounter : maxCounter;
-                    getContext().setSessionAttribute("maxCounter", newMaxCounter);
-                    getContext().setSessionAttribute("counter", newcounter);
+                    getContext().setSessionAttribute("maxCounterCompare", newMaxCounter);
+                    getContext().setSessionAttribute("counterCompare", newcounter);
                     getContext().setSessionAttribute("compareC-" + newcounter, toArray);
                     getContext().setSessionAttribute("ex1-" + newcounter, regCuentaUno);
                     getContext().setSessionAttribute("ex2-" + newcounter, regCuentaDos);
@@ -191,15 +188,15 @@ public class ComparePage extends BorderPage {
     }
 
     public boolean counterForward() {
-        Integer counter = (Integer) getContext().getSessionAttribute("counter");
-        getContext().setSessionAttribute("counter", counter + 1);
+        Integer counter = (Integer) getContext().getSessionAttribute("counterCompare");
+        getContext().setSessionAttribute("counterCompare", counter + 1);
         setRedirect(ComparePage.class);
         return true;
     }
 
     public boolean counterBack() {
-        Integer counter = (Integer) getContext().getSessionAttribute("counter");
-        getContext().setSessionAttribute("counter", counter - 1);
+        Integer counter = (Integer) getContext().getSessionAttribute("counterCompare");
+        getContext().setSessionAttribute("counterCompare", counter - 1);
         setRedirect(ComparePage.class);
         return true;
     }

@@ -8,7 +8,7 @@ package com.view.page;
 public class BienvenidaPage extends BorderPage{
 
     @Override
-    public void init() {
+    public void init() {       
     }
     
 }

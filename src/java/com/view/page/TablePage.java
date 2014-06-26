@@ -5,7 +5,6 @@ import db.pojos.Cuenta;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Resource;
-import manager.session.Variable;
 import org.apache.click.Context;
 import org.apache.click.control.ActionLink;
 import org.apache.click.control.Column;
@@ -14,7 +13,6 @@ import org.apache.click.control.FieldSet;
 import org.apache.click.control.Form;
 import org.apache.click.control.Table;
 import org.apache.click.extras.control.FormTable;
-import util.UserManager;
 import util.Util;
 
 /**
@@ -49,18 +47,17 @@ public class TablePage extends BorderPage {
             setRedirect(NocontratadoPage.class);
             return;
         }
+        form = new Form("form");
         counter = (Integer) getSessionVar("icapCounter");
-        data = (List<Cuenta>) getSessionVar("data-" + counter);
+        checkBackForward(counter,(Integer) getSessionVar("icapMaxCounter"));
+        data = (List<Cuenta>) getSessionVar("icapData-" + counter);
         regCta = (String) getSessionVar("regCta-" + counter);
         titlePage = (String) getSessionVar("title-" + counter);
-        form = new Form("form");
         table = new FormTable("table", form);
         table.setName("dataTable");
         table.setPageNumber(0);
         table.setClass(Table.CLASS_ORANGE2);
         title = titlePage;
-        
-//ponemos los links de los montos para hacerlo recursivo
         for (int t = 0; t < data.size(); t++) {
             ActionLink actionLink = new ActionLink("link" + data.get(t).getIdCuenta(), data.get(t).getResultado(), this, "onLinkClick");
             actionLink.setValue(data.get(t).getIdCuenta().toString());
@@ -124,16 +121,53 @@ public class TablePage extends BorderPage {
                         }
                     }
                 }
-                UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext).addVariable("page", new Variable("page", this.getClass(), Class.class), true);
-                newContext();
-                setTitle(ref.getDetalle());
-                UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext).addVariable("data", new Variable("data", newData, List.class), true);
-                UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext).addVariable("page", new Variable("page", this.getClass(), Class.class), true);
+
+                addSessionVar("icapCounter", ((Integer) getSessionVar("icapCounter")) + 1);
+                int newCounter = (Integer) getSessionVar("icapCounter");
+                int maxCounter = (Integer) getSessionVar("icapMaxCounter");
+                int newMax = maxCounter > newCounter ? maxCounter : newCounter;
+                addSessionVar("icapMaxCounter", newMax);
+                addSessionVar("icapData-" + newCounter, newData);
+                addSessionVar("title-" + newCounter, ref.getCatalogocuenta().getDesCatalogoCuenta());
+                addSessionVar("regCta-" + newCounter, ref.getRegcuenta().getDesRegCuenta());
                 setRedirect(TablePage.class);
                 return true;
             }
         }
         return true;
     }
+
+    private void checkBackForward(Integer counter, Integer maxCounter) {
+        if (counter < maxCounter) {
+            goForward = new ActionLink("forwardLink", "", this, "counterForward");
+            goForward.setName("forwardLink");
+            goForward.setId("forwardLink");
+            goForward.setImageSrc("/img/forward.png");
+            form.add(goForward);
+        }
+        if (counter > 0) {
+            goBack = new ActionLink("backLink", "", this, "counterBack");
+            goBack.setImageSrc("/img/back.png");
+            goBack.setName("backLink");
+            goBack.setId("backLink");
+            form.add(goBack);
+        }
+    }
+    
+    
+    public boolean counterForward() {
+        Integer counter = (Integer) getContext().getSessionAttribute("icapCounter");
+        getContext().setSessionAttribute("icapCounter", counter + 1);
+        setRedirect(ComparePage.class);
+        return true;
+    }
+
+    public boolean counterBack() {
+        Integer counter = (Integer) getContext().getSessionAttribute("icapCounter");
+        getContext().setSessionAttribute("icapCounter", counter - 1);
+        setRedirect(ComparePage.class);
+        return true;
+    }
+
 
 }

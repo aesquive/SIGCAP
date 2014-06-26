@@ -25,7 +25,7 @@ public class ReportesPage extends BorderPage {
     private Form form;
     private List<Regreportes> reportes;
     private List<Regcuenta> regCuentas;
-    private static int numPer = 4;
+    private static int numPer = 1;
 
     @Override
     public void init() {

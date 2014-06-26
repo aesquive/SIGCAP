@@ -5,12 +5,10 @@ import db.pojos.User;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import manager.session.SessionController;
 import org.apache.click.control.Form;
 import org.apache.click.control.Option;
 import org.apache.click.control.Select;
 import org.apache.click.control.Submit;
-import util.UserManager;
 
 /**
  *
@@ -33,8 +31,7 @@ public class BajausuariosPage extends BorderPage {
         select = new Select("select", "Seleccionar Usuario", true);
         select.setDefaultOption(new Option(-1, "--Seleccionar--"));
         List<User> createQuery = DAO.createQuery(User.class, null);
-        SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
-        User userSess = (User) controller.getVariable("user").getValue();
+        User userSess = (User) getSessionVar("user");
         for (User u : createQuery) {
             if (!u.getUser().toUpperCase().equals(userSess.getUser().toUpperCase())) {
                 select.add(new Option(u.getIduser(), u.getUser()));
@@ -58,8 +55,7 @@ public class BajausuariosPage extends BorderPage {
             user.setActivo(Integer.parseInt(accion.getValue()));
             String texto=Integer.parseInt(accion.getValue())==0 ? " desbloqueó al usuario " : " dio de baja al usuario "; 
             DAO.update(user);
-            SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
-            User userSess = (User) controller.getVariable("user").getValue();
+            User userSess = (User) getSessionVar("user");
             DAO.saveRecordt(userSess, userSess.getUser() + texto + user.getUser());
             setRedirect(ControlusuariosPage.class);
             return true;

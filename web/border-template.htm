@@ -7,7 +7,7 @@
         <link rel="stylesheet" type="text/css" href="$context/css/style.css" title="Style"/>
     </head>
     <body>
-
+        
         <script>
             function waitPage() {
                 document.getElementById("divProcess").style.display = "block";
@@ -19,7 +19,12 @@
                 document.getElementById("divForm").style.display = "block";
             }
         </script>
-
+        #if ($connecteduser)
+        <a style="font-size: medium">Usuario conectado: $connecteduser</a>
+        <a href="salir.htm">&nbsp;&nbsp;&nbsp;Cerrar Sesi&oacute;n</a>
+        <br/>
+        #end
+        <br/>
         #if ($rootMenu)
         $rootMenu
         #end

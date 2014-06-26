@@ -1,182 +1,58 @@
 package com.view.page;
 
-import db.controller.DAO;
-import db.pojos.Catalogocuenta;
-import db.pojos.Cuenta;
-import db.pojos.Moneda;
-import db.pojos.Regcuenta;
-import db.pojos.Regcuentauser;
-import db.pojos.User;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import manager.session.SessionController;
-import org.apache.click.control.FileField;
+
+import com.view.page.BorderPage;
+import org.apache.click.control.FieldSet;
 import org.apache.click.control.Form;
-import org.apache.click.control.Option;
-import org.apache.click.control.Select;
 import org.apache.click.control.Submit;
-import org.apache.click.control.TextField;
-import org.apache.click.extras.control.DateField;
-import org.apache.commons.fileupload.FileItem;
-import util.UserManager;
-import util.Util;
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
 /**
  *
  * @author Admin
  */
-public class WarehousePage extends BorderPage {
+public class WarehousePage extends BorderPage{
 
-    Form form;
-    FileField fileTenencia;
-    FileField fileCaptacion;
-    FileField fileCarteraComercial;
-    FileField fileCarteraConsumo;
-    FileField fileDisponibilidades;
-    FileField fileTarjetaCredito;
-    FileField fileCatalogoMinimo;
-    TextField name;
-    DateField dateField;
-    private static int numPer = 0;
-
+    private Form form;
+    
     @Override
     public void init() {
-        this.form = new Form("form");
-        if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer)) || !dte.get(numPer)) {
-            setRedirect(NocontratadoPage.class);
-            return;
-        }
-        name = new TextField("name", "Nombre del Ejercicio", true);
-        dateField = new DateField("dateField", "Fecha de Ejercicio (dd/mm/aaaa)", true);
-        dateField.setFormatPattern("dd/MM/yyyy");
-        fileTenencia = new FileField("fileTenencia", "Tenencia  ", false);
-        fileCaptacion = new FileField("fileCaptacion", "Captación   ", false);
-        fileCarteraComercial = new FileField("fileComercial", "Cartera Comercial  ", false);
-        fileDisponibilidades = new FileField("fileDisponibilidades", "Disponibilidades  ", false);
-        fileCarteraConsumo = new FileField("fileConsumo", "Cartera Consumo   ", false);
-        fileTarjetaCredito = new FileField("fileTarjeta", "Tarjeta de Crédito   ", false);
-        form.add(name);
-        form.add(dateField);
-        form.add(fileTenencia);
-        form.add(fileCaptacion);
-        form.add(fileCarteraComercial);
-        form.add(fileCarteraConsumo);
-        form.add(fileDisponibilidades);
-        form.add(fileTarjetaCredito);
-
-        fileCatalogoMinimo = new FileField("fileCatalogo", "Catálogo Mínimo", true);
-        form.add(fileCatalogoMinimo);
-
-        Submit sub = new Submit("sub", "Procesar", this, "procesarClicked");
-        javaScriptProcess(sub);
-        form.add(sub);
-
+        form=new Form("form");
+        FieldSet fsc=new FieldSet("fsc","Carga de Información");
+        fsc.add(new Submit("carga","Cargar Información", this, "cargaDatos"));
+        FieldSet fsr=new FieldSet("fsr","Reportes");
+        fsr.setColumns(1);
+        fsr.add(new Submit("consistencia","Reporte de Consistencia", this, "consistencia"));
+        fsr.add(new Submit("congruencia","Reporte de Congruencia", this, "congruencia"));
+        fsr.add(new Submit("integridad","Reporte de Integridad", this, "integridad"));
+        form.add(fsc);
+        form.add(fsr);
         addControl(form);
-
     }
-
-    public boolean procesarClicked() {
-        if (form.isValid()) {
-            try {
-                message = "Reportes Invalidos :";
-                List<String> dataCatalogoMinimo = getFileData(fileCatalogoMinimo);
-                boolean validarNumeroCampos = validNumberFields(dataCatalogoMinimo, 4);
-                if (!validarNumeroCampos) {
-                    message = message + "CatalogoMinimo";
-                    return false;
-                }
-                Regcuenta regCuenta = saveProject();
-                SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
-                User user = (User) controller.getVariable("user").getValue();
-                saveUserRelation(regCuenta, user);
-                saveCuenta(regCuenta, dataCatalogoMinimo);
-                message = "";
-                DAO.saveRecordt(user, user.getUser() +"generó alta del ejercicio " + regCuenta.getDesRegCuenta());
-                setRedirect(AdministradormodelosPage.class);
-                return true;
-            } catch (Exception ex) {
-                message = "Algún error ha ocurrido";
-                Logger.getLogger(WarehousePage.class.getName()).log(Level.INFO, null, ex);
-                return false;
-            }
-        }
-        return false;
+    
+    public boolean cargaDatos(){
+        setRedirect(CargadatosPage.class);
+        return true;
     }
-
-    public List<String> getFileData(FileField fileField) throws IOException {
-        FileItem fileItem = fileField.getFileItem();
-        List<String> lines = new LinkedList<String>();
-        InputStream inp = fileItem.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inp));
-        String linea = reader.readLine();
-        while (linea != null) {
-            lines.add(linea);
-            linea = reader.readLine();
-        }
-        reader.close();
-        inp.close();
-        return lines;
+    
+    public boolean consistencia(){
+        setRedirect(ReporteconsistenciaPage.class);
+        return true;
     }
-
-    private boolean validNumberFields(List<String> dataCatalogoMinimo, int i) {
-        if (dataCatalogoMinimo.get(0).split(";").length == i) {
-            return true;
-        }
-        return false;
+    
+    public boolean congruencia(){
+            setRedirect(ReportecongruenciaPage.class);
+        return true;
+    
     }
-
-    private Regcuenta saveProject() {
-        Regcuenta regcuenta = new Regcuenta(name.getValue());
-        regcuenta.setFecha(dateField.getDate());
-        DAO.save(regcuenta);
-        return regcuenta;
+    
+    public boolean integridad(){
+        setRedirect(ReporteintegridadPage.class);
+        return true;
     }
-
-    private void saveUserRelation(Regcuenta regCuenta, User user) {
-        Regcuentauser regcuentauser = new Regcuentauser(regCuenta, user);
-        DAO.save(regcuentauser);
-    }
-
-    private void saveCuenta(Regcuenta regCuenta, List<String> dataCatalogoMinimo) {
-        Map<String, Catalogocuenta> catalogos = new HashMap<String, Catalogocuenta>();
-        List<Catalogocuenta> createQuery = DAO.createQuery(Catalogocuenta.class, null);
-        for (Catalogocuenta c : createQuery) {
-            catalogos.put(c.getIdCatalogoCuenta().toString(), c);
-        }
-        Map<String, Moneda> monedas = new HashMap<String, Moneda>();
-        List<Moneda> qmon = DAO.createQuery(Moneda.class, null);
-        for (Moneda m : qmon) {
-            monedas.put(m.getIdMoneda().toString(), m);
-        }
-        for (String c : dataCatalogoMinimo) {
-            String[] split = c.split(";");
-            Cuenta cta = new Cuenta();
-            cta.setRegcuenta(regCuenta);
-            cta.setStatus(0);
-            cta.setCatalogocuenta(catalogos.get(split[0]));
-            String number = quitarRelleno(split[3]);
-            cta.setValor(Double.parseDouble(number));
-            cta.setMoneda(monedas.get(split[2]));
-            DAO.save(cta);
-        }
-    }
-
-    private String quitarRelleno(String string) {
-        while (string.length() > 0 && string.charAt(0) == '0') {
-            string = string.substring(1);
-        }
-        if (string.length() == 0) {
-            string = "0";
-        }
-        return string;
-    }
-
 }

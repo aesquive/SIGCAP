@@ -11,7 +11,6 @@ import db.pojos.Permisosuser;
 import db.pojos.User;
 import java.util.LinkedList;
 import java.util.List;
-import manager.session.SessionController;
 import org.apache.click.control.Checkbox;
 import org.apache.click.control.FieldSet;
 import org.apache.click.control.Form;
@@ -19,7 +18,6 @@ import org.apache.click.control.PasswordField;
 import org.apache.click.control.Submit;
 import org.apache.click.control.TextField;
 import util.PermisosCheck;
-import util.UserManager;
 
 /**
  *
@@ -99,8 +97,7 @@ public class AltausuariosPage extends BorderPage {
                     Permisosuser pu = new Permisosuser(user, todosPermisos.get(t), value);
                     DAO.save(pu);
                 }
-                SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
-                User userSess = (User) controller.getVariable("user").getValue();
+                User userSess = (User) getSessionVar("user");
                 DAO.saveRecordt(userSess,userSess.getUser()+" dio de alta a "+user.getUser());
                 setRedirect(ControlusuariosPage.class);
 

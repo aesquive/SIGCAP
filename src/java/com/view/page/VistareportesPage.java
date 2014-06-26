@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,11 +18,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import manager.session.SessionController;
 import model.comparator.ModelComparator;
 import org.apache.click.Page;
 import reports.excelmaker.ExcelMaker;
-import util.UserManager;
 
 /**
  *
@@ -95,8 +92,7 @@ public class VistareportesPage extends Page {
         } catch (Exception e) {
             System.out.println("waisting time");
         }
-        SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
-        User user = (User) controller.getVariable("user").getValue();
+          User user = (User) getContext().getSessionAttribute("user");
         DAO.saveRecordt(user, user.getUser() + " generó reporte " + selectedReport.getDesReportes());
         setRedirect("/reportes/" + selected.getIdRegCuenta().toString() + "-" + selectedReport.getIdRegReportes().toString() + ".xlsx");
         return true;
@@ -117,8 +113,7 @@ public class VistareportesPage extends Page {
             }
             String compareWriteFile = ModelComparator.compareWriteFile(manager.configuration.Configuration.getValue("baseAnalisisComparativo"), reg1, reg2, variance, numRegs);
             setRedirect("/reportes/" + compareWriteFile);
-            SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
-            User user = (User) controller.getVariable("user").getValue();
+            User user = (User) getContext().getSessionAttribute("user");
             DAO.saveRecordt(user, user.getUser()+ " generó reporte comparativo de " + reg1.getDesRegCuenta() + " y " + reg2.getDesRegCuenta());
         } catch (IOException ex) {
             Logger.getLogger(VistareportesPage.class.getName()).log(Level.INFO, null, ex);
@@ -137,8 +132,7 @@ public class VistareportesPage extends Page {
             cen.setTime(dateEn);
             cin.set(Calendar.HOUR, 0);
             cen.set(Calendar.HOUR, 0);
-            SessionController controller = UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).getSessionController(UserManager.getContextManager(Integer.parseInt(getContext().getSessionAttribute("user").toString())).actualContext);
-            User user = (User) controller.getVariable("user").getValue();
+            User user = (User) getContext().getSessionAttribute("user");
             DAO.saveRecordt(user, user.getUser()+ " generó reporte Tracking Log");
             String generateReport = trackinglog.TrackingLogReporter.generateReport("tracking-" + user.getIduser() + ".xlsx", cin.getTime(), cen.getTime());
             setRedirect("/reportes/" + generateReport);

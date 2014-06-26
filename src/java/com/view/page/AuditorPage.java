@@ -17,7 +17,7 @@ import util.Util;
 public class AuditorPage extends BorderPage {
 
     Form form;
-    private static int numPer = 5;
+    private static int numPer = 4;
 
     @Override
     public void init() {
@@ -27,7 +27,7 @@ public class AuditorPage extends BorderPage {
             return;
         }
         form = new Form("form");
-        form.add(new Submit("comp","Análisis Comparativo", this, "comparator"));
+        form.add(new Submit("comp","Reporte de Validación", this, "comparator"));
         form.add(new Submit("subTracking", "Tracking Log",this,"tracking"));
         
         addControl(form);
