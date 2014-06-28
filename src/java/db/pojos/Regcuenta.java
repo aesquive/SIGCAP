@@ -33,7 +33,8 @@ public class Regcuenta  implements java.io.Serializable,Cloneable {
      private Set regcuentausers = new HashSet(0);
      private Set cuentas = new HashSet(0);
      private Set captacions = new HashSet(0);
-
+     private Set consistencias=new HashSet(0);
+     
     public Regcuenta() {
     }
 
@@ -41,7 +42,7 @@ public class Regcuenta  implements java.io.Serializable,Cloneable {
     public Regcuenta(String desRegCuenta) {
         this.desRegCuenta = desRegCuenta;
     }
-    public Regcuenta(String desRegCuenta, Date fecha, Set catalogominimos, Set disponibilidads, Set ingresosnetoses, Set valoreses, Set tarjetacreditos, Set reservases, Set prestamos, Set regvectors, Set regcuentausers, Set cuentas, Set captacions) {
+    public Regcuenta(String desRegCuenta, Date fecha, Set catalogominimos, Set disponibilidads, Set ingresosnetoses, Set valoreses, Set tarjetacreditos, Set reservases, Set prestamos, Set regvectors, Set regcuentausers, Set cuentas, Set captacions,Set consistencias) {
        this.desRegCuenta = desRegCuenta;
        this.fecha = fecha;
        this.catalogominimos = catalogominimos;
@@ -55,6 +56,7 @@ public class Regcuenta  implements java.io.Serializable,Cloneable {
        this.regcuentausers = regcuentausers;
        this.cuentas = cuentas;
        this.captacions = captacions;
+       this.consistencias=consistencias;
     }
    
     public Integer getIdRegCuenta() {
@@ -266,6 +268,20 @@ public class Regcuenta  implements java.io.Serializable,Cloneable {
             }
         }
         return null;
+    }
+
+    /**
+     * @return the consistencias
+     */
+    public Set getConsistencias() {
+        return consistencias;
+    }
+
+    /**
+     * @param consistencias the consistencias to set
+     */
+    public void setConsistencias(Set consistencias) {
+        this.consistencias = consistencias;
     }
 
 

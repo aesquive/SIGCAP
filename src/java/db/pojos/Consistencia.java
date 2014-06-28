@@ -10,7 +10,7 @@ public class Consistencia  implements java.io.Serializable {
 
 
      private Integer idConsistencia;
-     private Integer idRegCuenta;
+     private Regcuenta regCuenta;
      private Double disponibilidadesLeidos;
      private Double tenenciaLeidos;
      private Double captacionLeidos;
@@ -23,8 +23,8 @@ public class Consistencia  implements java.io.Serializable {
     public Consistencia() {
     }
 
-    public Consistencia(Integer idRegCuenta, Double disponibilidadesLeidos, Double tenenciaLeidos, Double captacionLeidos, Double tarjetaCreditoLeidos, Double prestamosLeidos, Double catalogoMinimoLeidos, Double reservasLeidos, Double ingresosLeidos) {
-       this.idRegCuenta = idRegCuenta;
+    public Consistencia(Regcuenta regCuenta, Double disponibilidadesLeidos, Double tenenciaLeidos, Double captacionLeidos, Double tarjetaCreditoLeidos, Double prestamosLeidos, Double catalogoMinimoLeidos, Double reservasLeidos, Double ingresosLeidos) {
+       this.regCuenta = regCuenta;
        this.disponibilidadesLeidos = disponibilidadesLeidos;
        this.tenenciaLeidos = tenenciaLeidos;
        this.captacionLeidos = captacionLeidos;
@@ -41,13 +41,6 @@ public class Consistencia  implements java.io.Serializable {
     
     public void setIdConsistencia(Integer idConsistencia) {
         this.idConsistencia = idConsistencia;
-    }
-    public Integer getIdRegCuenta() {
-        return this.idRegCuenta;
-    }
-    
-    public void setIdRegCuenta(Integer idRegCuenta) {
-        this.idRegCuenta = idRegCuenta;
     }
     public Double getDisponibilidadesLeidos() {
         return this.disponibilidadesLeidos;
@@ -104,6 +97,20 @@ public class Consistencia  implements java.io.Serializable {
     
     public void setIngresosLeidos(Double ingresosLeidos) {
         this.ingresosLeidos = ingresosLeidos;
+    }
+
+    /**
+     * @return the regCuenta
+     */
+    public Regcuenta getRegCuenta() {
+        return regCuenta;
+    }
+
+    /**
+     * @param regCuenta the regCuenta to set
+     */
+    public void setRegCuenta(Regcuenta regCuenta) {
+        this.regCuenta = regCuenta;
     }
 
 

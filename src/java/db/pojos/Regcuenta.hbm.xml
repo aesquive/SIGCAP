@@ -74,11 +74,19 @@
             </key>
             <one-to-many class="db.pojos.Cuenta" />
         </set>
+        
+        <set name="consistencias" table="consistencia" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="IdRegCuenta" />
+            </key>
+            <one-to-many class="db.pojos.Consistencia" />
+        </set>
         <set name="captacions" table="captacion" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="IdRegCuenta" />
             </key>
             <one-to-many class="db.pojos.Captacion" />
         </set>
+        
     </class>
 </hibernate-mapping>

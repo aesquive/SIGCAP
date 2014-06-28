@@ -128,18 +128,32 @@ public class CargadatosPage extends BorderPage {
                 saveUserRelation(regCuenta, user);
                 //Generamos una nueva consistencia , para poner los resultados de los reportes leidos
                 Consistencia cons = new Consistencia();
-                cons.setIdRegCuenta(regCuenta.getIdRegCuenta());
-                List<String> saveCaptacion = saveCaptacion(cons, regCuenta);
-                List<String> saveCatalogoMinimo = saveCatalogoMinimo(cons, regCuenta);
-                List<String> saveDisponibilidades = saveDisponibilidades(cons, regCuenta);
-                List<String> saveIngresos = saveIngresos(cons, regCuenta);
-                List<String> savePrestamos = savePrestamos(cons, regCuenta);
-                List<String> saveReservas = saveReservas(cons, regCuenta);
-                List<String> saveTarjeta = saveTarjeta(cons, regCuenta);
+                cons.setRegCuenta(regCuenta);
+                List<Object> saveCaptacion = saveCaptacion(cons, regCuenta);
+                List<Object> saveCatalogoMinimo = saveCatalogoMinimo(cons, regCuenta);
+                List<Object> saveDisponibilidades = saveDisponibilidades(cons, regCuenta);
+                List<Object> saveIngresos = saveIngresos(cons, regCuenta);
+                List<Object> savePrestamos = savePrestamos(cons, regCuenta);
+                List<Object> saveReservas = saveReservas(cons, regCuenta);
+                List<Object> saveTarjeta = saveTarjeta(cons, regCuenta);
+                List<Object> saveTenencia = saveTenencia(cons, regCuenta);
                 Map<String, Vector> mapVector = mapVector();
-                List<String> saveTenencia = saveTenencia(cons, regCuenta);
+                saveAll(saveCaptacion,saveCatalogoMinimo,saveDisponibilidades,saveIngresos,savePrestamos,saveReservas,saveTarjeta,saveTenencia);
                 DAO.saveRecordt(user, user.getUser() + "generó alta del ejercicio " + regCuenta.getDesRegCuenta());
                 DAO.save(cons);
+                addSessionVar("cargaConsistencia", cons);
+                addSessionVar("cargaRegCuenta", regCuenta);
+                addSessionVar("cargaCaptación",saveCaptacion);
+                addSessionVar("cargaCatalogo",saveCatalogoMinimo);
+                addSessionVar("cargaDisponibilidades",saveDisponibilidades);
+                addSessionVar("cargaIngresos", saveIngresos);
+                addSessionVar("cargaPrestamos",savePrestamos);
+                addSessionVar("cargaReservas",saveReservas);
+                addSessionVar("cargaTarjeta",saveTarjeta);
+                addSessionVar("cargaTenencia",saveTenencia);
+                addSessionVar("cargaVector", mapVector);
+                setRedirect(MapeoPage.class);
+                message="Carga Completa";
                 return true;
             } catch (Exception ex) {
                 System.out.println(ex);
@@ -191,7 +205,7 @@ public class CargadatosPage extends BorderPage {
         DAO.save(regcuentauser);
     }
 
-    private List<String> saveCaptacion(Consistencia cons, Regcuenta reg) {
+    private List<Object> saveCaptacion(Consistencia cons, Regcuenta reg) {
         try {
             System.out.println("---COMIENZA CAPTACION");
             List<String> captaciones = getFileData(fileCaptacion);
@@ -211,17 +225,16 @@ public class CargadatosPage extends BorderPage {
                     System.out.println("registro de captación no guardado");
                 }
             }
-            DAO.saveUpdateMultiple(items);
             System.out.println("-----TERMINO CAPTACION---");
             cons.setCaptacionLeidos(new Double(String.valueOf(captaciones.size())));
-            return captaciones;
+            return items;
         } catch (Exception ex) {
             removeData(reg.getCaptacions());
         }
         return null;
     }
 
-    private List<String> saveCatalogoMinimo(Consistencia cons, Regcuenta reg) {
+    private List<Object> saveCatalogoMinimo(Consistencia cons, Regcuenta reg) {
         try {
             System.out.println("--COMIENTZA CAT MINIMO---");
             List<String> captaciones = getFileData(fileCatalogoMinimo);
@@ -239,17 +252,16 @@ public class CargadatosPage extends BorderPage {
                     System.out.println("registro no guardado");
                 }
             }
-            DAO.saveUpdateMultiple(items);
             cons.setCatalogoMinimoLeidos(new Double(String.valueOf(captaciones.size())));
             System.out.println("---TERMINA CAT MINIMO---");
-            return captaciones;
+            return items;
         } catch (Exception ex) {
             Logger.getLogger(CargadatosPage.class.getName()).log(Level.INFO, null, ex);
         }
         return null;
     }
 
-    private List<String> saveDisponibilidades(Consistencia cons, Regcuenta regCuenta) {
+    private List<Object> saveDisponibilidades(Consistencia cons, Regcuenta regCuenta) {
         try {
             System.out.println("---COMIENZA DISPONIBILIDADES--");
             List<String> captaciones = getFileData(fileDisponibilidades);
@@ -268,17 +280,16 @@ public class CargadatosPage extends BorderPage {
                     System.out.println("registro no guardado");
                 }
             }
-            DAO.saveUpdateMultiple(items);
             cons.setDisponibilidadesLeidos(new Double(String.valueOf(captaciones.size())));
             System.out.println("--TERMINA DISPONIBILIDADES---");
-            return captaciones;
+            return items;
         } catch (Exception ex) {
             Logger.getLogger(CargadatosPage.class.getName()).log(Level.INFO, null, ex);
         }
         return null;
     }
 
-    private List<String> saveIngresos(Consistencia cons, Regcuenta regCuenta) {
+    private List<Object> saveIngresos(Consistencia cons, Regcuenta regCuenta) {
         try {
             System.out.println("---COMIENZA INGRESOS---");
             List<String> captaciones = getFileData(fileIngresos);
@@ -296,16 +307,15 @@ public class CargadatosPage extends BorderPage {
                 }
             }
             cons.setIngresosLeidos(new Double(String.valueOf(captaciones.size())));
-            DAO.saveUpdateMultiple(items);
             System.out.println("---TERMINA INGRESOS---");
-            return captaciones;
+            return items;
         } catch (Exception ex) {
             Logger.getLogger(CargadatosPage.class.getName()).log(Level.INFO, null, ex);
         }
         return null;
     }
 
-    private List<String> savePrestamos(Consistencia cons, Regcuenta regCuenta) {
+    private List<Object> savePrestamos(Consistencia cons, Regcuenta regCuenta) {
         try {
             System.out.println("--COMIENZA PRESTAMOS--");
             List<String> captaciones = getFileData(filePrestamosPersonales);
@@ -327,17 +337,16 @@ public class CargadatosPage extends BorderPage {
                     System.out.println("registro no guardado");
                 }
             }
-            DAO.saveUpdateMultiple(items);
             cons.setPrestamosLeidos(new Double(String.valueOf(captaciones.size())));
             System.out.println("--TERMINA PRESTAMOS--");
-            return captaciones;
+            return items;
         } catch (Exception ex) {
             Logger.getLogger(CargadatosPage.class.getName()).log(Level.INFO, null, ex);
         }
         return null;
     }
 
-    private List<String> saveReservas(Consistencia cons, Regcuenta regCuenta) {
+    private List<Object> saveReservas(Consistencia cons, Regcuenta regCuenta) {
         try {
             System.out.println("--COMIENZA RESERVAS--");
             List<String> captaciones = getFileData(fileReservas);
@@ -355,16 +364,15 @@ public class CargadatosPage extends BorderPage {
                 }
             }
             cons.setReservasLeidos(new Double(String.valueOf(captaciones.size())));
-            DAO.saveUpdateMultiple(items);
             System.out.println("--TERMINA RESERVAS--");
-            return captaciones;
+            return items;
         } catch (Exception ex) {
             Logger.getLogger(CargadatosPage.class.getName()).log(Level.INFO, null, ex);
         }
         return null;
     }
 
-    private List<String> saveTarjeta(Consistencia cons, Regcuenta regCuenta) {
+    private List<Object> saveTarjeta(Consistencia cons, Regcuenta regCuenta) {
         try {
             System.out.println("--COMIEZA TARJETA--");
             List<String> captaciones = getFileData(fileTarjetaCredito);
@@ -386,17 +394,16 @@ public class CargadatosPage extends BorderPage {
                     System.out.println("registro no guardado");
                 }
             }
-            DAO.saveUpdateMultiple(items);
             cons.setTarjetaCreditoLeidos(new Double(String.valueOf(captaciones.size())));
             System.out.println("--TERMINA TARJETA--");
-            return captaciones;
+            return items;
         } catch (Exception ex) {
             Logger.getLogger(CargadatosPage.class.getName()).log(Level.INFO, null, ex);
         }
         return null;
     }
 
-    private List<String> saveTenencia(Consistencia cons, Regcuenta regCuenta) {
+    private List<Object> saveTenencia(Consistencia cons, Regcuenta regCuenta) {
         try {
             System.out.println("--COMIEZA TENENCIA--");
             List<String> captaciones = getFileData(fileTenencia);
@@ -420,10 +427,9 @@ public class CargadatosPage extends BorderPage {
                     System.out.println("registro no guardado");
                 }
             }
-            DAO.saveUpdateMultiple(items);
             cons.setTenenciaLeidos(new Double(String.valueOf(captaciones.size())));
             System.out.println("--TERMINA TENENCIA--");
-            return captaciones;
+            return items;
         } catch (Exception ex) {
             Logger.getLogger(CargadatosPage.class.getName()).log(Level.INFO, null, ex);
         }
@@ -490,6 +496,10 @@ public class CargadatosPage extends BorderPage {
             Logger.getLogger(CargadatosPage.class.getName()).log(Level.INFO, null, ex);
         }
         return null;
+    }
+
+    private void saveAll(List<Object> ... objects) {
+        DAO.saveCargaDatos(objects);
     }
 
 }

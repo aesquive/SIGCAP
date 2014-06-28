@@ -8,9 +8,10 @@
             <column name="IdConsistencia" />
             <generator class="identity" />
         </id>
-        <property name="idRegCuenta" type="java.lang.Integer">
-            <column name="IdRegCuenta" />
-        </property>
+        <many-to-one name="regcuenta" class="db.pojos.Regcuenta" fetch="select">
+            <column name="IdRegCuenta" not-null="true" />
+        </many-to-one>
+               
         <property name="disponibilidadesLeidos" type="java.lang.Double">
             <column name="DisponibilidadesLeidos" precision="15" scale="5" />
         </property>

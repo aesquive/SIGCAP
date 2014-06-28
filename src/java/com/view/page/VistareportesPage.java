@@ -1,6 +1,7 @@
 package com.view.page;
 
 import db.controller.DAO;
+import db.pojos.Consistencia;
 import db.pojos.Cuenta;
 import db.pojos.Regcuenta;
 import db.pojos.Regreportes;
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import manager.configuration.Configuration;
 import model.comparator.ModelComparator;
 import org.apache.click.Page;
 import reports.excelmaker.ExcelMaker;
@@ -32,7 +34,7 @@ public class VistareportesPage extends Page {
 
     public VistareportesPage() {
         Integer typeReport = Integer.parseInt(getContext().getRequestParameterValues("typ")[0]);
-        System.out.println("el tipo de reporte es "+typeReport);
+        System.out.println("el tipo de reporte es " + typeReport);
         switch (typeReport) {
             //reportes de rc
             case 0:
@@ -60,6 +62,10 @@ public class VistareportesPage extends Page {
                 String var3 = (String) getContext().getRequestParameterValues("var")[0];
                 String numF3 = (String) getContext().getRequestParameterValues("num")[0];
                 initComparator(Integer.parseInt(pr13), Integer.parseInt(pr23), Double.parseDouble(var3), Integer.parseInt(numF3));
+                break;
+            case 4:
+                String pra14 = (String) getContext().getRequestParameterValues("pra")[0];
+                initConsistencia(Integer.parseInt(pra14));
                 break;
         }
 
@@ -102,7 +108,7 @@ public class VistareportesPage extends Page {
         } catch (Exception e) {
             System.out.println("waisting time");
         }
-          User user = (User) getContext().getSessionAttribute("user");
+        User user = (User) getContext().getSessionAttribute("user");
         DAO.saveRecordt(user, user.getUser() + " generó reporte " + selectedReport.getDesReportes());
         setRedirect("/reportes/" + selected.getIdRegCuenta().toString() + "-" + selectedReport.getIdRegReportes().toString() + ".xlsx");
         return true;
@@ -121,17 +127,16 @@ public class VistareportesPage extends Page {
                     reg2 = r;
                 }
             }
-            String compareWriteFile = ModelComparator.compareWriteFile(manager.configuration.Configuration.getValue("baseAnalisisComparativo"),"comparativo", reg1,reg1.getCuentas(), reg2,reg2.getCuentas(), variance, numRegs);
+            String compareWriteFile = ModelComparator.compareWriteFile(manager.configuration.Configuration.getValue("baseAnalisisComparativo"), "comparativo", reg1, reg1.getCuentas(), reg2, reg2.getCuentas(), variance, numRegs);
             setRedirect("/reportes/" + compareWriteFile);
             User user = (User) getContext().getSessionAttribute("user");
-            DAO.saveRecordt(user, user.getUser()+ " generó reporte comparativo de " + reg1.getDesRegCuenta() + " y " + reg2.getDesRegCuenta());
+            DAO.saveRecordt(user, user.getUser() + " generó reporte comparativo de " + reg1.getDesRegCuenta() + " y " + reg2.getDesRegCuenta());
         } catch (IOException ex) {
             Logger.getLogger(VistareportesPage.class.getName()).log(Level.INFO, null, ex);
         }
 
     }
 
-    
     private void initComparator(int project1, int project2, double variance, int numRegs) {
         try {
             List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
@@ -145,18 +150,18 @@ public class VistareportesPage extends Page {
                     reg2 = r;
                 }
             }
-            List<Cuenta> cuentasInicialesUno=obtenerCuentasIniciales(reg1);
-            List<Cuenta> cuentasInicialesDos=obtenerCuentasIniciales(reg2);
-            String compareWriteFile = ModelComparator.compareWriteFile(manager.configuration.Configuration.getValue("baseAnalisisCongruencia"),"congruencia", reg1,cuentasInicialesUno,reg2, cuentasInicialesDos, variance, numRegs);
+            List<Cuenta> cuentasInicialesUno = obtenerCuentasIniciales(reg1);
+            List<Cuenta> cuentasInicialesDos = obtenerCuentasIniciales(reg2);
+            String compareWriteFile = ModelComparator.compareWriteFile(manager.configuration.Configuration.getValue("baseAnalisisCongruencia"), "congruencia", reg1, cuentasInicialesUno, reg2, cuentasInicialesDos, variance, numRegs);
             setRedirect("/reportes/" + compareWriteFile);
             User user = (User) getContext().getSessionAttribute("user");
-            DAO.saveRecordt(user, user.getUser()+ " generó reporte comparativo de " + reg1.getDesRegCuenta() + " y " + reg2.getDesRegCuenta());
+            DAO.saveRecordt(user, user.getUser() + " generó reporte comparativo de " + reg1.getDesRegCuenta() + " y " + reg2.getDesRegCuenta());
         } catch (IOException ex) {
             Logger.getLogger(VistareportesPage.class.getName()).log(Level.INFO, null, ex);
         }
 
     }
-    
+
     private void processTracking(String ini, String end) {
         try {
             SimpleDateFormat format = new SimpleDateFormat("ddMMyyyy");
@@ -169,8 +174,8 @@ public class VistareportesPage extends Page {
             cin.set(Calendar.HOUR, 0);
             cen.set(Calendar.HOUR, 0);
             User user = (User) getContext().getSessionAttribute("user");
-            DAO.saveRecordt(user, user.getUser()+ " generó reporte Tracking Log");
-            String generateReport = trackinglog.TrackingLogReporter.generateReport("tracking-" + user.getIduser() + ".xlsx", cin.getTime(), cen.getTime());
+            DAO.saveRecordt(user, user.getUser() + " generó reporte Tracking Log");
+            String generateReport = reports.excelmaker.TrackingLogReporter.generateReport("tracking-" + user.getIduser() + ".xlsx", cin.getTime(), cen.getTime());
             setRedirect("/reportes/" + generateReport);
         } catch (Exception ex) {
             Logger.getLogger(VistareportesPage.class.getName()).log(Level.INFO, null, ex);
@@ -178,19 +183,35 @@ public class VistareportesPage extends Page {
     }
 
     private List<Cuenta> obtenerCuentasIniciales(Regcuenta reg1) {
-        List<Cuenta> list=new LinkedList<Cuenta>();
+        List<Cuenta> list = new LinkedList<Cuenta>();
         Set<Cuenta> cuentas = reg1.getCuentas();
         Iterator<Cuenta> iterator = cuentas.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             Cuenta next = iterator.next();
-            if(next.getCatalogocuenta().getIdCatalogoCuenta().toString().equals("790000000000")){
-                System.out.println("Valor de la cta movida"+next.getValor()+" ejercicio "+reg1.getDesRegCuenta());
+            if (next.getCatalogocuenta().getIdCatalogoCuenta().toString().equals("790000000000")) {
+                System.out.println("Valor de la cta movida" + next.getValor() + " ejercicio " + reg1.getDesRegCuenta());
             }
-            if(next.getMoneda()!=null){
+            if (next.getMoneda() != null) {
                 list.add(next);
             }
         }
         return list;
+    }
+
+    private void initConsistencia(int parseInt) {
+       
+            List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
+            Regcuenta reg1 = null;
+            for (Regcuenta r : createQuery) {
+                if (r.getIdRegCuenta() == parseInt) {
+                    reg1 = r;
+                }
+            }
+            Set<Consistencia> consistencias = reg1.getConsistencias();
+            Consistencia next = consistencias.iterator().next();
+            String nameFile = reports.excelmaker.ConsistenciaReportMaker.makeReport(Configuration.getValue("baseAnalisisConsistencia"),next,reg1);
+            setRedirect("/reportes/" + nameFile);
+            
     }
 
 }

@@ -114,4 +114,14 @@ public class DAO {
         session.flush();
         session.clear();
     }
+    
+    public static void saveCargaDatos(List<Object>... objects){
+        for(List<Object> list:objects){
+            for(Object o:list){
+                session.saveOrUpdate(o);
+            }
+        }
+        session.flush();
+        session.clear();
+    }
 }

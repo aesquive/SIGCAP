@@ -1,4 +1,4 @@
-package trackinglog;
+package reports.excelmaker;
 
 import db.controller.DAO;
 import db.pojos.Tracking;
