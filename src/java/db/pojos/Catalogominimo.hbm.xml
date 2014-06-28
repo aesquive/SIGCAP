@@ -3,19 +3,25 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 26/06/2014 12:43:39 AM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
-    <class name="db.pojos.Regvector" table="regvector" catalog="prueba">
-        <id name="idRegVector" type="java.lang.Integer">
-            <column name="IdRegVector" />
+    <class name="db.pojos.Catalogominimo" table="catalogominimo" catalog="prueba">
+        <id name="idCatalogoMinimo" type="java.lang.Integer">
+            <column name="IdCatalogoMinimo" />
             <generator class="identity" />
         </id>
         <many-to-one name="regcuenta" class="db.pojos.Regcuenta" fetch="select">
             <column name="IdRegCuenta" />
         </many-to-one>
+        <many-to-one name="catalogocuenta" class="db.pojos.Catalogocuenta" fetch="select">
+            <column name="IdCatalogoCuenta" />
+        </many-to-one>
         <property name="fecha" type="timestamp">
             <column name="Fecha" length="19" />
         </property>
-        <property name="ruta" type="string">
-            <column name="Ruta" />
+        <property name="valor" type="java.lang.Double">
+            <column name="Valor" precision="24" scale="5" />
+        </property>
+        <property name="moneda" type="java.lang.Integer">
+            <column name="Moneda"  />
         </property>
     </class>
 </hibernate-mapping>

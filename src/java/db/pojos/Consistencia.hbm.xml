@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 26/06/2014 12:43:39 AM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="db.pojos.Consistencia" table="consistencia" catalog="prueba">
+        <id name="idConsistencia" type="java.lang.Integer">
+            <column name="IdConsistencia" />
+            <generator class="identity" />
+        </id>
+        <property name="idRegCuenta" type="java.lang.Integer">
+            <column name="IdRegCuenta" />
+        </property>
+        <property name="disponibilidadesLeidos" type="java.lang.Double">
+            <column name="DisponibilidadesLeidos" precision="15" scale="5" />
+        </property>
+        <property name="tenenciaLeidos" type="java.lang.Double">
+            <column name="TenenciaLeidos" precision="15" scale="5" />
+        </property>
+        <property name="captacionLeidos" type="java.lang.Double">
+            <column name="CaptacionLeidos" precision="15" scale="5" />
+        </property>
+        <property name="tarjetaCreditoLeidos" type="java.lang.Double">
+            <column name="TarjetaCreditoLeidos" precision="15" scale="5" />
+        </property>
+        <property name="prestamosLeidos" type="java.lang.Double">
+            <column name="PrestamosLeidos" precision="15" scale="5" />
+        </property>
+        <property name="catalogoMinimoLeidos" type="java.lang.Double">
+            <column name="CatalogoMinimoLeidos" precision="15" scale="5" />
+        </property>
+        <property name="reservasLeidos" type="java.lang.Double">
+            <column name="ReservasLeidos" precision="15" scale="5" />
+        </property>
+        <property name="ingresosLeidos" type="java.lang.Double">
+            <column name="IngresosLeidos" precision="15" scale="5" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,5 +1,5 @@
 package db.pojos;
-// Generated 4/06/2014 10:53:47 PM by Hibernate Tools 3.6.0
+// Generated 26/06/2014 12:43:36 AM by Hibernate Tools 3.6.0
 
 
 import java.util.HashSet;
@@ -19,8 +19,9 @@ public class Permisos  implements java.io.Serializable {
     public Permisos() {
     }
 
-    public Permisos(String desPermiso, Set permisosusers) {
+    public Permisos(String desPermiso, String codigo, Set permisosusers) {
        this.desPermiso = desPermiso;
+       this.codigo = codigo;
        this.permisosusers = permisosusers;
     }
    
@@ -38,6 +39,13 @@ public class Permisos  implements java.io.Serializable {
     public void setDesPermiso(String desPermiso) {
         this.desPermiso = desPermiso;
     }
+    public String getCodigo() {
+        return this.codigo;
+    }
+    
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
     public Set getPermisosusers() {
         return this.permisosusers;
     }
@@ -46,19 +54,7 @@ public class Permisos  implements java.io.Serializable {
         this.permisosusers = permisosusers;
     }
 
-    /**
-     * @return the valor
-     */
-    public String getCodigo() {
-        return codigo;
-    }
 
-    /**
-     * @param valor the valor to set
-     */
-    public void setCodigo(String valor) {
-        this.codigo = valor;
-    }
 
 
 

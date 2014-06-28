@@ -8,7 +8,7 @@
     <property name="hibernate.connection.username">root</property>
     <property name="hibernate.connection.password">root</property>
     <property name="hibernate.connection.autocommit">true</property>
-    <property name="current_session_context_class">thread</property> 
+    <property name="current_session_context_class">thread</property>
     <property name="hibernate.c3p0.min_size">3</property>
     <property name="hibernate.c3p0.max_size">20</property>
     <property name="hibernate.c3p0.timeout">250</property>
@@ -24,15 +24,18 @@
     <mapping resource="db/pojos/Cuenta.hbm.xml"/>
     <mapping resource="db/pojos/Regcuentauser.hbm.xml"/>
     <mapping resource="db/pojos/Catalogocuenta.hbm.xml"/>
-    <mapping resource="db/pojos/Carteracomercial.hbm.xml"/>
     <mapping resource="db/pojos/Valores.hbm.xml"/>
     <mapping resource="db/pojos/Permisos.hbm.xml"/>
+    <mapping resource="db/pojos/Consistencia.hbm.xml"/>
     <mapping resource="db/pojos/Operacion.hbm.xml"/>
     <mapping resource="db/pojos/Permisosuser.hbm.xml"/>
+    <mapping resource="db/pojos/Catalogominimo.hbm.xml"/>
     <mapping resource="db/pojos/Tarjetacredito.hbm.xml"/>
     <mapping resource="db/pojos/Disponibilidad.hbm.xml"/>
+    <mapping resource="db/pojos/Ingresosnetos.hbm.xml"/>
+    <mapping resource="db/pojos/Reservas.hbm.xml"/>
     <mapping resource="db/pojos/Regreportes.hbm.xml"/>
-    <mapping resource="db/pojos/Carteraconsumo.hbm.xml"/>
+    <mapping resource="db/pojos/Prestamo.hbm.xml"/>
     <mapping resource="db/pojos/Tracking.hbm.xml"/>
     <mapping resource="db/pojos/Regcuenta.hbm.xml"/>
   </session-factory>

@@ -1,5 +1,5 @@
 package db.pojos;
-// Generated 4/06/2014 10:53:47 PM by Hibernate Tools 3.6.0
+// Generated 26/06/2014 12:43:36 AM by Hibernate Tools 3.6.0
 
 
 
@@ -52,13 +52,12 @@ public class Permisosuser  implements java.io.Serializable,Comparable {
         this.valor = valor;
     }
 
+
     @Override
     public int compareTo(Object t) {
         Permisosuser compare=(Permisosuser)t;
         return this.getPermisos().getIdPermiso().compareTo(compare.getPermisos().getIdPermiso());
     }
-
-
 
 
 }

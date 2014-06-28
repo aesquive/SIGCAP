@@ -1,31 +1,49 @@
 package com.view.page;
 
 import db.controller.DAO;
-import db.pojos.Catalogocuenta;
-import db.pojos.Cuenta;
-import db.pojos.Moneda;
-import db.pojos.Regcuenta;
-import db.pojos.Regcuentauser;
-import db.pojos.User;
+import db.pojos.*;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import static java.lang.Double.parseDouble;
+import static java.lang.Long.parseLong;
+import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.SizeRequirements;
+import manager.configuration.Configuration;
 import org.apache.click.control.FileField;
 import org.apache.click.control.Form;
-import org.apache.click.control.Option;
-import org.apache.click.control.Select;
 import org.apache.click.control.Submit;
 import org.apache.click.control.TextField;
 import org.apache.click.extras.control.DateField;
 import org.apache.commons.fileupload.FileItem;
+import org.apache.poi.hssf.util.CellReference;
+import org.apache.poi.poifs.crypt.HashAlgorithm;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.helpers.XSSFRowShifter;
 import util.Util;
+import util.Vector;
 
 /**
  *
@@ -36,11 +54,13 @@ public class CargadatosPage extends BorderPage {
     Form form;
     FileField fileTenencia;
     FileField fileCaptacion;
-    FileField fileCarteraComercial;
-    FileField fileCarteraConsumo;
+    FileField filePrestamosPersonales;
+    FileField fileReservas;
     FileField fileDisponibilidades;
     FileField fileTarjetaCredito;
     FileField fileCatalogoMinimo;
+    FileField fileIngresos;
+    FileField vector;
     TextField name;
     DateField dateField;
     private static int numPer = 0;
@@ -55,24 +75,26 @@ public class CargadatosPage extends BorderPage {
         name = new TextField("name", "Nombre del Ejercicio", true);
         dateField = new DateField("dateField", "Fecha de Ejercicio (dd/mm/aaaa)", true);
         dateField.setFormatPattern("dd/MM/yyyy");
-        fileTenencia = new FileField("fileTenencia", "Tenencia  ", false);
-        fileCaptacion = new FileField("fileCaptacion", "Captación   ", false);
-        fileCarteraComercial = new FileField("fileComercial", "Cartera Comercial  ", false);
-        fileDisponibilidades = new FileField("fileDisponibilidades", "Disponibilidades  ", false);
-        fileCarteraConsumo = new FileField("fileConsumo", "Cartera Consumo   ", false);
-        fileTarjetaCredito = new FileField("fileTarjeta", "Tarjeta de Crédito   ", false);
+        fileTenencia = new FileField("fileTenencia", "Tenencia (csv|txt)", true);
+        fileCaptacion = new FileField("fileCaptacion", "Captación (csv|txt)", true);
+        filePrestamosPersonales = new FileField("filePrestamos", "Prestamos Personales (csv|txt)", true);
+        fileDisponibilidades = new FileField("fileDisponibilidades", "Disponibilidades (csv|txt)", true);
+        fileTarjetaCredito = new FileField("fileTarjeta", "Tarjeta de Crédito  (csv|txt)", true);
+        fileReservas = new FileField("fileConsumo", "Reservas(csv|txt)", true);
+        fileIngresos = new FileField("fileIngreso", "Ingresos Netos (csv|txt)", true);
+        vector = new FileField("vector", "Vector Analitico (csv|txt)", true);
         form.add(name);
         form.add(dateField);
         form.add(fileTenencia);
         form.add(fileCaptacion);
-        form.add(fileCarteraComercial);
-        form.add(fileCarteraConsumo);
+        form.add(filePrestamosPersonales);
         form.add(fileDisponibilidades);
+        form.add(fileReservas);
         form.add(fileTarjetaCredito);
-
+        form.add(fileIngresos);
         fileCatalogoMinimo = new FileField("fileCatalogo", "Catálogo Mínimo", true);
         form.add(fileCatalogoMinimo);
-
+        form.add(vector);
         Submit sub = new Submit("sub", "Procesar", this, "procesarClicked");
         javaScriptProcess(sub);
         form.add(sub);
@@ -84,24 +106,44 @@ public class CargadatosPage extends BorderPage {
     public boolean procesarClicked() {
         if (form.isValid()) {
             try {
-                message = "Reportes Invalidos :";
-                List<String> dataCatalogoMinimo = getFileData(fileCatalogoMinimo);
-                boolean validarNumeroCampos = validNumberFields(dataCatalogoMinimo, 4);
-                if (!validarNumeroCampos) {
-                    message = message + "CatalogoMinimo";
+                message = "Reportes Invalidos (Número de Campos) : ";
+                FileField[] camposArchivos = new FileField[]{fileCaptacion, fileCatalogoMinimo, fileDisponibilidades, fileIngresos, filePrestamosPersonales, fileReservas, fileTarjetaCredito, fileTenencia};
+                String[] nombres = new String[]{"Captación", "Catálogo Mínimo", "Disponibilidades", "Ingresos Netos", "Prestamos Personales", "Reservas", "Tarjeta de Crédito", "Tenencia"};
+                Integer[] numCampos = new Integer[]{6, 4, 5, 3, 8, 3, 8, 9};
+                boolean pass = true;
+                for (int t = 0; t < nombres.length; t++) {
+                    List<String> dataCatalogoMinimo = getFileData(camposArchivos[t]);
+                    boolean validarNumeroCampos = validNumberFields(dataCatalogoMinimo, numCampos[t]);
+                    if (!validarNumeroCampos) {
+                        message = message + nombres[t] + ", ";
+                        pass = false;
+                    }
+                }
+                if (!pass) {
                     return false;
                 }
+                //salvamos el proyecto que registra nombre y fecha
                 Regcuenta regCuenta = saveProject();
                 User user = (User) getSessionVar("user");
                 saveUserRelation(regCuenta, user);
-                saveCuenta(regCuenta, dataCatalogoMinimo);
-                message = "";
+                //Generamos una nueva consistencia , para poner los resultados de los reportes leidos
+                Consistencia cons = new Consistencia();
+                cons.setIdRegCuenta(regCuenta.getIdRegCuenta());
+                List<String> saveCaptacion = saveCaptacion(cons, regCuenta);
+                List<String> saveCatalogoMinimo = saveCatalogoMinimo(cons, regCuenta);
+                List<String> saveDisponibilidades = saveDisponibilidades(cons, regCuenta);
+                List<String> saveIngresos = saveIngresos(cons, regCuenta);
+                List<String> savePrestamos = savePrestamos(cons, regCuenta);
+                List<String> saveReservas = saveReservas(cons, regCuenta);
+                List<String> saveTarjeta = saveTarjeta(cons, regCuenta);
+                Map<String, Vector> mapVector = mapVector();
+                List<String> saveTenencia = saveTenencia(cons, regCuenta);
                 DAO.saveRecordt(user, user.getUser() + "generó alta del ejercicio " + regCuenta.getDesRegCuenta());
-                setRedirect(AdministradormodelosPage.class);
+                DAO.save(cons);
                 return true;
             } catch (Exception ex) {
+                System.out.println(ex);
                 message = "Algún error ha ocurrido";
-                Logger.getLogger(CargadatosPage.class.getName()).log(Level.INFO, null, ex);
                 return false;
             }
         }
@@ -124,10 +166,17 @@ public class CargadatosPage extends BorderPage {
     }
 
     private boolean validNumberFields(List<String> dataCatalogoMinimo, int i) {
-        if (dataCatalogoMinimo.get(0).split(";").length == i) {
-            return true;
+        try {
+
+            if (dataCatalogoMinimo.get(0).split(";").length == i) {
+
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            message = "Alguno de los archivos esta vacio";
+            return false;
         }
-        return false;
     }
 
     private Regcuenta saveProject() {
@@ -142,38 +191,305 @@ public class CargadatosPage extends BorderPage {
         DAO.save(regcuentauser);
     }
 
-    private void saveCuenta(Regcuenta regCuenta, List<String> dataCatalogoMinimo) {
-        Map<String, Catalogocuenta> catalogos = new HashMap<String, Catalogocuenta>();
+    private List<String> saveCaptacion(Consistencia cons, Regcuenta reg) {
+        try {
+            System.out.println("---COMIENZA CAPTACION");
+            List<String> captaciones = getFileData(fileCaptacion);
+            List<Object> items = new LinkedList<Object>();
+            for (String s : captaciones) {
+                try {
+                    String[] split = s.split(";");
+                    Date date = parseDate(split[0]);
+                    Catalogocuenta cuenta = parseCatalogoCuenta(split[1]);
+                    String des = split[2];
+                    Long idCapt = parseLong(split[3]);
+                    Double valor = parseDouble(split[4]);
+                    Date venc = parseDate(split[5]);
+                    Captacion cap = new Captacion(reg, cuenta, date, des, idCapt, valor, venc);
+                    items.add(cap);
+                } catch (Exception e) {
+                    System.out.println("registro de captación no guardado");
+                }
+            }
+            DAO.saveUpdateMultiple(items);
+            System.out.println("-----TERMINO CAPTACION---");
+            cons.setCaptacionLeidos(new Double(String.valueOf(captaciones.size())));
+            return captaciones;
+        } catch (Exception ex) {
+            removeData(reg.getCaptacions());
+        }
+        return null;
+    }
+
+    private List<String> saveCatalogoMinimo(Consistencia cons, Regcuenta reg) {
+        try {
+            System.out.println("--COMIENTZA CAT MINIMO---");
+            List<String> captaciones = getFileData(fileCatalogoMinimo);
+            List<Object> items = new LinkedList<Object>();
+            for (String s : captaciones) {
+                try {
+                    String[] split = s.split(";");
+                    Date date = parseDate(split[0]);
+                    Catalogocuenta cuenta = parseCatalogoCuenta(split[1]);
+                    Double value = parseDouble(split[2]);
+                    int moneda = Integer.parseInt(split[3]);
+                    Catalogominimo cap = new Catalogominimo(reg, cuenta, date, value, moneda);
+                    items.add(cap);
+                } catch (Exception e) {
+                    System.out.println("registro no guardado");
+                }
+            }
+            DAO.saveUpdateMultiple(items);
+            cons.setCatalogoMinimoLeidos(new Double(String.valueOf(captaciones.size())));
+            System.out.println("---TERMINA CAT MINIMO---");
+            return captaciones;
+        } catch (Exception ex) {
+            Logger.getLogger(CargadatosPage.class.getName()).log(Level.INFO, null, ex);
+        }
+        return null;
+    }
+
+    private List<String> saveDisponibilidades(Consistencia cons, Regcuenta regCuenta) {
+        try {
+            System.out.println("---COMIENZA DISPONIBILIDADES--");
+            List<String> captaciones = getFileData(fileDisponibilidades);
+            List<Object> items = new LinkedList<Object>();
+            for (String s : captaciones) {
+                try {
+                    String[] split = s.split(";");
+                    Date date = parseDate(split[0]);
+                    Catalogocuenta cuenta = parseCatalogoCuenta(split[1]);
+                    String des = split[2];
+                    Double value = parseDouble(split[3]);
+                    Date venc = parseDate(split[4]);
+                    Disponibilidad cap = new Disponibilidad(regCuenta, cuenta, date, des, value, venc);
+                    items.add(cap);
+                } catch (Exception e) {
+                    System.out.println("registro no guardado");
+                }
+            }
+            DAO.saveUpdateMultiple(items);
+            cons.setDisponibilidadesLeidos(new Double(String.valueOf(captaciones.size())));
+            System.out.println("--TERMINA DISPONIBILIDADES---");
+            return captaciones;
+        } catch (Exception ex) {
+            Logger.getLogger(CargadatosPage.class.getName()).log(Level.INFO, null, ex);
+        }
+        return null;
+    }
+
+    private List<String> saveIngresos(Consistencia cons, Regcuenta regCuenta) {
+        try {
+            System.out.println("---COMIENZA INGRESOS---");
+            List<String> captaciones = getFileData(fileIngresos);
+            List<Object> items = new LinkedList<Object>();
+            for (String s : captaciones) {
+                try {
+                    String[] split = s.split(";");
+                    Date date = parseDate(split[0]);
+                    int cuenta = Integer.parseInt(split[1]);
+                    Double value = parseDouble(split[2]);
+                    Ingresosnetos cap = new Ingresosnetos(regCuenta, date, cuenta, value);
+                    items.add(cap);
+                } catch (Exception e) {
+                    System.out.println("registro no guardado");
+                }
+            }
+            cons.setIngresosLeidos(new Double(String.valueOf(captaciones.size())));
+            DAO.saveUpdateMultiple(items);
+            System.out.println("---TERMINA INGRESOS---");
+            return captaciones;
+        } catch (Exception ex) {
+            Logger.getLogger(CargadatosPage.class.getName()).log(Level.INFO, null, ex);
+        }
+        return null;
+    }
+
+    private List<String> savePrestamos(Consistencia cons, Regcuenta regCuenta) {
+        try {
+            System.out.println("--COMIENZA PRESTAMOS--");
+            List<String> captaciones = getFileData(filePrestamosPersonales);
+            List<Object> items = new LinkedList<Object>();
+            for (String s : captaciones) {
+                try {
+                    String[] split = s.split(";");
+                    Date date = parseDate(split[0]);
+                    Catalogocuenta cuenta = parseCatalogoCuenta(split[1]);
+                    String des = split[2];
+                    Long cta = parseLong(split[3]);
+                    Double value = parseDouble(split[4]);
+                    Date fecCorte = parseDate(split[5]);
+                    String tipo = split[6];
+                    int relev = Integer.parseInt(split[7]);
+                    Prestamo cap = new Prestamo(regCuenta, cuenta, date, des, cta, value, fecCorte, tipo, relev);
+                    items.add(cap);
+                } catch (Exception e) {
+                    System.out.println("registro no guardado");
+                }
+            }
+            DAO.saveUpdateMultiple(items);
+            cons.setPrestamosLeidos(new Double(String.valueOf(captaciones.size())));
+            System.out.println("--TERMINA PRESTAMOS--");
+            return captaciones;
+        } catch (Exception ex) {
+            Logger.getLogger(CargadatosPage.class.getName()).log(Level.INFO, null, ex);
+        }
+        return null;
+    }
+
+    private List<String> saveReservas(Consistencia cons, Regcuenta regCuenta) {
+        try {
+            System.out.println("--COMIENZA RESERVAS--");
+            List<String> captaciones = getFileData(fileReservas);
+            List<Object> items = new LinkedList<Object>();
+            for (String s : captaciones) {
+                try {
+                    String[] split = s.split(";");
+                    Date date = parseDate(split[0]);
+                    String sta = split[1];
+                    Double value = parseDouble(split[2]);
+                    Reservas cap = new Reservas(regCuenta, date, sta, value);
+                    items.add(cap);
+                } catch (Exception e) {
+                    System.out.println("registro no guardado");
+                }
+            }
+            cons.setReservasLeidos(new Double(String.valueOf(captaciones.size())));
+            DAO.saveUpdateMultiple(items);
+            System.out.println("--TERMINA RESERVAS--");
+            return captaciones;
+        } catch (Exception ex) {
+            Logger.getLogger(CargadatosPage.class.getName()).log(Level.INFO, null, ex);
+        }
+        return null;
+    }
+
+    private List<String> saveTarjeta(Consistencia cons, Regcuenta regCuenta) {
+        try {
+            System.out.println("--COMIEZA TARJETA--");
+            List<String> captaciones = getFileData(fileTarjetaCredito);
+            List<Object> items = new LinkedList<Object>();
+            for (String s : captaciones) {
+                try {
+                    String[] split = s.split(";");
+                    Date date = parseDate(split[0]);
+                    Catalogocuenta cuenta = parseCatalogoCuenta(split[1]);
+                    String des = split[2];
+                    String cta = split[3];
+                    Double value = parseDouble(split[4]);
+                    Date fecCorte = parseDate(split[5]);
+                    String tipo = split[6];
+                    int relev = Integer.parseInt(split[7]);
+                    Tarjetacredito cap = new Tarjetacredito(regCuenta, cuenta, date, des, cta, value, fecCorte, tipo, relev);
+                    items.add(cap);
+                } catch (Exception e) {
+                    System.out.println("registro no guardado");
+                }
+            }
+            DAO.saveUpdateMultiple(items);
+            cons.setTarjetaCreditoLeidos(new Double(String.valueOf(captaciones.size())));
+            System.out.println("--TERMINA TARJETA--");
+            return captaciones;
+        } catch (Exception ex) {
+            Logger.getLogger(CargadatosPage.class.getName()).log(Level.INFO, null, ex);
+        }
+        return null;
+    }
+
+    private List<String> saveTenencia(Consistencia cons, Regcuenta regCuenta) {
+        try {
+            System.out.println("--COMIEZA TENENCIA--");
+            List<String> captaciones = getFileData(fileTenencia);
+            List<Object> items = new LinkedList<Object>();
+            for (String s : captaciones) {
+                try {
+                    String[] split = s.split(";");
+                    Date date = parseDate(split[0]);
+                    Long cta = parseLong(split[1]);
+                    String des = split[2];
+                    Double tits = Double.parseDouble(split[3]);
+                    String tipoValor = split[4];
+                    String emision = split[5];
+                    String serie = split[6];
+                    Date fecCpn = parseDate(split[7]);
+                    String rc10 = split[8];
+                    Valores valores = new Valores(regCuenta, date, cta, des, tits.intValue(), tipoValor, emision, serie, fecCpn, rc10);
+                    items.add(valores);
+                } catch (Exception e) {
+                    System.out.println(e);
+                    System.out.println("registro no guardado");
+                }
+            }
+            DAO.saveUpdateMultiple(items);
+            cons.setTenenciaLeidos(new Double(String.valueOf(captaciones.size())));
+            System.out.println("--TERMINA TENENCIA--");
+            return captaciones;
+        } catch (Exception ex) {
+            Logger.getLogger(CargadatosPage.class.getName()).log(Level.INFO, null, ex);
+        }
+        return null;
+    }
+
+    private Catalogocuenta parseCatalogoCuenta(String string) {
         List<Catalogocuenta> createQuery = DAO.createQuery(Catalogocuenta.class, null);
         for (Catalogocuenta c : createQuery) {
-            catalogos.put(c.getIdCatalogoCuenta().toString(), c);
+            if (c.getIdCatalogoCuenta().toString().equals(string)) {
+                return c;
+            }
         }
-        Map<String, Moneda> monedas = new HashMap<String, Moneda>();
-        List<Moneda> qmon = DAO.createQuery(Moneda.class, null);
-        for (Moneda m : qmon) {
-            monedas.put(m.getIdMoneda().toString(), m);
-        }
-        for (String c : dataCatalogoMinimo) {
-            String[] split = c.split(";");
-            Cuenta cta = new Cuenta();
-            cta.setRegcuenta(regCuenta);
-            cta.setStatus(0);
-            cta.setCatalogocuenta(catalogos.get(split[0]));
-            String number = quitarRelleno(split[3]);
-            cta.setValor(Double.parseDouble(number));
-            cta.setMoneda(monedas.get(split[2]));
-            DAO.save(cta);
+        return null;
+    }
+
+    private Date parseDate(String string) {
+        try {
+            SimpleDateFormat sp = new SimpleDateFormat("dd/MM/yyyy");
+            return sp.parse(string);
+        } catch (ParseException ex) {
+            return null;
         }
     }
 
-    private String quitarRelleno(String string) {
-        while (string.length() > 0 && string.charAt(0) == '0') {
-            string = string.substring(1);
+    private void removeData(Set captacions) {
+        for (Object o : captacions) {
+            DAO.delete(o);
         }
-        if (string.length() == 0) {
-            string = "0";
+    }
+
+    public static void main(String[] args) {
+        File f = new File("C:\\Users\\Admin\\Documents\\NetBeansProjects\\SIGCAP\\web\\modelo\\baseModelo.xlsx");
+        String toPath = f.toPath().toString();
+        System.out.println(toPath);
+
+    }
+
+    private Map<String, Vector> mapVector() {
+        try {
+            System.out.println("--MAPEANDO VECTOR--");
+            Map<String, Vector> mapping = new HashMap<String, Vector>();
+            List<String> fileData = getFileData(vector);
+            for (String row : fileData) {
+                try {
+                    String[] split = row.split(";");
+                    String concat = split[1] + split[2] + split[3];
+                    Double precio = parseDouble(split[5]);
+                    Date fecVenc = parseDate(split[15]);
+                    int moneda = split[17].contains("(UDI)") ? 1 : split[17].contains("(USD)") ? 4 : 14;
+                    String mdy = split[36];
+                    String fitch = split[53];
+                    String sp = split[37];
+                    String hr = split[59];
+                    Vector vec = new Vector(concat, precio, fecVenc, moneda, mdy, fitch, sp, hr);
+                    mapping.put(concat, vec);
+                }catch(Exception e){
+                    System.out.println("registro de vector no guardado");
+                }
+            }
+            System.out.println("--VECTOR MAPEADO--");
+            return mapping;
+        } catch (IOException ex) {
+            Logger.getLogger(CargadatosPage.class.getName()).log(Level.INFO, null, ex);
         }
-        return string;
+        return null;
     }
 
 }

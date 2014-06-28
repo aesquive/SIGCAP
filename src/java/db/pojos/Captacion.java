@@ -1,5 +1,5 @@
 package db.pojos;
-// Generated 4/06/2014 10:53:47 PM by Hibernate Tools 3.6.0
+// Generated 26/06/2014 12:43:36 AM by Hibernate Tools 3.6.0
 
 
 import java.util.Date;
@@ -12,22 +12,22 @@ public class Captacion  implements java.io.Serializable {
 
      private Integer idCaptacion;
      private Regcuenta regcuenta;
+     private Catalogocuenta catalogocuenta;
      private Date fecha;
-     private Long idCuentaContable;
-     private Long idOperacion;
      private String descripcion;
+     private Long idCuentaCaptacion;
      private Double monto;
      private Date fechaVencimiento;
 
     public Captacion() {
     }
 
-    public Captacion(Regcuenta regcuenta, Date fecha, Long idCuentaContable, Long idOperacion, String descripcion, Double monto, Date fechaVencimiento) {
+    public Captacion(Regcuenta regcuenta, Catalogocuenta catalogocuenta, Date fecha, String descripcion, Long idCuentaCaptacion, Double monto, Date fechaVencimiento) {
        this.regcuenta = regcuenta;
+       this.catalogocuenta = catalogocuenta;
        this.fecha = fecha;
-       this.idCuentaContable = idCuentaContable;
-       this.idOperacion = idOperacion;
        this.descripcion = descripcion;
+       this.idCuentaCaptacion = idCuentaCaptacion;
        this.monto = monto;
        this.fechaVencimiento = fechaVencimiento;
     }
@@ -46,6 +46,13 @@ public class Captacion  implements java.io.Serializable {
     public void setRegcuenta(Regcuenta regcuenta) {
         this.regcuenta = regcuenta;
     }
+    public Catalogocuenta getCatalogocuenta() {
+        return this.catalogocuenta;
+    }
+    
+    public void setCatalogocuenta(Catalogocuenta catalogocuenta) {
+        this.catalogocuenta = catalogocuenta;
+    }
     public Date getFecha() {
         return this.fecha;
     }
@@ -53,26 +60,19 @@ public class Captacion  implements java.io.Serializable {
     public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
-    public Long getIdCuentaContable() {
-        return this.idCuentaContable;
-    }
-    
-    public void setIdCuentaContable(Long idCuentaContable) {
-        this.idCuentaContable = idCuentaContable;
-    }
-    public Long getIdOperacion() {
-        return this.idOperacion;
-    }
-    
-    public void setIdOperacion(Long idOperacion) {
-        this.idOperacion = idOperacion;
-    }
     public String getDescripcion() {
         return this.descripcion;
     }
     
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+    public Long getIdCuentaCaptacion() {
+        return this.idCuentaCaptacion;
+    }
+    
+    public void setIdCuentaCaptacion(Long idCuentaCaptacion) {
+        this.idCuentaCaptacion = idCuentaCaptacion;
     }
     public Double getMonto() {
         return this.monto;

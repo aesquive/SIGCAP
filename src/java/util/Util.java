@@ -4,6 +4,7 @@ package util;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import static java.lang.Double.parseDouble;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -65,12 +66,10 @@ public class Util {
     }
     
     public static void main(String[] args) throws ParseException {
-        String asciiText = Util.getAsciiText("5048495250504854", 2);
-        System.out.println(asciiText);
-        String algo="20142206";
-        SimpleDateFormat sd=new SimpleDateFormat("yyyyddMM");
-        Date parse = sd.parse(asciiText);
-        System.out.println(parse);
+        String cad="000000000-2036625524";
+        
+        double parseDouble = parseDouble(cad);
+        System.out.println(parseDouble);
     }
     
     

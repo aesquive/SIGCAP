@@ -1,5 +1,5 @@
 package db.pojos;
-// Generated 4/06/2014 10:53:47 PM by Hibernate Tools 3.6.0
+// Generated 26/06/2014 12:43:36 AM by Hibernate Tools 3.6.0
 
 
 import java.util.Date;
@@ -12,8 +12,8 @@ public class Disponibilidad  implements java.io.Serializable {
 
      private Integer idDisponibilidad;
      private Regcuenta regcuenta;
+     private Catalogocuenta catalogocuenta;
      private Date fecha;
-     private Long idCuentaContable;
      private String descripcion;
      private Double monto;
      private Date fechaVencimiento;
@@ -21,10 +21,10 @@ public class Disponibilidad  implements java.io.Serializable {
     public Disponibilidad() {
     }
 
-    public Disponibilidad(Regcuenta regcuenta, Date fecha, Long idCuentaContable, String descripcion, Double monto, Date fechaVencimiento) {
+    public Disponibilidad(Regcuenta regcuenta, Catalogocuenta catalogocuenta, Date fecha, String descripcion, Double monto, Date fechaVencimiento) {
        this.regcuenta = regcuenta;
+       this.catalogocuenta = catalogocuenta;
        this.fecha = fecha;
-       this.idCuentaContable = idCuentaContable;
        this.descripcion = descripcion;
        this.monto = monto;
        this.fechaVencimiento = fechaVencimiento;
@@ -44,19 +44,19 @@ public class Disponibilidad  implements java.io.Serializable {
     public void setRegcuenta(Regcuenta regcuenta) {
         this.regcuenta = regcuenta;
     }
+    public Catalogocuenta getCatalogocuenta() {
+        return this.catalogocuenta;
+    }
+    
+    public void setCatalogocuenta(Catalogocuenta catalogocuenta) {
+        this.catalogocuenta = catalogocuenta;
+    }
     public Date getFecha() {
         return this.fecha;
     }
     
     public void setFecha(Date fecha) {
         this.fecha = fecha;
-    }
-    public Long getIdCuentaContable() {
-        return this.idCuentaContable;
-    }
-    
-    public void setIdCuentaContable(Long idCuentaContable) {
-        this.idCuentaContable = idCuentaContable;
     }
     public String getDescripcion() {
         return this.descripcion;

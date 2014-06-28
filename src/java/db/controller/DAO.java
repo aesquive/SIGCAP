@@ -106,4 +106,12 @@ public class DAO {
     public static void refresh(Object obj){
         session.refresh(obj);
     }
+    
+    public static void saveUpdateMultiple(List<Object> obj){
+        for(Object o:obj){
+            session.saveOrUpdate(o);
+        }
+        session.flush();
+        session.clear();
+    }
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 4/06/2014 10:53:47 PM by Hibernate Tools 3.6.0 -->
+<!-- Generated 26/06/2014 12:43:39 AM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
-    <class  name="db.pojos.Catalogocuenta" table="catalogocuenta" catalog="prueba">
+    <class name="db.pojos.Catalogocuenta" table="catalogocuenta" catalog="prueba">
         <id name="idCatalogoCuenta" type="java.lang.Long">
             <column name="idCatalogoCuenta" />
             <generator class="identity" />
@@ -11,11 +11,41 @@
         <property name="desCatalogoCuenta" type="string">
             <column name="desCatalogoCuenta" length="600" not-null="true" />
         </property>
+        <set name="tarjetacreditos" table="tarjetacredito" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="IdCuentaContable" />
+            </key>
+            <one-to-many class="db.pojos.Tarjetacredito" />
+        </set>
+        <set name="catalogominimos" table="catalogominimo" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="IdCatalogoCuenta" />
+            </key>
+            <one-to-many class="db.pojos.Catalogominimo" />
+        </set>
         <set name="operacions" table="operacion" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="idCuenta" not-null="true" />
             </key>
             <one-to-many class="db.pojos.Operacion" />
+        </set>
+        <set name="captacions" table="captacion" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="IdCuentaContable" />
+            </key>
+            <one-to-many class="db.pojos.Captacion" />
+        </set>
+        <set name="prestamos" table="prestamo" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="IdCuentaContable" />
+            </key>
+            <one-to-many class="db.pojos.Prestamo" />
+        </set>
+        <set name="disponibilidads" table="disponibilidad" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="IdCuentaContable" />
+            </key>
+            <one-to-many class="db.pojos.Disponibilidad" />
         </set>
         <set name="cuentas" table="cuenta" inverse="true" lazy="true" fetch="select">
             <key>

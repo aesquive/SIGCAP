@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 4/06/2014 10:53:47 PM by Hibernate Tools 3.6.0 -->
+<!-- Generated 26/06/2014 12:43:39 AM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
-    <class  name="db.pojos.Valores" table="valores" catalog="prueba">
+    <class name="db.pojos.Valores" table="valores" catalog="prueba">
         <id name="idTenencia" type="java.lang.Integer">
             <column name="IdTenencia" />
             <generator class="identity" />
@@ -32,29 +32,11 @@
         <property name="serie" type="string">
             <column name="Serie" />
         </property>
-        <property name="fechaVencimiento" type="timestamp">
-            <column name="FechaVencimiento" length="19" />
+        <property name="fechaProximoCupon" type="timestamp">
+            <column name="FechaProximoCupon" length="19" />
         </property>
-        <property name="precioLimpio" type="java.lang.Double">
-            <column name="PrecioLimpio" precision="10" scale="5" />
-        </property>
-        <property name="tasa" type="java.lang.Double">
-            <column name="Tasa" precision="10" scale="5" />
-        </property>
-        <property name="tipoTasa" type="string">
-            <column name="TipoTasa" />
-        </property>
-        <property name="calificacionMoodys" type="string">
-            <column name="CalificacionMoodys" />
-        </property>
-        <property name="calificacionSp" type="string">
-            <column name="CalificacionSP" />
-        </property>
-        <property name="calificacionFitch" type="string">
-            <column name="CalificacionFitch" />
-        </property>
-        <property name="calificacionHr" type="string">
-            <column name="CalificacionHR" />
+        <property name="grupoRc10" type="string">
+            <column name="GrupoRC10" />
         </property>
     </class>
 </hibernate-mapping>

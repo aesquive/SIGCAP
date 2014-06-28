@@ -3,9 +3,9 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 26/06/2014 12:43:39 AM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
-    <class name="db.pojos.Regvector" table="regvector" catalog="prueba">
-        <id name="idRegVector" type="java.lang.Integer">
-            <column name="IdRegVector" />
+    <class name="db.pojos.Ingresosnetos" table="ingresosnetos" catalog="prueba">
+        <id name="idIngresosNetos" type="java.lang.Integer">
+            <column name="IdIngresosNetos" />
             <generator class="identity" />
         </id>
         <many-to-one name="regcuenta" class="db.pojos.Regcuenta" fetch="select">
@@ -14,8 +14,11 @@
         <property name="fecha" type="timestamp">
             <column name="Fecha" length="19" />
         </property>
-        <property name="ruta" type="string">
-            <column name="Ruta" />
+        <property name="numeroMes" type="java.lang.Integer">
+            <column name="NumeroMes" />
+        </property>
+        <property name="ingresoNeto" type="java.lang.Double">
+            <column name="IngresoNeto" precision="15" scale="5" />
         </property>
     </class>
 </hibernate-mapping>

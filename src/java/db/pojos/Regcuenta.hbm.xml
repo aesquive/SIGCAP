@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 4/06/2014 10:53:47 PM by Hibernate Tools 3.6.0 -->
+<!-- Generated 26/06/2014 12:43:39 AM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
-    <class  name="db.pojos.Regcuenta" table="regcuenta" catalog="prueba">
+    <class name="db.pojos.Regcuenta" table="regcuenta" catalog="prueba">
         <id name="idRegCuenta" type="java.lang.Integer">
             <column name="idRegCuenta" />
             <generator class="identity" />
@@ -14,17 +14,23 @@
         <property name="fecha" type="timestamp">
             <column name="fecha" length="19" />
         </property>
+        <set name="catalogominimos" table="catalogominimo" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="IdRegCuenta" />
+            </key>
+            <one-to-many class="db.pojos.Catalogominimo" />
+        </set>
         <set name="disponibilidads" table="disponibilidad" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="IdRegCuenta" />
             </key>
             <one-to-many class="db.pojos.Disponibilidad" />
         </set>
-        <set name="carteracomercials" table="carteracomercial" inverse="true" lazy="true" fetch="select">
+        <set name="ingresosnetoses" table="ingresosnetos" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="IdRegCuenta" />
             </key>
-            <one-to-many class="db.pojos.Carteracomercial" />
+            <one-to-many class="db.pojos.Ingresosnetos" />
         </set>
         <set name="valoreses" table="valores" inverse="true" lazy="true" fetch="select">
             <key>
@@ -37,6 +43,18 @@
                 <column name="IdRegCuenta" />
             </key>
             <one-to-many class="db.pojos.Tarjetacredito" />
+        </set>
+        <set name="reservases" table="reservas" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="IdRegCuenta" />
+            </key>
+            <one-to-many class="db.pojos.Reservas" />
+        </set>
+        <set name="prestamos" table="prestamo" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="IdRegCuenta" />
+            </key>
+            <one-to-many class="db.pojos.Prestamo" />
         </set>
         <set name="regvectors" table="regvector" inverse="true" lazy="true" fetch="select">
             <key>

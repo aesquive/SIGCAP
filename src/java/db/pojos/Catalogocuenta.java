@@ -1,5 +1,5 @@
 package db.pojos;
-// Generated 4/06/2014 10:53:47 PM by Hibernate Tools 3.6.0
+// Generated 26/06/2014 12:43:36 AM by Hibernate Tools 3.6.0
 
 
 import java.util.HashSet;
@@ -13,7 +13,12 @@ public class Catalogocuenta  implements java.io.Serializable {
 
      private Long idCatalogoCuenta;
      private String desCatalogoCuenta;
+     private Set tarjetacreditos = new HashSet(0);
+     private Set catalogominimos = new HashSet(0);
      private Set operacions = new HashSet(0);
+     private Set captacions = new HashSet(0);
+     private Set prestamos = new HashSet(0);
+     private Set disponibilidads = new HashSet(0);
      private Set cuentas = new HashSet(0);
 
     public Catalogocuenta() {
@@ -23,9 +28,14 @@ public class Catalogocuenta  implements java.io.Serializable {
     public Catalogocuenta(String desCatalogoCuenta) {
         this.desCatalogoCuenta = desCatalogoCuenta;
     }
-    public Catalogocuenta(String desCatalogoCuenta, Set operacions, Set cuentas) {
+    public Catalogocuenta(String desCatalogoCuenta, Set tarjetacreditos, Set catalogominimos, Set operacions, Set captacions, Set prestamos, Set disponibilidads, Set cuentas) {
        this.desCatalogoCuenta = desCatalogoCuenta;
+       this.tarjetacreditos = tarjetacreditos;
+       this.catalogominimos = catalogominimos;
        this.operacions = operacions;
+       this.captacions = captacions;
+       this.prestamos = prestamos;
+       this.disponibilidads = disponibilidads;
        this.cuentas = cuentas;
     }
    
@@ -43,12 +53,47 @@ public class Catalogocuenta  implements java.io.Serializable {
     public void setDesCatalogoCuenta(String desCatalogoCuenta) {
         this.desCatalogoCuenta = desCatalogoCuenta;
     }
+    public Set getTarjetacreditos() {
+        return this.tarjetacreditos;
+    }
+    
+    public void setTarjetacreditos(Set tarjetacreditos) {
+        this.tarjetacreditos = tarjetacreditos;
+    }
+    public Set getCatalogominimos() {
+        return this.catalogominimos;
+    }
+    
+    public void setCatalogominimos(Set catalogominimos) {
+        this.catalogominimos = catalogominimos;
+    }
     public Set getOperacions() {
         return this.operacions;
     }
     
     public void setOperacions(Set operacions) {
         this.operacions = operacions;
+    }
+    public Set getCaptacions() {
+        return this.captacions;
+    }
+    
+    public void setCaptacions(Set captacions) {
+        this.captacions = captacions;
+    }
+    public Set getPrestamos() {
+        return this.prestamos;
+    }
+    
+    public void setPrestamos(Set prestamos) {
+        this.prestamos = prestamos;
+    }
+    public Set getDisponibilidads() {
+        return this.disponibilidads;
+    }
+    
+    public void setDisponibilidads(Set disponibilidads) {
+        this.disponibilidads = disponibilidads;
     }
     public Set getCuentas() {
         return this.cuentas;

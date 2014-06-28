@@ -1,5 +1,5 @@
 package db.pojos;
-// Generated 4/06/2014 10:53:47 PM by Hibernate Tools 3.6.0
+// Generated 26/06/2014 12:43:36 AM by Hibernate Tools 3.6.0
 
 
 import java.util.HashSet;
@@ -26,13 +26,13 @@ public class User  implements java.io.Serializable {
     public User(String user) {
         this.user = user;
     }
-    public User(String user, String password, Set regcuentausers, Set trackings, Set permisosusers) {
+    public User(String user, String password, Integer activo, Set regcuentausers, Set trackings, Set permisosusers) {
        this.user = user;
        this.password = password;
+       this.activo = activo;
        this.regcuentausers = regcuentausers;
        this.trackings = trackings;
        this.permisosusers = permisosusers;
-       this.activo=0;
     }
    
     public Integer getIduser() {
@@ -56,6 +56,13 @@ public class User  implements java.io.Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
+    public Integer getActivo() {
+        return this.activo;
+    }
+    
+    public void setActivo(Integer activo) {
+        this.activo = activo;
+    }
     public Set getRegcuentausers() {
         return this.regcuentausers;
     }
@@ -76,20 +83,6 @@ public class User  implements java.io.Serializable {
     
     public void setPermisosusers(Set permisosusers) {
         this.permisosusers = permisosusers;
-    }
-
-    /**
-     * @return the activo
-     */
-    public Integer getActivo() {
-        return activo;
-    }
-
-    /**
-     * @param activo the activo to set
-     */
-    public void setActivo(Integer activo) {
-        this.activo = activo;
     }
 
 

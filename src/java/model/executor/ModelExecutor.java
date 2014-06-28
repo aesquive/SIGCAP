@@ -184,7 +184,7 @@ public class ModelExecutor {
      * @throws MathInterpreterException
      */
     public static void main(String[] args) throws MathInterpreterException, IOException {
-        int regCuenta = 9;
+        int regCuenta = 12;
         Map<String, Cuenta> cuentas = new HashMap<String, Cuenta>();
         List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
         Regcuenta c = new Regcuenta();
@@ -193,8 +193,8 @@ public class ModelExecutor {
                 c = r;
             }
         }
-        String value = Configuration.getValue("baseModelo");
-        ModelExecutor m = new ModelExecutor(Configuration.getValue("baseModelo"), c, false);
+        String value = "C:\\Users\\Admin\\Documents\\NetBeansProjects\\SIGCAP\\web\\modelo\\baseMarzo.xlsx";
+        ModelExecutor m = new ModelExecutor(value, c, false);
         m.start();
         Cuenta get = cuentas.get("1");
     }

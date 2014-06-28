@@ -1,5 +1,5 @@
 package db.pojos;
-// Generated 4/06/2014 10:53:47 PM by Hibernate Tools 3.6.0
+// Generated 26/06/2014 12:43:36 AM by Hibernate Tools 3.6.0
 
 
 import java.util.Date;
@@ -12,32 +12,28 @@ public class Tarjetacredito  implements java.io.Serializable {
 
      private Integer idTarjetaCredito;
      private Regcuenta regcuenta;
+     private Catalogocuenta catalogocuenta;
      private Date fecha;
-     private Long idCuentaContable;
-     private String idCredito;
      private String descripcion;
+     private String idCredito;
      private Double saldoInsoluto;
      private Date fechaCorte;
      private String tipoTarjeta;
      private Integer relevante;
-     private Double provisionCrediticia;
-     private Double duracion;
 
     public Tarjetacredito() {
     }
 
-    public Tarjetacredito(Regcuenta regcuenta, Date fecha, Long idCuentaContable, String idCredito, String descripcion, Double saldoInsoluto, Date fechaCorte, String tipoTarjeta, Integer relevante, Double provisionCrediticia, Double duracion) {
+    public Tarjetacredito(Regcuenta regcuenta, Catalogocuenta catalogocuenta, Date fecha, String descripcion, String idCredito, Double saldoInsoluto, Date fechaCorte, String tipoTarjeta, Integer relevante) {
        this.regcuenta = regcuenta;
+       this.catalogocuenta = catalogocuenta;
        this.fecha = fecha;
-       this.idCuentaContable = idCuentaContable;
-       this.idCredito = idCredito;
        this.descripcion = descripcion;
+       this.idCredito = idCredito;
        this.saldoInsoluto = saldoInsoluto;
        this.fechaCorte = fechaCorte;
        this.tipoTarjeta = tipoTarjeta;
        this.relevante = relevante;
-       this.provisionCrediticia = provisionCrediticia;
-       this.duracion = duracion;
     }
    
     public Integer getIdTarjetaCredito() {
@@ -54,6 +50,13 @@ public class Tarjetacredito  implements java.io.Serializable {
     public void setRegcuenta(Regcuenta regcuenta) {
         this.regcuenta = regcuenta;
     }
+    public Catalogocuenta getCatalogocuenta() {
+        return this.catalogocuenta;
+    }
+    
+    public void setCatalogocuenta(Catalogocuenta catalogocuenta) {
+        this.catalogocuenta = catalogocuenta;
+    }
     public Date getFecha() {
         return this.fecha;
     }
@@ -61,12 +64,12 @@ public class Tarjetacredito  implements java.io.Serializable {
     public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
-    public Long getIdCuentaContable() {
-        return this.idCuentaContable;
+    public String getDescripcion() {
+        return this.descripcion;
     }
     
-    public void setIdCuentaContable(Long idCuentaContable) {
-        this.idCuentaContable = idCuentaContable;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
     public String getIdCredito() {
         return this.idCredito;
@@ -74,13 +77,6 @@ public class Tarjetacredito  implements java.io.Serializable {
     
     public void setIdCredito(String idCredito) {
         this.idCredito = idCredito;
-    }
-    public String getDescripcion() {
-        return this.descripcion;
-    }
-    
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
     }
     public Double getSaldoInsoluto() {
         return this.saldoInsoluto;
@@ -109,20 +105,6 @@ public class Tarjetacredito  implements java.io.Serializable {
     
     public void setRelevante(Integer relevante) {
         this.relevante = relevante;
-    }
-    public Double getProvisionCrediticia() {
-        return this.provisionCrediticia;
-    }
-    
-    public void setProvisionCrediticia(Double provisionCrediticia) {
-        this.provisionCrediticia = provisionCrediticia;
-    }
-    public Double getDuracion() {
-        return this.duracion;
-    }
-    
-    public void setDuracion(Double duracion) {
-        this.duracion = duracion;
     }
 
 
