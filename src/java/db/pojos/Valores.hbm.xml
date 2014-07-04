@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 26/06/2014 12:43:39 AM by Hibernate Tools 3.6.0 -->
+<!-- Generated 3/07/2014 02:02:56 PM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
     <class name="db.pojos.Valores" table="valores" catalog="prueba">
         <id name="idTenencia" type="java.lang.Integer">
@@ -14,7 +14,7 @@
         <property name="fecha" type="timestamp">
             <column name="Fecha" length="19" />
         </property>
-        <property name="idCuentaContable" type="java.lang.Long">
+        <property name="idCuentaContable" type="string">
             <column name="IdCuentaContable" />
         </property>
         <property name="descripcion" type="string">
@@ -37,6 +37,36 @@
         </property>
         <property name="grupoRc10" type="string">
             <column name="GrupoRC10" />
+        </property>
+        <property name="precio" type="java.lang.Double">
+            <column name="Precio" precision="20" scale="5" />
+        </property>
+        <property name="sobretasa" type="string">
+            <column name="Sobretasa" />
+        </property>
+        <property name="calificacion" type="string">
+            <column name="Calificacion" />
+        </property>
+        <property name="grupoRc07" type="string">
+            <column name="GrupoRC07" />
+        </property>
+        <property name="ponderador" type="java.lang.Double">
+            <column name="Ponderador" precision="20" scale="5" />
+        </property>
+        <property name="plazo" type="string">
+            <column name="Plazo" />
+        </property>
+        
+        <property name="fechaVencimiento" type="timestamp">
+            <column name="FechaVencimiento" length="19" />
+        </property>
+        
+        <property name="moneda" type="string">
+            <column name="Moneda" />
+        </property>
+        
+        <property name="gradoRiesgo" type="java.lang.Integer">
+            <column name="GradoRiesgo" />
         </property>
     </class>
 </hibernate-mapping>

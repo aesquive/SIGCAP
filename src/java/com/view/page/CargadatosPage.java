@@ -4,21 +4,15 @@ import db.controller.DAO;
 import db.pojos.*;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import static java.lang.Double.parseDouble;
 import static java.lang.Long.parseLong;
-import java.nio.file.Files;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -33,15 +27,6 @@ import org.apache.click.control.Submit;
 import org.apache.click.control.TextField;
 import org.apache.click.extras.control.DateField;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.poi.hssf.util.CellReference;
-import org.apache.poi.poifs.crypt.HashAlgorithm;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.xssf.usermodel.helpers.XSSFRowShifter;
 import util.Util;
 import util.Vector;
 
@@ -82,7 +67,7 @@ public class CargadatosPage extends BorderPage {
         fileTarjetaCredito = new FileField("fileTarjeta", "Tarjeta de Crédito  (csv|txt)", true);
         fileReservas = new FileField("fileConsumo", "Reservas(csv|txt)", true);
         fileIngresos = new FileField("fileIngreso", "Ingresos Netos (csv|txt)", true);
-        vector = new FileField("vector", "Vector Analitico (csv|txt)", true);
+        vector = new FileField("vector", "Vector Analitico (csv|txt)", false);
         form.add(name);
         form.add(dateField);
         form.add(fileTenencia);
@@ -108,8 +93,8 @@ public class CargadatosPage extends BorderPage {
             try {
                 message = "Reportes Invalidos (Número de Campos) : ";
                 FileField[] camposArchivos = new FileField[]{fileCaptacion, fileCatalogoMinimo, fileDisponibilidades, fileIngresos, filePrestamosPersonales, fileReservas, fileTarjetaCredito, fileTenencia};
-                String[] nombres = new String[]{"Captación", "Catálogo Mínimo", "Disponibilidades", "Ingresos Netos", "Prestamos Personales", "Reservas", "Tarjeta de Crédito", "Tenencia"};
-                Integer[] numCampos = new Integer[]{6, 4, 5, 3, 8, 3, 8, 9};
+                String[] nombres = new String[]{"Captación", "Catálogo Mínimo", "Disponibilidades", "Ingresos Netos", "Prestamos Personales", "Reservas", "Tarjeta de Crédito","Tenencia"};
+                Integer[] numCampos = new Integer[]{6, 4, 5, 3, 8, 3, 8, 18};
                 boolean pass = true;
                 for (int t = 0; t < nombres.length; t++) {
                     List<String> dataCatalogoMinimo = getFileData(camposArchivos[t]);
@@ -128,7 +113,7 @@ public class CargadatosPage extends BorderPage {
                 saveUserRelation(regCuenta, user);
                 //Generamos una nueva consistencia , para poner los resultados de los reportes leidos
                 Consistencia cons = new Consistencia();
-                cons.setRegCuenta(regCuenta);
+                cons.setRegcuenta(regCuenta);
                 List<Object> saveCaptacion = saveCaptacion(cons, regCuenta);
                 List<Object> saveCatalogoMinimo = saveCatalogoMinimo(cons, regCuenta);
                 List<Object> saveDisponibilidades = saveDisponibilidades(cons, regCuenta);
@@ -141,17 +126,17 @@ public class CargadatosPage extends BorderPage {
                 saveAll(saveCaptacion,saveCatalogoMinimo,saveDisponibilidades,saveIngresos,savePrestamos,saveReservas,saveTarjeta,saveTenencia);
                 DAO.saveRecordt(user, user.getUser() + "generó alta del ejercicio " + regCuenta.getDesRegCuenta());
                 DAO.save(cons);
-                addSessionVar("cargaConsistencia", cons);
-                addSessionVar("cargaRegCuenta", regCuenta);
-                addSessionVar("cargaCaptación",saveCaptacion);
-                addSessionVar("cargaCatalogo",saveCatalogoMinimo);
-                addSessionVar("cargaDisponibilidades",saveDisponibilidades);
-                addSessionVar("cargaIngresos", saveIngresos);
-                addSessionVar("cargaPrestamos",savePrestamos);
-                addSessionVar("cargaReservas",saveReservas);
-                addSessionVar("cargaTarjeta",saveTarjeta);
-                addSessionVar("cargaTenencia",saveTenencia);
-                addSessionVar("cargaVector", mapVector);
+                addSessionVar("mapeoConsistencia", cons);
+                addSessionVar("mapeoRegCuenta", regCuenta);
+                addSessionVar("mapeoCaptación",saveCaptacion);
+                addSessionVar("mapeoCatalogo",saveCatalogoMinimo);
+                addSessionVar("mapeoDisponibilidades",saveDisponibilidades);
+                addSessionVar("mapeoIngresos", saveIngresos);
+                addSessionVar("mapeoPrestamos",savePrestamos);
+                addSessionVar("mapeoReservas",saveReservas);
+                addSessionVar("mapeoTarjeta",saveTarjeta);
+                addSessionVar("mapeoTenencia",saveTenencia);
+                addSessionVar("mapeoVector", mapVector);
                 setRedirect(MapeoPage.class);
                 message="Carga Completa";
                 return true;
@@ -412,15 +397,25 @@ public class CargadatosPage extends BorderPage {
                 try {
                     String[] split = s.split(";");
                     Date date = parseDate(split[0]);
-                    Long cta = parseLong(split[1]);
+                    String cta = (split[1]);
                     String des = split[2];
-                    Double tits = Double.parseDouble(split[3]);
+                    Integer tits = Integer.parseInt(split[3]);
                     String tipoValor = split[4];
                     String emision = split[5];
                     String serie = split[6];
                     Date fecCpn = parseDate(split[7]);
                     String rc10 = split[8];
-                    Valores valores = new Valores(regCuenta, date, cta, des, tits.intValue(), tipoValor, emision, serie, fecCpn, rc10);
+                    Double precio=parseDouble(split[9]);
+                    String st=split[10];
+                    String calif=split[11];
+                    String clasificacion=split[12];
+                    Double ponderador=parseDouble(split[13]);
+                    String plazo=split[14];
+                    Date vencimiento=parseDate(split[15]);
+                    String moneda=split[16];
+                    Integer grado=Integer.parseInt(split[17]);
+                    Valores valores=new Valores(regCuenta, date, cta, des, tits, tipoValor, emision, serie, fecCpn, rc10, precio, st, calif, clasificacion
+                            , ponderador, plazo, vencimiento, moneda, grado);
                     items.add(valores);
                 } catch (Exception e) {
                     System.out.println(e);
@@ -484,7 +479,8 @@ public class CargadatosPage extends BorderPage {
                     String fitch = split[53];
                     String sp = split[37];
                     String hr = split[59];
-                    Vector vec = new Vector(concat, precio, fecVenc, moneda, mdy, fitch, sp, hr);
+                    String stasa=split[8]==null || split[8].equals("") || split[8].equals("0") ?"No" : "Si";
+                    Vector vec = new Vector(concat, precio, fecVenc, moneda, mdy, fitch, sp, hr,stasa);
                     mapping.put(concat, vec);
                 }catch(Exception e){
                     System.out.println("registro de vector no guardado");

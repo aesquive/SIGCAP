@@ -126,7 +126,7 @@ public class SimulacionPage extends BorderPage {
         try {
             Regcuenta regcuenta = data.get(0).getRegcuenta();
             User user = (User) getSessionVar("user");
-            ModelExecutor modelExecutor = new ModelExecutor(manager.configuration.Configuration.getValue("baseModelo"), regcuenta, true);
+            ModelExecutor modelExecutor = new ModelExecutor( regcuenta, true);
             modelExecutor.start();
             DAO.saveRecordt(user,user.getUser()+" generó simulación de "+regcuenta.getDesRegCuenta());
             cambiarPantalla(data.get(0).getRegcuenta());

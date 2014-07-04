@@ -26,12 +26,8 @@ public class IcapPage extends BorderPage {
         List<Cuenta> data = new LinkedList<Cuenta>();
         for (Cuenta c : createQuery) {
             Regcuenta regcuenta = c.getRegcuenta();
-            Iterator<Regcuentauser> iterator = regcuenta.getRegcuentausers().iterator();
-            while (iterator.hasNext()) {
-                Regcuentauser next = iterator.next();
-                if (c.getCatalogocuenta().getIdCatalogoCuenta() == 1) {
-                    data.add(c);
-                }
+            if (c.getCatalogocuenta().getIdCatalogoCuenta() == 1) {
+                data.add(c);
             }
         }
         addSessionVar("icapCounter", 0);

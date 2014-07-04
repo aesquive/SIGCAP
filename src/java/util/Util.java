@@ -7,6 +7,7 @@ import java.io.IOException;
 import static java.lang.Double.parseDouble;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -66,11 +67,21 @@ public class Util {
     }
     
     public static void main(String[] args) throws ParseException {
-        String cad="000000000-2036625524";
-        
-        double parseDouble = parseDouble(cad);
-        System.out.println(parseDouble);
+        SimpleDateFormat sp=new SimpleDateFormat("dd/MM/yyyy");
+        Date init = sp.parse("31/12/2013");
+        Date last=sp.parse("05/01/2014");
+        int daysBetweenDates = daysBetweenDates(init, last);
+        System.out.println(daysBetweenDates);
     }
-    
+
+    public static int daysBetweenDates(Date init,Date last){
+        Calendar calLast=Calendar.getInstance();
+        calLast.setTime(last);
+        Calendar calInit=Calendar.getInstance();
+        calInit.setTime(init);
+        int rangoAnyos =calLast.get(Calendar.YEAR)-calInit.get(Calendar.YEAR);
+        
+        return (rangoAnyos*365)+calLast.get(Calendar.DAY_OF_YEAR)-calInit.get(Calendar.DAY_OF_YEAR);
+    }
     
 }

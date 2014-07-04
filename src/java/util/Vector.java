@@ -8,6 +8,7 @@ import java.util.Date;
  * @author Admin
  */
 public class Vector {
+
     private String tvEmiSerie;
     private Double precioSucio;
     private Date fechaVencimiento;
@@ -16,8 +17,9 @@ public class Vector {
     private String fitch;
     private String sp;
     private String hr;
-
-    public Vector(String tvEmiSerie, Double precioSucio, Date fechaVencimiento, int moneda, String moodys, String fitch, String sp, String hr) {
+    private String sobretasa;
+    
+    public Vector(String tvEmiSerie, Double precioSucio, Date fechaVencimiento, int moneda, String moodys, String fitch, String sp, String hr,String stasa) {
         this.tvEmiSerie = tvEmiSerie;
         this.precioSucio = precioSucio;
         this.fechaVencimiento = fechaVencimiento;
@@ -26,6 +28,7 @@ public class Vector {
         this.fitch = fitch;
         this.sp = sp;
         this.hr = hr;
+        this.sobretasa=stasa;
     }
 
     /**

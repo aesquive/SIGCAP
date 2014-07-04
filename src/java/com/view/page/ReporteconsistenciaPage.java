@@ -6,6 +6,7 @@
 package com.view.page;
 
 import db.controller.DAO;
+import db.pojos.Consistencia;
 import db.pojos.Regcuenta;
 import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
@@ -33,12 +34,13 @@ public class ReporteconsistenciaPage extends BorderPage {
         form = new Form("form");
         projects = new Select("select", "Ejercicio", true);
         projects.setDefaultOption(new Option("-1", "Seleccionar"));
-        projects.add(new Submit("sub", "Generar Reporte", this, "generarConsistencia"));
-        List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
-        for (Regcuenta r : createQuery) {
+        List<Consistencia> createQuery = DAO.createQuery(Consistencia.class, null);
+        for (Consistencia c: createQuery) {
+            Regcuenta r=c.getRegcuenta();
             projects.add(new Option(r.getIdRegCuenta().toString(), r.getDesRegCuenta()));
         }
         form.add(projects);
+        form.add(new Submit("sub", "Generar Reporte", this, "generarConsistencia"));
         addControl(form);
     }
 

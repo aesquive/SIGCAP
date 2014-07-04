@@ -29,6 +29,11 @@ public class Reflector {
         return execute(target,args,findMethod);
     }
 
+    public static void main(String[] args) {
+        String algo="algo/otro";
+        System.out.println(algo.split("/")[0]);
+    }
+    
     /**
      * encuentra un metodo dando el nombre sobre una clase
      * @param classArg

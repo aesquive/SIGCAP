@@ -199,7 +199,8 @@ public class VistareportesPage extends Page {
     }
 
     private void initConsistencia(int parseInt) {
-       
+        try {
+
             List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
             Regcuenta reg1 = null;
             for (Regcuenta r : createQuery) {
@@ -209,9 +210,12 @@ public class VistareportesPage extends Page {
             }
             Set<Consistencia> consistencias = reg1.getConsistencias();
             Consistencia next = consistencias.iterator().next();
-            String nameFile = reports.excelmaker.ConsistenciaReportMaker.makeReport(Configuration.getValue("baseAnalisisConsistencia"),next,reg1);
+            String nameFile = reports.excelmaker.ConsistenciaReportMaker.makeReport(Configuration.getValue("baseAnalisisConsistencia"), next, reg1);
             setRedirect("/reportes/" + nameFile);
-            
+        }catch(Exception ex){
+            System.out.println(ex);
+        }
+
     }
 
 }

@@ -158,14 +158,14 @@ public class TablePage extends BorderPage {
     public boolean counterForward() {
         Integer counter = (Integer) getContext().getSessionAttribute("icapCounter");
         getContext().setSessionAttribute("icapCounter", counter + 1);
-        setRedirect(ComparePage.class);
+        setRedirect(TablePage.class);
         return true;
     }
 
     public boolean counterBack() {
         Integer counter = (Integer) getContext().getSessionAttribute("icapCounter");
         getContext().setSessionAttribute("icapCounter", counter - 1);
-        setRedirect(ComparePage.class);
+        setRedirect(TablePage.class);
         return true;
     }
 

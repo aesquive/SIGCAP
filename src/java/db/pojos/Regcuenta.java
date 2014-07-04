@@ -185,7 +185,7 @@ public class Regcuenta  implements java.io.Serializable,Cloneable {
             String numberCount = count.getIdCatalogoCuenta().toString();
             Cuenta ownValue = ownCuentas.get(numberCount);
             Cuenta compareValue = compareCuentas.get(numberCount);
-            Double value1 = ownValue == null ? Double.NaN : ownValue.getValor();
+            Double value1 = (ownValue == null || ownValue.getValor()==null) ? Double.NaN : ownValue.getValor();
             Double value2 = compareValue == null ? Double.NaN : compareValue.getValor();
             Double compare = value1 == Double.NaN || value2 == Double.NaN ? Double.NaN : Math.abs((value2 / value1) - 1);
             mapping.put(numberCount, new NDimensionVector(value1, value2, compare));

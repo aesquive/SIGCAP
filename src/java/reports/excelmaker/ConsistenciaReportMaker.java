@@ -1,5 +1,6 @@
 package reports.excelmaker;
 
+import db.controller.DAO;
 import db.pojos.Consistencia;
 import db.pojos.Regcuenta;
 import java.io.File;
@@ -8,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,6 +39,7 @@ public class ConsistenciaReportMaker {
             setCellValue(sheet, "D12", consistencias.getReservasLeidos());
             setCellValue(sheet, "D13", consistencias.getTarjetaCreditoLeidos());
             setCellValue(sheet, "D14", consistencias.getTenenciaLeidos());
+            System.out.println("las captaciones son "+regcuenta.getCaptacions().size());
             setCellValue(sheet, "F8", regcuenta.getCaptacions().size());
             setCellValue(sheet, "F9", regcuenta.getDisponibilidads().size());
             setCellValue(sheet, "F10", regcuenta.getIngresosnetoses().size());
@@ -72,6 +75,23 @@ public class ConsistenciaReportMaker {
             cell.setCellValue((Double) value);
             return;
         }
+        if(value instanceof Integer){
+            Double d=new Double(String.valueOf(value));
+            cell.setCellValue(d);
+            return;
+        }
+    }
+    
+    public static void main(String[] args) {
+        List<Regcuenta> list=DAO.createQuery(Regcuenta.class, null);
+        Regcuenta reg=null;
+        for(Regcuenta r:list){
+            if(r.getIdRegCuenta()==15){
+                reg=r;
+            }
+        }
+        ConsistenciaReportMaker.makeReport(Configuration.getValue("baseAnalisisConsistencia"),(Consistencia)reg.getConsistencias().iterator().next(), reg);
+        
     }
 
 }

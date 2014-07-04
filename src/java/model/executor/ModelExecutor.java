@@ -2,7 +2,9 @@ package model.executor;
 
 import db.controller.DAO;
 import db.pojos.Catalogocuenta;
+import db.pojos.Catalogominimo;
 import db.pojos.Cuenta;
+import db.pojos.Moneda;
 import db.pojos.Operacion;
 import db.pojos.Regcuenta;
 import interpreter.MathInterpreter;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import manager.configuration.Configuration;
+import model.wrappers.BaseModeloMathInterpreter;
 import org.hibernate.criterion.Criterion;
 
 /**
@@ -35,7 +38,7 @@ public class ModelExecutor {
     public Regcuenta regCuenta;
     private Criterion[] criterios;
 
-    public ModelExecutor(String baseModelo, Regcuenta regCuenta, boolean isSimulation) throws IOException {
+    public ModelExecutor(Regcuenta regCuenta, boolean isSimulation) throws IOException {
         Set<Cuenta> cuentas1 = regCuenta.getCuentas();
         for (Cuenta c : cuentas1) {
             System.out.println("borrando" + c.getCatalogocuenta().getIdCatalogoCuenta());
@@ -46,33 +49,48 @@ public class ModelExecutor {
         this.valores = new HashMap<String, Double>();
         this.cuentas = new HashMap<String, Cuenta>();
         this.operaciones = mapOperaciones(DAO.createQuery(Operacion.class, null));
-        this.isSimulation = isSimulation;
         this.regCuenta = regCuenta;
-        mapCuentas((List<Cuenta>) DAO.createQuery(Cuenta.class, null));
-        //sacamos los datos del modelo de excel
-        ExcelInteraction ex = new ExcelInteraction(baseModelo);
-        Map<Integer, Double> modelExcelData = ex.getModelExcelData();
+        //sacamos las cuentas base
+        BaseModeloMathInterpreter base = new BaseModeloMathInterpreter(regCuenta);
+        base.calculate();
+        Map<String, Double> map = base.getMap();
         //sacamos los datos del mapeo de catalogos de cuentas
         List<Catalogocuenta> queryCatalogos = DAO.createQuery(Catalogocuenta.class, criterios);
-        Map<Integer, Catalogocuenta> mapCatalogosCuentas = new HashMap<Integer, Catalogocuenta>();
+        Map<String, Catalogocuenta> mapCatalogosCuentas = new HashMap<String, Catalogocuenta>();
         for (Catalogocuenta c : queryCatalogos) {
-            mapCatalogosCuentas.put(c.getIdCatalogoCuenta().intValue(), c);
+            mapCatalogosCuentas.put(c.getIdCatalogoCuenta().toString(), c);
+        }
+        List<Moneda> createQuery = DAO.createQuery(Moneda.class, null);
+        Moneda peso = null;
+        for (Moneda m : createQuery) {
+            if (m.getIdMoneda() == 14) {
+                peso = m;
+            }
         }
         //generamos las nuevas cuentas
-        for (Integer s : modelExcelData.keySet()) {
+        for (String s : map.keySet()) {
             System.out.println("intentando " + s);
-            Cuenta c = null;
-            if (isSimulation) {
-                c = cuentas.get(String.valueOf(s));
-            }
-            if (c == null) {
-                c = new Cuenta();
-            }
+            Cuenta c = new Cuenta();
             c.setCatalogocuenta(mapCatalogosCuentas.get(s));
-            c.setValor(modelExcelData.get(s));
+            c.setValor(map.get(s));
             c.setRegcuenta(regCuenta);
+            c.setMoneda(peso);
             c.setRef("");
             guardarCuenta(c);
+        }
+        Set<Catalogominimo> catalogominimos = regCuenta.getCatalogominimos();
+        for (Catalogominimo cat : catalogominimos) {
+            try {
+                Cuenta c = new Cuenta();
+                c.setCatalogocuenta(cat.getCatalogocuenta());
+                c.setValor(cat.getValor());
+                c.setRegcuenta(cat.getRegcuenta());
+                c.setMoneda(peso);
+                c.setRef("");
+                guardarCuenta(c);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
         }
 
         mapCuentas((List<Cuenta>) DAO.createQuery(Cuenta.class, null));
@@ -83,9 +101,11 @@ public class ModelExecutor {
     }
 
     public void start() throws MathInterpreterException {
+        System.out.println("Start operations");
         if (isSimulation) {
             startOperations();
         }
+        System.out.println("operations completed =" + operationsCompleted());
         while (!operationsCompleted()) {
             startOperations();
         }
@@ -184,7 +204,7 @@ public class ModelExecutor {
      * @throws MathInterpreterException
      */
     public static void main(String[] args) throws MathInterpreterException, IOException {
-        int regCuenta = 12;
+        int regCuenta = 20;
         Map<String, Cuenta> cuentas = new HashMap<String, Cuenta>();
         List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
         Regcuenta c = new Regcuenta();
@@ -193,8 +213,7 @@ public class ModelExecutor {
                 c = r;
             }
         }
-        String value = "C:\\Users\\Admin\\Documents\\NetBeansProjects\\SIGCAP\\web\\modelo\\baseMarzo.xlsx";
-        ModelExecutor m = new ModelExecutor(value, c, false);
+        ModelExecutor m = new ModelExecutor(c, false);
         m.start();
         Cuenta get = cuentas.get("1");
     }
@@ -207,11 +226,11 @@ public class ModelExecutor {
     }
 
     private void mapCuentas(List<Cuenta> list) {
-        cuentas.clear();
         for (Cuenta c : list) {
             if (c.getRegcuenta().getIdRegCuenta() == regCuenta.getIdRegCuenta()) {
                 cuentas.put(c.getCatalogocuenta().getIdCatalogoCuenta().toString(), c);
             }
         }
     }
+
 }
