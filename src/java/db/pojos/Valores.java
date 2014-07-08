@@ -47,6 +47,14 @@ public class Valores implements java.io.Serializable {
     private Date fechaVencimiento;
     private String moneda;
     private Integer gradoRiesgo;
+
+    public static String[] getTenenciaColumns(){
+        return new String[]{"TipoValor","Emision","Serie","Precio","NumeroTitulosFormato","Sobretasa"};
+    }
+    
+    public static String[] getTenenciaDesColumns(){
+        return new String[]{"TV","Emision","Serie","Precio","Numero de Títulos","Sobretasa"};
+    }
     
     public Valores() {
     }
@@ -170,7 +178,7 @@ public class Valores implements java.io.Serializable {
     }
 
     public String getSobretasa() {
-        return this.sobretasa;
+        return this.sobretasa.toUpperCase();
     }
 
     public void setSobretasa(String sobretasa) {

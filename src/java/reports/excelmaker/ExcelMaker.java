@@ -36,8 +36,8 @@ public class ExcelMaker {
         FileInputStream fis = new FileInputStream(file);
         XSSFWorkbook wb = new XSSFWorkbook(fis);
         Sheet sheet = wb.getSheetAt(0);
-        int maxRows = 100;
-        int maxColumns = 70;
+        int maxRows = 200;
+        int maxColumns = 150;
         for (int t = 0; t < maxRows; t++) {
             Row row = sheet.getRow(t);
             for (int c = 0; c < maxColumns; c++) {

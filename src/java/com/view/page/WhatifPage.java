@@ -1,10 +1,18 @@
 package com.view.page;
 
 import db.controller.DAO;
+import db.pojos.Captacion;
+import db.pojos.Catalogominimo;
+import db.pojos.Consistencia;
 import db.pojos.Cuenta;
+import db.pojos.Disponibilidad;
+import db.pojos.Ingresosnetos;
 import db.pojos.Regcuenta;
 import db.pojos.Regcuentauser;
+import db.pojos.Reservas;
+import db.pojos.Tarjetacredito;
 import db.pojos.User;
+import db.pojos.Valores;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -49,7 +57,7 @@ public class WhatifPage extends BorderPage {
         form = new Form("form");
         formView = new Form("formView");
         onceClicked = true;
-        selectProject = new Select("Ejercicio");
+        selectProject = new Select("Ejercicio Base");
         selectView = new Select("Ejercicio");
         nameSimulation = new TextField("Nombre de la Simulación");
         selectProject.setId("selectwhatif");
@@ -82,6 +90,7 @@ public class WhatifPage extends BorderPage {
         }
         if (onceClicked) {
             copiarProyecto();
+            setRedirect(ViewsimulationPage.class);
         }
         return true;
     }
@@ -98,7 +107,8 @@ public class WhatifPage extends BorderPage {
                 }
             }
         }
-        cambiarPantalla(regCta);
+        addSessionVar("simex", regCta);
+        setRedirect(ViewsimulationPage.class);
         return true;
     }
 
@@ -108,11 +118,7 @@ public class WhatifPage extends BorderPage {
             Calendar c = Calendar.getInstance();
             regCuenta.setDesRegCuenta(nameSimulation.getValue());
             regCuenta.setFecha(c.getTime());
-            regCuenta.setRegcuentausers(null);
-            regCuenta.setCuentas(null);
             DAO.save(regCuenta);
-            Regcuentauser regctauser = new Regcuentauser(regCuenta, user);
-            DAO.save(regctauser);
             copiarCuentas(regCuenta);
             Regcuenta selected = null;
             List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
@@ -121,8 +127,8 @@ public class WhatifPage extends BorderPage {
                     selected = (Regcuenta) rc.clone();
                 }
             }
-            DAO.saveRecordt(user, "Creo una copia de " + selected.getDesRegCuenta() + " llamada " + regCuenta.getDesRegCuenta());
-            cambiarPantalla(regCuenta);
+            DAO.saveRecordt(user, "Creo una simulación de " + selected.getDesRegCuenta() + " llamada " + regCuenta.getDesRegCuenta());
+            addSessionVar("simex", regCuenta);
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(WhatifPage.class.getName()).log(Level.FINE, null, ex);
         }
@@ -136,54 +142,51 @@ public class WhatifPage extends BorderPage {
                 regCta = (Regcuenta) rc.clone();
             }
         }
-        Set<Cuenta> cuentas = regCta.getCuentas();
-        Map<String, Cuenta> viejasCatalogoCuenta = new HashMap<String, Cuenta>();
-        Map<String, Cuenta> viejasIDCuenta = new HashMap<String, Cuenta>();
-        Map<String, Cuenta> nuevasCatalogoCuenta = new HashMap<String, Cuenta>();
-        for (Cuenta cta : cuentas) {
-            Cuenta c = (Cuenta) cta.clone();
-            Cuenta nueva = new Cuenta();
-            nueva.setMoneda(c.getMoneda());
-            nueva.setCatalogocuenta(c.getCatalogocuenta());
-            nueva.setRegcuenta(regCuenta);
-            nueva.setValor(c.getValor());
-            DAO.save(nueva);
-            viejasCatalogoCuenta.put(c.getCatalogocuenta().getIdCatalogoCuenta().toString(), c);
-            viejasIDCuenta.put(c.getIdCuenta().toString(), c);
-            nuevasCatalogoCuenta.put(nueva.getCatalogocuenta().getIdCatalogoCuenta().toString(), nueva);
+        Set<Captacion> captacions = regCta.getCaptacions();
+        Set<Catalogominimo> catMin=regCta.getCatalogominimos();
+        Consistencia consistenciaAnterior=(Consistencia) regCuenta.getConsistencias().iterator().next();
+        Set<Disponibilidad> disponibilidades=regCta.getDisponibilidads();
+        Set<Ingresosnetos> ingresos=regCta.getIngresosnetoses();
+        Set<Reservas> reservas=regCta.getReservases();
+        Set<Tarjetacredito> tarjeta=regCta.getTarjetacreditos();
+        Set<Valores> valores=regCta.getValoreses();
+        List<Object> items=new LinkedList<Object>();
+        Consistencia cons=new Consistencia(regCuenta, consistenciaAnterior.getDisponibilidadesLeidos(),
+                consistenciaAnterior.getTenenciaLeidos(), consistenciaAnterior.getCaptacionLeidos(),consistenciaAnterior.getTarjetaCreditoLeidos()
+                , consistenciaAnterior.getPrestamosLeidos(), consistenciaAnterior.getCatalogoMinimoLeidos(), consistenciaAnterior.getReservasLeidos(), consistenciaAnterior.getIngresosLeidos());
+        items.add(cons);
+        for(Captacion c:captacions){
+            Captacion nueva=new Captacion(regCta, c.getCatalogocuenta(),c.getFecha(), c.getDescripcion(), c.getIdCuentaCaptacion(), c.getMonto(), c.getFechaVencimiento());
+            items.add(nueva);
         }
-        for (String s : nuevasCatalogoCuenta.keySet()) {
-            Cuenta nueva = nuevasCatalogoCuenta.get(s);
-            Cuenta vieja = viejasCatalogoCuenta.get(s);
-            String ref = vieja.getRef();
-            String newRef = "";
-            if (ref != null) {
-                String[] split = ref.split(",");
-                for (String sp : split) {
-                    if (!sp.equals("")) {
-                        Cuenta ctaRef = viejasIDCuenta.get(sp);
-                        Cuenta ctaNuevaRef = nuevasCatalogoCuenta.get(ctaRef.getCatalogocuenta().getIdCatalogoCuenta().toString());
-                        newRef = newRef + ctaNuevaRef.getIdCuenta().toString() + ",";
-                    }
-                }
-                nueva.setRef(newRef);
-                DAO.update(nueva);
-            }
+        for(Catalogominimo c:catMin){
+            Catalogominimo nueva=new Catalogominimo(regCta, c.getCatalogocuenta(), c.getFecha(), c.getValor(), c.getMoneda());
+            items.add(nueva);
         }
+        for(Disponibilidad c:disponibilidades){
+            Disponibilidad nueva=new Disponibilidad(regCta, c.getCatalogocuenta(),c.getFecha(), c.getDescripcion(), c.getMonto(), c.getFechaVencimiento());
+            items.add(nueva);
+        }
+        for(Ingresosnetos c:ingresos){
+            Ingresosnetos nueva=new Ingresosnetos(regCta, c.getFecha(), c.getNumeroMes(), c.getIngresoNeto());
+            items.add(nueva);
+        }
+        for(Reservas c:reservas){
+            Reservas nueva=new Reservas(regCta, c.getFecha(), c.getEstatusCrediticio(), c.getMonto());
+            items.add(nueva);
+        }
+        for(Tarjetacredito c:tarjeta){
+            Tarjetacredito nueva=new Tarjetacredito(regCta, c.getCatalogocuenta(),c.getFecha(), c.getDescripcion(), c.getIdCredito(), c.getSaldoInsoluto(), c.getFechaCorte(),c.getTipoTarjeta(), c.getRelevante());
+            items.add(nueva);
+        }
+        
+        for(Valores c:valores){
+            Valores nueva=new Valores(regCta, c.getFecha(), c.getIdCuentaContable(), c.getDescripcion(), c.getNumeroTitulos(), c.getTipoValor(), c.getEmision(), c.getSerie(), c.getFechaProximoCupon(), c.getGrupoRc10()
+                    ,c.getPrecio(),c.getSobretasa(),c.getCalificacion(),c.getGrupoRc07(), c.getPonderador(), c.getPlazo(), c.getFechaVencimiento(),c.getMoneda(), c.getGradoRiesgo());
+            items.add(nueva);
+        }
+        DAO.saveUpdateMultiple(items);
     }
 
-    private void cambiarPantalla(Regcuenta regCuenta) {
-        List<Cuenta> data = new LinkedList<Cuenta>();
-        List<Cuenta> createQuery = DAO.createQuery(Cuenta.class, null);
-        for (Cuenta c : createQuery) {
-            if (c.getCatalogocuenta().getIdCatalogoCuenta() == 1 && c.getRegcuenta().getIdRegCuenta() == regCuenta.getIdRegCuenta()) {
-                data.add(c);
-                break;
-            }
-        }
-        addSessionVar("dataSimulacion",data);
-        addSessionVar("title","");
-        setRedirect(SimulacionPage.class);
-    }
-
+    
 }

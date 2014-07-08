@@ -10,8 +10,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -25,15 +27,15 @@ import util.NDimensionVector;
  */
 public class ModelComparator {
 
-    public static String compareWriteFile(String baseName,String newFileName, Regcuenta first,Collection<Cuenta> cuentasFirst, Regcuenta second,Collection<Cuenta> cuentasSecond, Double minVariance, int numberRegisters) throws IOException {
+    public static String compareWriteFile(String baseName, String newFileName, Regcuenta first, Collection<Cuenta> cuentasFirst, Regcuenta second, Collection<Cuenta> cuentasSecond, Double minVariance, int numberRegisters) throws IOException {
         Map<Integer, NDimensionVector> compareProjects = null;
         if (first != null && second != null) {
-            compareProjects = first.compareProjects(second, minVariance, numberRegisters,cuentasFirst,cuentasSecond);
+            compareProjects = first.compareProjects(second, minVariance, numberRegisters, cuentasFirst, cuentasSecond);
         }
-        return writeFile(baseName,newFileName, compareProjects, first, second);
+        return writeFile(baseName, newFileName, compareProjects, first, second);
     }
 
-    private static String writeFile(String baseName,String newFileName,Map<Integer, NDimensionVector> map, Regcuenta first, Regcuenta second) throws IOException {
+    private static String writeFile(String baseName, String newFileName, Map<Integer, NDimensionVector> map, Regcuenta first, Regcuenta second) throws IOException {
         File file = new File(baseName);
         FileInputStream fis = new FileInputStream(file);
         XSSFWorkbook wb = new XSSFWorkbook(fis);
@@ -58,84 +60,88 @@ public class ModelComparator {
         Row row = sheet.getRow(cr.getRow());
         Cell cell = row.getCell(cr.getCol());
         Map<String, Catalogocuenta> ctas = mapCuentas(DAO.createQuery(Catalogocuenta.class, null));
-        int numberRows=0;
+        int numberRows = 0;
         for (int t = 0; t < map.size(); t++) {
             NDimensionVector vals = map.get(t);
             List values = vals.getValues();
             int data = 4;
-            
+            Set<String> conj = new HashSet<String>();
             for (int d = 0; d < values.size(); d++) {
                 int mod = d % data;
                 Object value = values.get(d);
-                switch (mod) {
-                    case 0:
-                        if (((Double) values.get(d + 3)) == 0) {
+                if (!conj.contains(values.get(0).toString())) {
 
-                        } else {
-                            cell = row.getCell(0);
-                            String idCta = (String) value;
-                            Catalogocuenta catCta = ctas.get(idCta);
-                            cell.setCellValue(catCta.getIdCatalogoCuenta());
-                            cell = row.getCell(2);
-                            cell.setCellValue(catCta.getDesCatalogoCuenta());
-                            numberRows++;
-                        }
-                        break;
-                    case 1:
-                        if (((Double) values.get(d + 2)) == 0) {
+                    switch (mod) {
+                        case 0:
+                            if (((Double) values.get(d + 3)) == 0) {
 
-                        } else {
-                            Double valor = (Double) value;
-                            cell = row.getCell(3);
-                            cell.setCellValue(valor);
-                        }
-                        break;
-
-                    case 2:
-                        if (((Double) values.get(d + 1)) == 0) {
-
-                        } else {
-                            Double valor2 = (Double) value;
-                            cell = row.getCell(5);
-                            cell.setCellValue(valor2);
-                        }
-                        break;
-                    case 3:
-                        Double valor4 = (Double) value;
-                        if (valor4.isNaN() || valor4.isInfinite()) {
-                            cell = row.getCell(7);
-                            cell.setCellValue("NA");
-                            cell = row.getCell(9);
-                            cell.setCellValue("La variación no esta definida");
-
-                        } else if (valor4 != 0) {
-                            cell = row.getCell(7);
-                            cell.setCellValue(valor4);
-                            cell = row.getCell(9);
-                            if (((Double) values.get(d - 1)).isNaN() || ((Double) values.get(d - 1)).isInfinite()) {
-                                cell.setCellValue("El valor del primer ejercicio no esta definido");
-                            } else if (((Double) values.get(d - 2)).isNaN() || ((Double) values.get(d - 1)).isInfinite()) {
-                                cell.setCellValue("El valor del segundo ejercicio no esta definido");
+                            } else {
+                                cell = row.getCell(0);
+                                String idCta = (String) value;
+                                Catalogocuenta catCta = ctas.get(idCta);
+                                cell.setCellValue(catCta.getIdCatalogoCuenta());
+                                cell = row.getCell(2);
+                                cell.setCellValue(catCta.getDesCatalogoCuenta());
+                                numberRows++;
                             }
-                        }
-                        break;
+                            break;
+                        case 1:
+                            if (((Double) values.get(d + 2)) == 0) {
+
+                            } else {
+                                Double valor = (Double) value;
+                                cell = row.getCell(3);
+                                cell.setCellValue(valor);
+                            }
+                            break;
+
+                        case 2:
+                            if (((Double) values.get(d + 1)) == 0) {
+
+                            } else {
+                                Double valor2 = (Double) value;
+                                cell = row.getCell(5);
+                                cell.setCellValue(valor2);
+                            }
+                            break;
+                        case 3:
+                            Double valor4 = (Double) value;
+                            if (valor4.isNaN() || valor4.isInfinite()) {
+                                cell = row.getCell(7);
+                                cell.setCellValue("NA");
+                                cell = row.getCell(9);
+                                cell.setCellValue("La variación no esta definida");
+
+                            } else if (valor4 != 0) {
+                                cell = row.getCell(7);
+                                cell.setCellValue(valor4);
+                                cell = row.getCell(9);
+                                if (((Double) values.get(d - 1)).isNaN() || ((Double) values.get(d - 1)).isInfinite()) {
+                                    cell.setCellValue("El valor del primer ejercicio no esta definido");
+                                } else if (((Double) values.get(d - 2)).isNaN() || ((Double) values.get(d - 1)).isInfinite()) {
+                                    cell.setCellValue("El valor del segundo ejercicio no esta definido");
+                                }
+                            }
+                            conj.add((String) values.get(d - 3));
+                            break;
+                    }
                 }
             }
             row = sheet.getRow(cell.getRowIndex() + 1);
         }
-        int lastRow=7+numberRows;
-        row=sheet.getRow(lastRow);
-        while(row!=null){
+        int lastRow = 7 + numberRows;
+        row = sheet.getRow(lastRow);
+        while (row != null) {
             sheet.removeRow(row);
             lastRow++;
-            row=sheet.getRow(lastRow);
+            row = sheet.getRow(lastRow);
         }
-        File fileOutput = new File(manager.configuration.Configuration.getValue("Ruta Reportes") + newFileName+"-" + first.getIdRegCuenta().toString() + "-" + second.getIdRegCuenta() + ".xlsx");
+        File fileOutput = new File(manager.configuration.Configuration.getValue("Ruta Reportes") + newFileName + "-" + first.getIdRegCuenta().toString() + "-" + second.getIdRegCuenta() + ".xlsx");
         FileOutputStream fileOut = new FileOutputStream(fileOutput);
         wb.write(fileOut);
         fileOut.flush();
         fileOut.close();
-        return newFileName+"-" + first.getIdRegCuenta().toString() + "-" + second.getIdRegCuenta() + ".xlsx";
+        return newFileName + "-" + first.getIdRegCuenta().toString() + "-" + second.getIdRegCuenta() + ".xlsx";
     }
 
     private static Map<String, Catalogocuenta> mapCuentas(List<Catalogocuenta> createQuery) {

@@ -78,13 +78,13 @@ public abstract class BorderPage extends Page {
         List<Permisosuser> listPermisos = new LinkedList<Permisosuser>();
         for (Permisosuser ps : createQuery) {
             if (ps.getUser().getIduser() == user.getIduser()) {
-                DAO.refresh(ps);
+ //               DAO.refresh(ps);
                 listPermisos.add(ps);
             }
         }
         Collections.sort(listPermisos);
-        String[] label = new String[]{"DataWarehouse","Generador de RC´s","Gestión de Capital","Tailor Made", "Auditor","Simulación de Capital", "Administrador de Usuarios"};
-        String[] path = new String[]{"warehouse.htm", "reportes.htm", "icap.htm","tailormade.htm","auditor.htm" ,"whatif.htm","controlusuarios.htm"};
+        String[] label = new String[]{"DataWarehouse","Generador de RC´s","Gestión de Capital","Tenencia", "Auditor","Simulación de Capital", "Administrador de Usuarios"};
+        String[] path = new String[]{"warehouse.htm", "reportes.htm", "icap.htm","menutenencia.htm","auditor.htm" ,"whatif.htm","controlusuarios.htm"};
         for (int t = 0; t < label.length; t++) {
             if (listPermisos.size() > t && listPermisos.get(t).getValor() == 1) {
                 //if (isActive(listPermisos.get(t).getPermisos(),fileInfo)) {
