@@ -52,6 +52,10 @@ public class Valores implements java.io.Serializable {
         return new String[]{"TipoValor","Emision","Serie","Precio","NumeroTitulosFormato","Sobretasa"};
     }
     
+    public String getTipoValorEmisionSerie(){
+        return tipoValor+emision+serie;
+    }
+    
     public static String[] getTenenciaDesColumns(){
         return new String[]{"TV","Emision","Serie","Precio","Numero de Títulos","Sobretasa"};
     }
@@ -178,7 +182,7 @@ public class Valores implements java.io.Serializable {
     }
 
     public String getSobretasa() {
-        return this.sobretasa.toUpperCase();
+        return this.sobretasa;
     }
 
     public void setSobretasa(String sobretasa) {

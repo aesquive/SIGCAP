@@ -18,6 +18,9 @@ public class Vector {
     private String sp;
     private String hr;
     private String sobretasa;
+    private String gradoRiesgo;
+    private String grupoRiesgo;
+    private Double ponderador;
     
     public Vector(String tvEmiSerie, Double precioSucio, Date fechaVencimiento, int moneda, String moodys, String fitch, String sp, String hr,String stasa) {
         this.tvEmiSerie = tvEmiSerie;
@@ -141,6 +144,18 @@ public class Vector {
      */
     public void setHr(String hr) {
         this.hr = hr;
+    }
+
+    public void setGradoRiesgo(String value) {
+        this.gradoRiesgo=value;
+    }
+
+    public void setGrupoRiesgo(String value) {
+        this.grupoRiesgo=value;
+    }
+
+    public void setPonderador(Double aDouble) {
+        this.ponderador=aDouble;
     }
     
     

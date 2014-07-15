@@ -1,19 +1,12 @@
 package com.view.page;
 
-import db.pojos.Captacion;
-import db.pojos.Catalogominimo;
-import db.pojos.Consistencia;
-import db.pojos.Disponibilidad;
-import db.pojos.Ingresosnetos;
-import db.pojos.Prestamo;
-import db.pojos.Regcuenta;
-import db.pojos.Reservas;
-import db.pojos.Tarjetacredito;
-import db.pojos.Valores;
+import db.controller.DAO;
+import db.pojos.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.click.Context;
 import org.apache.click.control.ActionLink;
 import org.apache.click.control.Column;
@@ -102,8 +95,11 @@ public class MapeoPage extends BorderPage {
         formTable.setRowList(tenenciaNoMapeada);
     }
     
+    public static void main(String[] args) {
+        
+    }
+    
     public boolean generadorRc(){
-        cruzarVector(vector,tenenciaMapeada);
         setRedirect(ReportesPage.class);
         return true;
     }
@@ -137,7 +133,4 @@ public class MapeoPage extends BorderPage {
         return true;
     }
 
-    private void cruzarVector(Map<String, Vector> vector, Map<String, Valores> tenenciaMapeada) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

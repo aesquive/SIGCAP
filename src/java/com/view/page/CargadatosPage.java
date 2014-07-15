@@ -67,7 +67,7 @@ public class CargadatosPage extends BorderPage {
         fileTarjetaCredito = new FileField("fileTarjeta", "Tarjeta de Crédito  (csv|txt)", true);
         fileReservas = new FileField("fileConsumo", "Reservas(csv|txt)", true);
         fileIngresos = new FileField("fileIngreso", "Ingresos Netos (csv|txt)", true);
-        vector = new FileField("vector", "Vector Analitico (csv|txt)", false);
+        vector = new FileField("vector", "Vector Analitico (csv|txt)", true);
         form.add(name);
         form.add(dateField);
         form.add(fileTenencia);
@@ -94,7 +94,8 @@ public class CargadatosPage extends BorderPage {
                 message = "Reportes Invalidos (Número de Campos) : ";
                 FileField[] camposArchivos = new FileField[]{fileCaptacion, fileCatalogoMinimo, fileDisponibilidades, fileIngresos, filePrestamosPersonales, fileReservas, fileTarjetaCredito, fileTenencia};
                 String[] nombres = new String[]{"Captación", "Catálogo Mínimo", "Disponibilidades", "Ingresos Netos", "Prestamos Personales", "Reservas", "Tarjeta de Crédito","Tenencia"};
-                Integer[] numCampos = new Integer[]{6, 4, 5, 3, 8, 3, 8, 18};
+                //vALIDA EL NUMERO DE CAMPOS QUE TRAE EL ARCHIVO ... SI ESTE NO ES CORRECTO SACA AL USUARIO DE LA CARGA
+                Integer[] numCampos = new Integer[]{6, 4, 5, 3, 8, 3, 8, 9};
                 boolean pass = true;
                 for (int t = 0; t < nombres.length; t++) {
                     List<String> dataCatalogoMinimo = getFileData(camposArchivos[t]);
@@ -405,17 +406,18 @@ public class CargadatosPage extends BorderPage {
                     String serie = split[6];
                     Date fecCpn = parseDate(split[7]);
                     String rc10 = split[8];
-                    Double precio=parseDouble(split[9]);
-                    String st=split[10];
-                    String calif=split[11];
-                    String clasificacion=split[12];
-                    Double ponderador=parseDouble(split[13]);
-                    String plazo=split[14];
-                    Date vencimiento=parseDate(split[15]);
-                    String moneda=split[16];
-                    Integer grado=Integer.parseInt(split[17]);
-                    Valores valores=new Valores(regCuenta, date, cta, des, tits, tipoValor, emision, serie, fecCpn, rc10, precio, st, calif, clasificacion
-                            , ponderador, plazo, vencimiento, moneda, grado);
+                    Valores valores=new Valores(regCuenta, date, cta ,des, tits, tipoValor, emision, serie, fecCpn, rc10);
+                    //Double precio=parseDouble(split[9]);
+//                    String st=split[10];
+//                    String calif=split[11];
+//                    String clasificacion=split[12];
+//                    Double ponderador=parseDouble(split[13]);
+//                    String plazo=split[14];
+//                    Date vencimiento=parseDate(split[15]);
+//                    String moneda=split[16];
+//                    Integer grado=Integer.parseInt(split[17]);
+//                    Valores valores=new Valores(regCuenta, date, cta, des, tits, tipoValor, emision, serie, fecCpn, rc10, precio, st, calif, clasificacion
+//                            , ponderador, plazo, vencimiento, moneda, grado);
                     items.add(valores);
                 } catch (Exception e) {
                     System.out.println(e);

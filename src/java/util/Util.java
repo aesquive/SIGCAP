@@ -1,6 +1,6 @@
-
 package util;
 
+import db.pojos.Valores;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,8 +10,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,7 +26,7 @@ import org.apache.click.control.Label;
  * @author Admin
  */
 public class Util {
-    
+
     public static List<Double> sortDoubleValues(Set<Double> keySet) {
         List<Double> list = new LinkedList<Double>();
         for (Double d : keySet) {
@@ -33,7 +35,7 @@ public class Util {
         Collections.sort(list);
         return list;
     }
-    
+
     public static List<String> readFile(String fileName) {
         try {
             List<String> values = new LinkedList<String>();
@@ -50,7 +52,7 @@ public class Util {
         }
         return null;
     }
-    
+
     public static String getAsciiText(String valor, int numbersPerLetter) {
         String cad = "";
         if (valor == null) {
@@ -65,23 +67,98 @@ public class Util {
         }
         return cad;
     }
-    
+
     public static void main(String[] args) throws ParseException {
-        SimpleDateFormat sp=new SimpleDateFormat("dd/MM/yyyy");
-        Date init = sp.parse("31/12/2013");
-        Date last=sp.parse("05/01/2014");
-        int daysBetweenDates = daysBetweenDates(init, last);
-        System.out.println(daysBetweenDates);
+        List<String> l = new LinkedList<String>();
+        l.add("BAINVEX");
+        l.add("BONDESD");
+        l.add("VWLEASE");
+        l.add("CFEHCB");
+
+        Collections.sort(l);
+        for (String s : l) {
+            System.out.println(s);
+        }
     }
 
-    public static int daysBetweenDates(Date init,Date last){
-        Calendar calLast=Calendar.getInstance();
+    public static int daysBetweenDates(Date init, Date last) {
+        Calendar calLast = Calendar.getInstance();
         calLast.setTime(last);
-        Calendar calInit=Calendar.getInstance();
+        Calendar calInit = Calendar.getInstance();
         calInit.setTime(init);
-        int rangoAnyos =calLast.get(Calendar.YEAR)-calInit.get(Calendar.YEAR);
-        
-        return (rangoAnyos*365)+calLast.get(Calendar.DAY_OF_YEAR)-calInit.get(Calendar.DAY_OF_YEAR);
+        int rangoAnyos = calLast.get(Calendar.YEAR) - calInit.get(Calendar.YEAR);
+
+        return (rangoAnyos * 365) + calLast.get(Calendar.DAY_OF_YEAR) - calInit.get(Calendar.DAY_OF_YEAR);
     }
-    
+
+    public static List<Valores> sortValoresBy(Set<Valores> valoreses, String sortedColumn, boolean sortedAscending) {
+        Map<String, String> map = new HashMap<String, String>();
+        Map<Double, String> mapDouble = new HashMap<Double, String>();
+        Map<String, Valores> mapValores = new HashMap<String, Valores>();
+        for (Valores v : valoreses) {
+            Object value = Reflector.callMethod(v, null, "get" + sortedColumn);
+            String cadena = value.toString();
+            String replaceAll = cadena.replaceAll(",", "");
+            try {
+                Double valDouble = Double.parseDouble(replaceAll);
+                if (mapDouble.get(valDouble) == null) {
+                    mapDouble.put(valDouble, v.getIdTenencia() + ",");
+                } else {
+                    mapDouble.put(valDouble, mapDouble.get(valDouble) + v.getIdTenencia() + ",");
+                }
+            } catch (Exception e) {
+
+                if (map.get(replaceAll) == null) {
+                    map.put(replaceAll, v.getIdTenencia() + ",");
+                } else {
+                    map.put(replaceAll, map.get(replaceAll) + v.getIdTenencia() + ",");
+                }
+
+            }
+            mapValores.put(v.getIdTenencia().toString(), v);
+        }
+        if (map.size() > 0) {
+
+            List<String> example = new LinkedList<String>(map.keySet());
+            Collections.sort(example);
+            List<Valores> vals = new LinkedList<Valores>();
+            for (int t = 0; t < example.size(); t++) {
+                String key = null;
+                if (sortedAscending) {
+                    key = example.get(t);
+                } else {
+                    key = example.get(example.size() - t - 1);
+                }
+                String tenencias = map.get(key);
+                String[] split = tenencias.split(",");
+                for (String s : split) {
+                    if (s != null && !s.equals("")) {
+                        vals.add(mapValores.get(s));
+                    }
+                }
+            }
+            return vals;
+        }
+
+        List<Double> example = new LinkedList<Double>(mapDouble.keySet());
+        Collections.sort(example);
+        List<Valores> vals = new LinkedList<Valores>();
+        for (int t = 0; t < example.size(); t++) {
+            Double key = null;
+            if (sortedAscending) {
+                key = example.get(t);
+            } else {
+                key = example.get(example.size() - t - 1);
+            }
+            String tenencias = mapDouble.get(key);
+            String[] split = tenencias.split(",");
+            for (String s : split) {
+                if (s != null && !s.equals("")) {
+                    vals.add(mapValores.get(s));
+                }
+            }
+        }
+        return vals;
+    }
+
 }
