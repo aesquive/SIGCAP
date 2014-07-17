@@ -157,6 +157,58 @@ public class Vector {
     public void setPonderador(Double aDouble) {
         this.ponderador=aDouble;
     }
+
+    /**
+     * @return the sobretasa
+     */
+    public String getSobretasa() {
+        return sobretasa;
+    }
+
+    /**
+     * @param sobretasa the sobretasa to set
+     */
+    public void setSobretasa(String sobretasa) {
+        this.sobretasa = sobretasa;
+    }
+
+    /**
+     * @return the gradoRiesgo
+     */
+    public String getGradoRiesgo() {
+        return gradoRiesgo;
+    }
+
+    /**
+     * @return the grupoRiesgo
+     */
+    public String getGrupoRiesgo() {
+        return grupoRiesgo;
+    }
+
+    /**
+     * @return the ponderador
+     */
+    public Double getPonderador() {
+        return ponderador;
+    }
+
+    public String getCalificacion() {
+        if(sp!=null && !sp.equals("NA") && !sp.equals("-")){
+            return sp;
+        }
+        if(fitch!=null && !fitch.equals("NA") && !fitch.equals("-")){
+            return fitch;
+        }
+        
+        if(moodys!=null && !moodys.equals("NA") && !moodys.equals("-")){
+            return moodys;
+        }
+        
+        else{
+            return "MxAA";
+        }
+    }
     
     
     

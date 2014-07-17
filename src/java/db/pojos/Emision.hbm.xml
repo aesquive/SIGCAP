@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 15/07/2014 09:37:00 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="db.pojos.Emision" table="emision" catalog="prueba">
+        <id name="idEmision" type="java.lang.Integer">
+            <column name="IdEmision" />
+            <generator class="identity" />
+        </id>
+        <property name="tipoValor" type="string">
+            <column name="TipoValor" />
+        </property>
+        <property name="emision" type="string">
+            <column name="Emision" />
+        </property>
+        <property name="grupoRiesgo" type="string">
+            <column name="GrupoRiesgo" />
+        </property>
+    </class>
+</hibernate-mapping>

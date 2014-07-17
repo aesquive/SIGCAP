@@ -476,7 +476,7 @@ public class CargadatosPage extends BorderPage {
                     String concat = split[1] + split[2] + split[3];
                     Double precio = parseDouble(split[5]);
                     Date fecVenc = parseDate(split[15]);
-                    int moneda = split[17].contains("(UDI)") ? 1 : split[17].contains("(USD)") ? 4 : 14;
+                    int moneda = split[17].toUpperCase().contains("UDI") ? 1 : split[17].toUpperCase().contains("USD") ? 4 : 14;
                     String mdy = split[36];
                     String fitch = split[53];
                     String sp = split[37];

@@ -95,11 +95,9 @@ public class MapeoPage extends BorderPage {
         formTable.setRowList(tenenciaNoMapeada);
     }
     
-    public static void main(String[] args) {
-        
-    }
     
     public boolean generadorRc(){
+        cruzarVector(vector,tenenciaMapeada);
         setRedirect(ReportesPage.class);
         return true;
     }
@@ -133,4 +131,53 @@ public class MapeoPage extends BorderPage {
         return true;
     }
 
+
+    private void cruzarVector(Map<String, Vector> vector, Map<String, Valores> tenenciaMapeada) {
+        Set<String> tiposValor = tenenciaMapeada.keySet();
+        Map<String,Calificacion> cals=new HashMap<String, Calificacion>();
+        List<Calificacion> createQuery = DAO.createQuery(Calificacion.class, null);
+        Calificacion defaultCalif=null;
+        for(Calificacion c:createQuery){
+            cals.put(c.getCalificacion().toUpperCase(),c);
+        }
+        defaultCalif=cals.get("MxAA");
+        Map<String,Emision> emisionesRiesgo=new HashMap<String, Emision>();
+        List<Emision> queryEmision=DAO.createQuery(Emision.class, null);
+        for(Emision em:queryEmision){
+            String tValorEmision=em.getTipoValor()==null?"":em.getTipoValor();
+            tValorEmision=em.getEmision()==null?tValorEmision:tValorEmision+em.getEmision();
+            emisionesRiesgo.put(tValorEmision.toUpperCase(), em);
+        }
+        for(String papel:tiposValor){
+            Valores valor=tenenciaMapeada.get(papel);
+            Vector get = vector.get(papel);
+            String moneda=get.getMoneda()==1?"UDI":"MXN";
+            valor.setMoneda(moneda);
+            valor.setPrecio(get.getPrecioSucio());
+            valor.setSobretasa(get.getSobretasa());
+            valor.setFechaVencimiento(get.getFechaVencimiento());
+            String grupoRiesgo=get.getGrupoRiesgo()==null ? emisionesRiesgo.get(valor.getTipoValor().toUpperCase()+valor.getEmision().toUpperCase())==null?
+                    emisionesRiesgo.get(valor.getTipoValor())==null?"I":emisionesRiesgo.get(valor.getTipoValor()).getGrupoRiesgo() :
+                    emisionesRiesgo.get(valor.getTipoValor().toUpperCase()+valor.getEmision().toUpperCase()).getGrupoRiesgo() : get.getGrupoRiesgo();
+            valor.setGrupoRc07(grupoRiesgo);
+            Calificacion get1 = cals.get(get.getCalificacion().toUpperCase());
+            System.out.println("las califs vec sp"+get.getSp()+" fitch "+get.getFitch()+" mood "+get.getMoodys());
+            System.out.println("la calif tomada"+get.getCalificacion());
+            System.out.println("la calif de "+valor.getTipoValor()+valor.getEmision()+valor.getSerie()+" es "+get1);
+            get1=get1==null ? defaultCalif:get1;
+            valor.setCalificacion(get1.getCalificadoraReferencia());
+            valor.setPlazo(get1.getPlazo());
+            DAO.update(valor);
+        }
+    }
+
+    public static void main(String[] args) {
+        Map<String,Calificacion> cals=new HashMap<String, Calificacion>();
+        List<Calificacion> createQuery = DAO.createQuery(Calificacion.class, null);
+        for(Calificacion c:createQuery){
+            cals.put(c.getCalificacion(),c);
+        }
+        Calificacion get = cals.get("MxAA");
+        System.out.println(get);
+    }
 }

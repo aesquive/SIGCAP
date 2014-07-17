@@ -48,8 +48,13 @@ public class Valores implements java.io.Serializable {
     private String moneda;
     private Integer gradoRiesgo;
 
+    public String getFechaVencimientoFormato(){
+        SimpleDateFormat df=new SimpleDateFormat("dd/MM/yyyy");
+        return df.format(fechaVencimiento);
+    }
+    
     public static String[] getTenenciaColumns(){
-        return new String[]{"TipoValor","Emision","Serie","Precio","NumeroTitulosFormato","Sobretasa"};
+        return new String[]{"TipoValor","Emision","Serie","Precio","NumeroTitulosFormato","Sobretasa","Calificacion","GrupoRc07","FechaVencimientoFormato","Moneda"};
     }
     
     public String getTipoValorEmisionSerie(){
@@ -57,7 +62,7 @@ public class Valores implements java.io.Serializable {
     }
     
     public static String[] getTenenciaDesColumns(){
-        return new String[]{"TV","Emision","Serie","Precio","Numero de Títulos","Sobretasa"};
+        return new String[]{"TV","Emisión","Serie","Precio","Numero de Títulos","Sobretasa","Calificación","Riesgo Emisión","Fecha de Vencimiento","Moneda"};
     }
     
     public Valores() {

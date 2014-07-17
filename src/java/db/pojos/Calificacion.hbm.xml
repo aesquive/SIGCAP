@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 14/07/2014 09:36:59 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="db.pojos.Calificacion" table="calificacion" catalog="prueba">
+        <id name="idCalificacion" type="java.lang.Integer">
+            <column name="IdCalificacion" />
+            <generator class="identity" />
+        </id>
+        <property name="calificadora" type="string">
+            <column name="Calificadora" />
+        </property>
+        <property name="calificacion" type="string">
+            <column name="Calificacion" />
+        </property>
+        <property name="ponderador" type="java.lang.Integer">
+            <column name="Ponderador" />
+        </property>
+        <property name="calificadoraReferencia" type="string">
+            <column name="CalificadoraReferencia" />
+        </property>
+        <property name="plazo" type="string">
+            <column name="Plazo" />
+        </property>
+    </class>
+</hibernate-mapping>
