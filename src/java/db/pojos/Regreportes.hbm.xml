@@ -14,5 +14,9 @@
         <property name="ruta" type="string">
             <column name="Ruta" />
         </property>
+        
+        <property name="nombreCorto" type="string">
+            <column name="NombreCorto" />
+        </property>
     </class>
 </hibernate-mapping>

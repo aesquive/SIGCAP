@@ -67,6 +67,11 @@ public class VistareportesPage extends Page {
                 String pra14 = (String) getContext().getRequestParameterValues("pra")[0];
                 initConsistencia(Integer.parseInt(pra14));
                 break;
+            case 5:
+                String pro = (String) getContext().getRequestParameterValues("pro")[0];
+                tenenciaReport(Integer.parseInt(pro));
+                break;
+
         }
 
     }
@@ -87,7 +92,7 @@ public class VistareportesPage extends Page {
             }
         }
 
-        String fileName = manager.configuration.Configuration.getValue("Ruta Reportes") + selected.getIdRegCuenta().toString() + "-" + selectedReport.getIdRegReportes().toString() + ".xlsx";
+        String fileName = manager.configuration.Configuration.getValue("Ruta Reportes") + selected.getIdRegCuenta().toString() + "-" + selectedReport.getNombreCorto()+ ".xlsx";
         Set<Cuenta> cuentas = selected.getCuentas();
         Map<String, Cuenta> map = new HashMap<String, Cuenta>();
         for (Cuenta c : cuentas) {
@@ -155,7 +160,9 @@ public class VistareportesPage extends Page {
             String compareWriteFile = ModelComparator.compareWriteFile(manager.configuration.Configuration.getValue("baseAnalisisCongruencia"), "congruencia", reg1, cuentasInicialesUno, reg2, cuentasInicialesDos, variance, numRegs);
             setRedirect("/reportes/" + compareWriteFile);
             User user = (User) getContext().getSessionAttribute("user");
-            DAO.saveRecordt(user, user.getUser() + " generó reporte comparativo de " + reg1.getDesRegCuenta() + " y " + reg2.getDesRegCuenta());
+            String reg1name=reg1==null? "":reg1.getDesRegCuenta();
+            String reg2name=reg2==null?"":reg2.getDesRegCuenta();
+            DAO.saveRecordt(user, user.getUser() + " generó reporte comparativo de " + reg1name + " y " + reg2name);
         } catch (IOException ex) {
             Logger.getLogger(VistareportesPage.class.getName()).log(Level.INFO, null, ex);
         }
@@ -164,7 +171,7 @@ public class VistareportesPage extends Page {
 
     private void processTracking(String ini, String end) {
         try {
-            SimpleDateFormat format = new SimpleDateFormat("ddMMyyyy");
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
             Date dateIn = format.parse(ini);
             Date dateEn = format.parse(end);
             Calendar cin = Calendar.getInstance();
@@ -212,10 +219,22 @@ public class VistareportesPage extends Page {
             Consistencia next = consistencias.iterator().next();
             String nameFile = reports.excelmaker.ConsistenciaReportMaker.makeReport(Configuration.getValue("baseAnalisisConsistencia"), next, reg1);
             setRedirect("/reportes/" + nameFile);
-        }catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex);
         }
 
+    }
+
+    private void tenenciaReport(int parseInt) {
+            List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
+            Regcuenta reg1 = null;
+            for (Regcuenta r : createQuery) {
+                if (r.getIdRegCuenta() == parseInt) {
+                    reg1 = r;
+                }
+            }
+            String nameFile=reports.excelmaker.TenenciaReportMaker.makeReport(Configuration.getValue("baseAnalisisTenencia"),reg1);
+            setRedirect("/reportes/"+nameFile);
     }
 
 }

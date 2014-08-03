@@ -1,24 +1,17 @@
 package com.view.page;
 
-import db.controller.DAO;
 import db.pojos.Catalogocuenta;
 import db.pojos.Cuenta;
 import db.pojos.Regcuenta;
-import edu.stanford.ejalbert.BrowserLauncher;
-import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
-import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.annotation.Resource;
-import manager.configuration.Configuration;
 import org.apache.click.Context;
 import org.apache.click.control.ActionLink;
 import org.apache.click.control.Column;
 import org.apache.click.control.Decorator;
 import org.apache.click.control.FieldSet;
 import org.apache.click.control.Form;
+import org.apache.click.control.HiddenField;
 import org.apache.click.control.Submit;
 import org.apache.click.control.Table;
 import org.apache.click.extras.control.FormTable;
@@ -51,7 +44,9 @@ public class ComparePage extends BorderPage {
     @Override
     public void init() {
         form = new Form("form");
-        form.add(new Submit("descargar", "Descargar Reporte", this, "makeReport"));
+        Submit sub = new Submit("descargar", "Descargar Reporte", this, "makeReport");
+        sub.setAttribute("onclick", "createComparativo()");
+        form.add(sub);
         table = new FormTable("table", form);
         table.setName("dataTable");
         table.setPageNumber(0);
@@ -78,6 +73,10 @@ public class ComparePage extends BorderPage {
         Column col1 = new Column("cuenta", "Cuenta");
         Column col2 = new Column("primerValor", regCuentaUno.getDesRegCuenta());
         Column col3 = new Column("segundoValor", regCuentaDos.getDesRegCuenta());
+
+        form.add(new HiddenField("hiddenPrimer", regCuentaUno.getIdRegCuenta()));
+        form.add(new HiddenField("hiddenSegundo", regCuentaDos.getIdRegCuenta()));
+        form.add(new HiddenField("hiddenVar", ((Double) getContext().getSessionAttribute("minVariance")) / 100));
 
         col1.setWidth("900 px");
         col2.setWidth("900 px");
@@ -141,7 +140,6 @@ public class ComparePage extends BorderPage {
                     getContext().setSessionAttribute("compareC-" + newcounter, toArray);
                     getContext().setSessionAttribute("ex1-" + newcounter, regCuentaUno);
                     getContext().setSessionAttribute("ex2-" + newcounter, regCuentaDos);
-                    System.out.println("acaba de poner las nuevas variables");
                     setRedirect(ComparePage.class);
                     return true;
                 }
@@ -202,16 +200,10 @@ public class ComparePage extends BorderPage {
     }
 
     public boolean makeReport() {
-        try {
-            BrowserLauncher browser = new BrowserLauncher();
-            browser.setNewWindowPolicy(true);
-            browser.openURLinBrowser(Configuration.getValue("direccionReportes") + "?typ=2&pra=" + regCuentaUno.getIdRegCuenta() + "&prb=" + regCuentaDos.getIdRegCuenta() + "&var=" + ((Double) getContext().getSessionAttribute("minVariance")) / 100 + "&num=" + ((Integer) getContext().getSessionAttribute("numRegs")));
-            return true;
-        } catch (BrowserLaunchingInitializingException ex) {
-            Logger.getLogger(ComparePage.class.getName()).log(Level.INFO, null, ex);
-        } catch (UnsupportedOperatingSystemException ex) {
-            Logger.getLogger(ComparePage.class.getName()).log(Level.INFO, null, ex);
-        }
-        return false;
+
+//            BrowserLauncher browser = new BrowserLauncher();
+//            browser.setNewWindowPolicy(true);
+//            browser.openURLinBrowser(Configuration.getValue("direccionReportes") + "?typ=2&pra=" + regCuentaUno.getIdRegCuenta() + "&prb=" + regCuentaDos.getIdRegCuenta() + "&var=" + ((Double) getContext().getSessionAttribute("minVariance")) / 100 + "&num=" + ((Integer) getContext().getSessionAttribute("numRegs")));
+        return true;
     }
 }

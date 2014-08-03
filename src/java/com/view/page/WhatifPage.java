@@ -4,7 +4,6 @@ import db.controller.DAO;
 import db.pojos.Captacion;
 import db.pojos.Catalogominimo;
 import db.pojos.Consistencia;
-import db.pojos.Cuenta;
 import db.pojos.Disponibilidad;
 import db.pojos.Ingresosnetos;
 import db.pojos.Regcuenta;
@@ -14,10 +13,8 @@ import db.pojos.Tarjetacredito;
 import db.pojos.User;
 import db.pojos.Valores;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -90,7 +87,7 @@ public class WhatifPage extends BorderPage {
         }
         if (onceClicked) {
             copiarProyecto();
-            setRedirect(ViewsimulationPage.class);
+            setRedirect(SimulacionPage.class);
         }
         return true;
     }
@@ -107,8 +104,8 @@ public class WhatifPage extends BorderPage {
                 }
             }
         }
-        addSessionVar("simex", regCta);
-        setRedirect(ViewsimulationPage.class);
+        addSessionVar("prySim", regCta);
+        setRedirect(SimulacionPage.class);
         return true;
     }
 
@@ -128,7 +125,7 @@ public class WhatifPage extends BorderPage {
                 }
             }
             DAO.saveRecordt(user, "Creo una simulación de " + selected.getDesRegCuenta() + " llamada " + regCuenta.getDesRegCuenta());
-            addSessionVar("simex", regCuenta);
+            addSessionVar("prySim", regCuenta);
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(WhatifPage.class.getName()).log(Level.FINE, null, ex);
         }
@@ -185,7 +182,7 @@ public class WhatifPage extends BorderPage {
                     ,c.getPrecio(),c.getSobretasa(),c.getCalificacion(),c.getGrupoRc07(), c.getPonderador(), c.getPlazo(), c.getFechaVencimiento(),c.getMoneda(), c.getGradoRiesgo());
             items.add(nueva);
         }
-        DAO.saveUpdateMultiple(items);
+        DAO.saveCargaDatos(items);
     }
 
     

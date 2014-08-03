@@ -1,15 +1,10 @@
 package com.view.page;
 
 import db.controller.DAO;
-import db.pojos.Calificacion;
-import db.pojos.Regcuenta;
 import db.pojos.Valores;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import org.apache.click.control.Form;
 import org.apache.click.control.Option;
 import org.apache.click.control.Select;
@@ -18,18 +13,16 @@ import org.apache.click.control.TextField;
 import org.apache.click.extras.control.DateField;
 import org.apache.click.extras.control.DoubleField;
 import org.apache.click.extras.control.IntegerField;
-import util.Vector;
 
 /**
  *
  * @author Admin
  */
-public class MapeoeditPage extends BorderPage {
+public class TenenciaeditarcalculoPage extends BorderPage {
 
     private Form form;
     private Valores valor;
 
-    DateField fechaEjercicio;
     TextField tipoValor;
     TextField emision;
     TextField serie;
@@ -44,74 +37,45 @@ public class MapeoeditPage extends BorderPage {
     DoubleField ponderador;
     DateField fechaVencimiento;
     Select gradoRiesgo;
-    Vector vector;
 
     @Override
     public void init() {
-        valor = (Valores) getSessionVar("editMapeo");
-        vector = (Vector) getSessionVar("vectorEditMapeo");
+        valor = (Valores) getSessionVar("editCalcTenencia");
         form = new Form("form");
         form.setColumns(2);
         llenarCamposValores();
         llenarCamposVector();
-        String tipoValor = valor.getTipoValor();
-        String[] noStasa = new String[]{"BI", "I", "G", "MC", "SC", "MP", "SP", "3P", "4P", "3U", "4U", "6U", "CC", "IL", "M", "S", "PI", "97", "2P", "2U", "FA", "FB", "FC", "FD", "FI", "FM", "FS", "OA", "OD", "OI"};
-        for (String ns : noStasa) {
-            if (ns.toUpperCase().trim().equals(tipoValor.toUpperCase().trim())) {
-                sobretasa.setValue("NO");
-                sobretasa.setDisabled(true);
-                sobretasa.setStyle("background-color", "white");
-                message = "Por definición el instrumento no tiene sobretasa";
-            }
-        }
         form.add(new Submit("sub", "Guardar", this, "guardarTenencia"));
         addControl(form);
     }
 
     public boolean guardarTenencia() {
         if (form.isValid()) {
-            Vector vec = new Vector(tipoValor.getValue() + emision.getValue() + serie.getValue(),
-                    precio.getDouble(), fechaVencimiento.getDate(), Integer.parseInt(moneda.getValue()), calificacion.getValue(), calificacion.getValue(), calificacion.getValue(), calificacion.getValue(), sobretasa.getValue());
-            vec.setGradoRiesgo(gradoRiesgo.getValue());
-            vec.setGrupoRiesgo(grupoRiesgosEmision.getValue());
-            vec.setPonderador(ponderador.getDouble()/100);
-            vec.setSp(calificacion.getValue());
-            vec.setMapeada(1);
-            Map<String, Vector> sessionVar = (Map<String, Vector>) getSessionVar("mapeoVector");
-            sessionVar.put(tipoValor.getValue() + emision.getValue() + serie.getValue(), vec);
-            addSessionVar("mapeoVector", sessionVar);
+            valor.setTipoValor(tipoValor.getValue());
+            valor.setEmision(emision.getValue());
             valor.setSerie(serie.getValue());
             valor.setFechaProximoCupon(fechaProximoCupon.getDate());
             valor.setGrupoRc10(vencimiento.getValue());
             valor.setNumeroTitulos(numeroTitulos.getInteger());
             valor.setSobretasa(sobretasa.getValue());
             valor.setPrecio(precio.getDouble());
-            valor.setMoneda(moneda.getValue());
+            String valMoneda=moneda.getValue().equals("1")?"UDI":moneda.getValue().equals("14")?"MXN":"USD";
+            valor.setMoneda(valMoneda);
             valor.setCalificacion(calificacion.getValue());
             valor.setFechaVencimiento(fechaVencimiento.getDate());
             valor.setGradoRiesgo(Integer.parseInt(gradoRiesgo.getValue()));
-            valor.setPonderador(ponderador.getDouble()/100);
+            valor.setPonderador(ponderador.getDouble() / 100);
             valor.setGrupoRc07(grupoRiesgosEmision.getValue());
             DAO.update(valor);
-            List<Valores> createQuery = DAO.createQuery(Valores.class, null);
-            Regcuenta regCta = (Regcuenta) getSessionVar("mapeoRegCuenta");
-            List<Valores> valNvos = new LinkedList<Valores>();
-            for (Valores val : createQuery) {
-                if (val.getRegcuenta().getIdRegCuenta() == regCta.getIdRegCuenta()) {
-                    valNvos.add(val);
-                }
-            }
-            addSessionVar("mapeoTenencia", valNvos);
-            setRedirect(MapeoPage.class);
-            return true;
         }
-        return false;
+        setRedirect(Tenenciacalculo.class);
+        return true;
     }
 
     private void llenarCamposValores() {
-        fechaEjercicio = new DateField("fecEje", "Fecha de Ejercicio", 0, false);
-        fechaEjercicio.setFormatPattern("dd/MM/yyyy");
-        fechaEjercicio.setDisabled(true);
+        Locale loc = new Locale("us");
+        NumberFormat instance = NumberFormat.getInstance(loc);
+        instance.setMaximumFractionDigits(6);
         tipoValor = new TextField("tv", "Tipo Valor");
         tipoValor.setDisabled(true);
         emision = new TextField("emi", "Emisora");
@@ -123,6 +87,7 @@ public class MapeoeditPage extends BorderPage {
         vencimiento.add(new Option("SI", "Si"));
         vencimiento.add(new Option("NO", "No"));
         numeroTitulos = new IntegerField("tit", "Número de Títulos", true);
+        numeroTitulos.setNumberFormat(instance);
         sobretasa = new Select("stasa", "Tiene sobretasa ", true);
         sobretasa.setDefaultOption(new Option("-1", "Seleccionar"));
         sobretasa.add(new Option("SI", "SI"));
@@ -134,33 +99,8 @@ public class MapeoeditPage extends BorderPage {
         }
         grupoRiesgosEmision.setDefaultOption(new Option("-1", "Seleccionar"));
         ponderador = new DoubleField("pond", "Ponderador por Riesgo %", 3, true);
-        fechaEjercicio.setDate(valor.getFecha());
-        tipoValor.setValue(valor.getTipoValor());
-        emision.setValue(valor.getEmision());
-        serie.setValue(valor.getSerie());
-        fechaProximoCupon.setDate(valor.getFechaProximoCupon());
         fechaProximoCupon.setFormatPattern("dd/MM/yyyy");
-
-        vencimiento.setValue(valor.getGrupoRc10());
-        numeroTitulos.setInteger(valor.getNumeroTitulos());
-
-        form.add(fechaEjercicio);
-        form.add(tipoValor);
-        form.add(emision);
-        form.add(serie);
-        form.add(fechaProximoCupon);
-        form.add(vencimiento);
-        form.add(numeroTitulos);
-        form.add(sobretasa);
-        form.add(grupoRiesgosEmision);
-        form.add(ponderador);
-    }
-
-    private void llenarCamposVector() {
         precio = new DoubleField("pr", "Precio Sucio", true);
-        Locale loc = new Locale("us");
-        NumberFormat instance = NumberFormat.getInstance(loc);
-        instance.setMaximumFractionDigits(6);
         precio.setNumberFormat(instance);
         fechaVencimiento = new DateField("fecVen", "Fecha de Vencimiento", true);
         fechaVencimiento.setFormatPattern("dd/MM/yyyy");
@@ -184,38 +124,40 @@ public class MapeoeditPage extends BorderPage {
         gradoRiesgo.add(new Option("4", "4"));
         gradoRiesgo.add(new Option("5", "5"));
         gradoRiesgo.setDefaultOption(new Option("-1", "-1"));
-        if (vector != null) {
-            if (vector.getPrecioSucio() != null) {
-                precio.setDouble(vector.getPrecioSucio());
-                precio.setRequired(false);
-                precio.setDisabled(true);
-                precio.setStyle("background-color", "white");
-            }
-            
-            if (vector.getMoneda()>0) {
-                moneda.setValue(String.valueOf(vector.getMoneda()));
-                fechaVencimiento.setRequired(false);
-                fechaVencimiento.setDisabled(true);
-                fechaVencimiento.setStyle("background-color", "white");
-            }
-            if (vector.getFechaVencimiento() != null) {
-                fechaVencimiento.setDate(vector.getFechaVencimiento());
-                fechaVencimiento.setRequired(false);
-                fechaVencimiento.setDisabled(true);
-                fechaVencimiento.setStyle("background-color", "white");
-            }
-            Map<String, Calificacion> califsMap = new HashMap<String, Calificacion>();
-            List<Calificacion> createQuery = DAO.createQuery(Calificacion.class, null);
-            for (Calificacion c : createQuery) {
-                califsMap.put(c.getCalificacion(), c);
-                califsMap.put(c.getCalificacion().toUpperCase(), c);
-            }
-        }
+
+        form.add(tipoValor);
+        form.add(emision);
+        form.add(serie);
+        form.add(fechaProximoCupon);
+        form.add(vencimiento);
+        form.add(numeroTitulos);
+        form.add(sobretasa);
+        form.add(grupoRiesgosEmision);
+        form.add(ponderador);
         form.add(precio);
         form.add(moneda);
         form.add(fechaVencimiento);
         form.add(calificacion);
         form.add(gradoRiesgo);
+
+    }
+
+    private void llenarCamposVector() {
+        tipoValor.setValue(valor.getTipoValor());
+        emision.setValue(valor.getEmision());
+        serie.setValue(valor.getSerie());
+        fechaProximoCupon.setDate(valor.getFechaProximoCupon());
+        vencimiento.setValue(valor.getGrupoRc10());
+        numeroTitulos.setInteger(valor.getNumeroTitulos());
+        precio.setDouble(valor.getPrecio());
+        sobretasa.setValue(sobretasa.getValue());
+        calificacion.setValue(calificacion.getValue());
+        String monedaSel=valor.getMoneda()==null || valor.getMoneda().equalsIgnoreCase("MXN")?"14":valor.getMoneda().equalsIgnoreCase("UDI")?"1":"4";
+        moneda.setValue(monedaSel);
+        grupoRiesgosEmision.setValue(valor.getGrupoRc07());
+        ponderador.setDouble(valor.getPonderador()*100);
+        fechaVencimiento.setDate(valor.getFechaVencimiento());
+        gradoRiesgo.setValue(valor.getGradoRiesgo().toString());
     }
 
 }

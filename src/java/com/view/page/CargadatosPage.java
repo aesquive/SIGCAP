@@ -49,14 +49,16 @@ public class CargadatosPage extends BorderPage {
     TextField name;
     DateField dateField;
     private static int numPer = 0;
+    private List<Catalogocuenta> catalogoCuenta;
 
     @Override
     public void init() {
+        catalogoCuenta=DAO.createQuery(Catalogocuenta.class, null);
         this.form = new Form("form");
-        if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer)) || !dte.get(numPer)) {
-            setRedirect(NocontratadoPage.class);
-            return;
-        }
+//        if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer)) || !dte.get(numPer)) {
+//            setRedirect(NocontratadoPage.class);
+//            return;
+//        }
         name = new TextField("name", "Nombre del Ejercicio", true);
         dateField = new DateField("dateField", "Fecha de Ejercicio (dd/mm/aaaa)", true);
         dateField.setFormatPattern("dd/MM/yyyy");
@@ -91,9 +93,16 @@ public class CargadatosPage extends BorderPage {
     public boolean procesarClicked() {
         if (form.isValid()) {
             try {
+                List<Regcuenta> createQueryRg = DAO.createQuery(Regcuenta.class, null);
+                for(Regcuenta r:createQueryRg){
+                    if(r.getDesRegCuenta().trim().toUpperCase().equals(name.getValue().trim().toUpperCase())){
+                        message="Favor de utilizar otro nombre de ejercicio (Repetido)";
+                        return false;
+                    }
+                }
                 message = "Reportes Invalidos (Número de Campos) : ";
                 FileField[] camposArchivos = new FileField[]{fileCaptacion, fileCatalogoMinimo, fileDisponibilidades, fileIngresos, filePrestamosPersonales, fileReservas, fileTarjetaCredito, fileTenencia};
-                String[] nombres = new String[]{"Captación", "Catálogo Mínimo", "Disponibilidades", "Ingresos Netos", "Prestamos Personales", "Reservas", "Tarjeta de Crédito","Tenencia"};
+                String[] nombres = new String[]{"Captación", "Catálogo Mínimo", "Disponibilidades", "Ingresos Netos", "Prestamos Personales", "Reservas", "Tarjeta de Crédito", "Tenencia"};
                 //vALIDA EL NUMERO DE CAMPOS QUE TRAE EL ARCHIVO ... SI ESTE NO ES CORRECTO SACA AL USUARIO DE LA CARGA
                 Integer[] numCampos = new Integer[]{6, 4, 5, 3, 8, 3, 8, 9};
                 boolean pass = true;
@@ -124,22 +133,22 @@ public class CargadatosPage extends BorderPage {
                 List<Object> saveTarjeta = saveTarjeta(cons, regCuenta);
                 List<Object> saveTenencia = saveTenencia(cons, regCuenta);
                 Map<String, Vector> mapVector = mapVector();
-                saveAll(saveCaptacion,saveCatalogoMinimo,saveDisponibilidades,saveIngresos,savePrestamos,saveReservas,saveTarjeta,saveTenencia);
+                saveAll(saveCaptacion, saveCatalogoMinimo, saveDisponibilidades, saveIngresos, savePrestamos, saveReservas, saveTarjeta, saveTenencia);
                 DAO.saveRecordt(user, user.getUser() + "generó alta del ejercicio " + regCuenta.getDesRegCuenta());
                 DAO.save(cons);
                 addSessionVar("mapeoConsistencia", cons);
                 addSessionVar("mapeoRegCuenta", regCuenta);
-                addSessionVar("mapeoCaptación",saveCaptacion);
-                addSessionVar("mapeoCatalogo",saveCatalogoMinimo);
-                addSessionVar("mapeoDisponibilidades",saveDisponibilidades);
+                addSessionVar("mapeoCaptación", saveCaptacion);
+                addSessionVar("mapeoCatalogo", saveCatalogoMinimo);
+                addSessionVar("mapeoDisponibilidades", saveDisponibilidades);
                 addSessionVar("mapeoIngresos", saveIngresos);
-                addSessionVar("mapeoPrestamos",savePrestamos);
-                addSessionVar("mapeoReservas",saveReservas);
-                addSessionVar("mapeoTarjeta",saveTarjeta);
-                addSessionVar("mapeoTenencia",saveTenencia);
+                addSessionVar("mapeoPrestamos", savePrestamos);
+                addSessionVar("mapeoReservas", saveReservas);
+                addSessionVar("mapeoTarjeta", saveTarjeta);
+                addSessionVar("mapeoTenencia", saveTenencia);
                 addSessionVar("mapeoVector", mapVector);
                 setRedirect(MapeoPage.class);
-                message="Carga Completa";
+                message = "Carga Completa";
                 return true;
             } catch (Exception ex) {
                 System.out.println(ex);
@@ -198,6 +207,7 @@ public class CargadatosPage extends BorderPage {
             List<Object> items = new LinkedList<Object>();
             for (String s : captaciones) {
                 try {
+                    System.out.println(s);
                     String[] split = s.split(";");
                     Date date = parseDate(split[0]);
                     Catalogocuenta cuenta = parseCatalogoCuenta(split[1]);
@@ -208,6 +218,7 @@ public class CargadatosPage extends BorderPage {
                     Captacion cap = new Captacion(reg, cuenta, date, des, idCapt, valor, venc);
                     items.add(cap);
                 } catch (Exception e) {
+                    System.out.println(e);
                     System.out.println("registro de captación no guardado");
                 }
             }
@@ -406,18 +417,9 @@ public class CargadatosPage extends BorderPage {
                     String serie = split[6];
                     Date fecCpn = parseDate(split[7]);
                     String rc10 = split[8];
-                    Valores valores=new Valores(regCuenta, date, cta ,des, tits, tipoValor, emision, serie, fecCpn, rc10);
-                    //Double precio=parseDouble(split[9]);
-//                    String st=split[10];
-//                    String calif=split[11];
-//                    String clasificacion=split[12];
-//                    Double ponderador=parseDouble(split[13]);
-//                    String plazo=split[14];
-//                    Date vencimiento=parseDate(split[15]);
-//                    String moneda=split[16];
-//                    Integer grado=Integer.parseInt(split[17]);
-//                    Valores valores=new Valores(regCuenta, date, cta, des, tits, tipoValor, emision, serie, fecCpn, rc10, precio, st, calif, clasificacion
-//                            , ponderador, plazo, vencimiento, moneda, grado);
+                    
+                    Valores valores = new Valores(regCuenta, date, cta, des, tits, tipoValor, emision, serie, fecCpn, rc10);
+                    valores.setMapeado(2);
                     items.add(valores);
                 } catch (Exception e) {
                     System.out.println(e);
@@ -434,8 +436,7 @@ public class CargadatosPage extends BorderPage {
     }
 
     private Catalogocuenta parseCatalogoCuenta(String string) {
-        List<Catalogocuenta> createQuery = DAO.createQuery(Catalogocuenta.class, null);
-        for (Catalogocuenta c : createQuery) {
+        for (Catalogocuenta c : catalogoCuenta) {
             if (c.getIdCatalogoCuenta().toString().equals(string)) {
                 return c;
             }
@@ -481,10 +482,10 @@ public class CargadatosPage extends BorderPage {
                     String fitch = split[53];
                     String sp = split[37];
                     String hr = split[59];
-                    String stasa=split[8]==null || split[8].equals("") || split[8].equals("0") ?"No" : "Si";
-                    Vector vec = new Vector(concat, precio, fecVenc, moneda, mdy, fitch, sp, hr,stasa);
+                    String stasa = split[20] == null || split[20].equals("") || split[20].equals("0")|| split[20].equals("-") ? "No" : "Si";
+                    Vector vec = new Vector(concat, precio, fecVenc, moneda, mdy, fitch, sp, hr, stasa);
                     mapping.put(concat, vec);
-                }catch(Exception e){
+                } catch (Exception e) {
                     System.out.println("registro de vector no guardado");
                 }
             }
@@ -496,7 +497,7 @@ public class CargadatosPage extends BorderPage {
         return null;
     }
 
-    private void saveAll(List<Object> ... objects) {
+    private void saveAll(List<Object>... objects) {
         DAO.saveCargaDatos(objects);
     }
 

@@ -42,15 +42,16 @@ public class TablePage extends BorderPage {
 
     @Override
     public void init() {
-        if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer)) && dte.get(numPer) == true) {
-            System.out.println("Pagina valida");
-            setRedirect(NocontratadoPage.class);
-            return;
-        }
+//        if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer)) && dte.get(numPer) == true) {
+//            System.out.println("Pagina valida");
+//            setRedirect(NocontratadoPage.class);
+//            return;
+//        }
         form = new Form("form");
         counter = (Integer) getSessionVar("icapCounter");
-        checkBackForward(counter,(Integer) getSessionVar("icapMaxCounter"));
+        checkBackForward(counter, (Integer) getSessionVar("icapMaxCounter"));
         data = (List<Cuenta>) getSessionVar("icapData-" + counter);
+        System.out.println("la data recibida" + data);
         regCta = (String) getSessionVar("regCta-" + counter);
         titlePage = (String) getSessionVar("title-" + counter);
         table = new FormTable("table", form);
@@ -95,7 +96,10 @@ public class TablePage extends BorderPage {
      * llena la tabla de informacion;
      */
     private void fillData() {
-        table.setRowList(data);
+        if (data != null) {
+
+            table.setRowList(data);
+        }
     }
 
     /**
@@ -153,8 +157,7 @@ public class TablePage extends BorderPage {
             form.add(goBack);
         }
     }
-    
-    
+
     public boolean counterForward() {
         Integer counter = (Integer) getContext().getSessionAttribute("icapCounter");
         getContext().setSessionAttribute("icapCounter", counter + 1);
@@ -168,6 +171,5 @@ public class TablePage extends BorderPage {
         setRedirect(TablePage.class);
         return true;
     }
-
 
 }

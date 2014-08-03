@@ -4,6 +4,8 @@ package db.pojos;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import org.apache.click.control.ActionLink;
 import util.Util;
@@ -13,7 +15,6 @@ import util.Util;
  */
 public class Valores implements java.io.Serializable {
 
-    
     public void setEditLink(ActionLink ac) {
         this.editLink = ac;
     }
@@ -21,9 +22,6 @@ public class Valores implements java.io.Serializable {
     public ActionLink getEditLink() {
         return editLink;
     }
-
-    
-    
 
     private ActionLink editLink;
 
@@ -47,28 +45,40 @@ public class Valores implements java.io.Serializable {
     private Date fechaVencimiento;
     private String moneda;
     private Integer gradoRiesgo;
-
-    public String getFechaVencimientoFormato(){
-        SimpleDateFormat df=new SimpleDateFormat("dd/MM/yyyy");
+    private Integer mapeado;
+    
+    public String getFechaVencimientoFormato() {
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         return df.format(fechaVencimiento);
     }
-    
-    public static String[] getTenenciaColumns(){
-        return new String[]{"TipoValor","Emision","Serie","Precio","NumeroTitulosFormato","Sobretasa","Calificacion","GrupoRc07","FechaVencimientoFormato","Moneda"};
+
+    public static String[] getTenenciaColumns() {
+        return new String[]{"TipoValor", "Emision", "Serie", "Precio", "NumeroTitulosFormato", "SobretasaLleno", "Calificacion", "GrupoRc07", "FechaVencimientoFormato", "Moneda", "Ponderador", "GradoRiesgo"};
     }
-    
-    public String getTipoValorEmisionSerie(){
-        return tipoValor+emision+serie;
+
+    public static String[] getTenenciaReport() {
+        return new String[]{"TipoValor", "Emision", "Serie", "Precio", "NumeroTitulos", "Sobretasa", "Calificacion", "GrupoRc07", "FechaVencimientoFormato", "Moneda", "Ponderador", "GradoRiesgo"};
     }
-    
-    public static String[] getTenenciaDesColumns(){
-        return new String[]{"TV","Emisión","Serie","Precio","Numero de Títulos","Sobretasa","Calificación","Riesgo Emisión","Fecha de Vencimiento","Moneda"};
+
+    public String getSobretasaLleno() {
+        if (this.sobretasa == null || sobretasa.equals("")) {
+            return "NO";
+        }
+        return sobretasa.toUpperCase();
     }
-    
+
+    public String getTipoValorEmisionSerie() {
+        return tipoValor + emision + serie;
+    }
+
+    public static String[] getTenenciaDesColumns() {
+        return new String[]{"TV", "Emisión", "Serie", "Precio", "Numero de Títulos", "Sobretasa", "Calificación", "Riesgo Emisión", "Fecha de Vencimiento", "Moneda", "Ponderador", "Grado Riesgo"};
+    }
+
     public Valores() {
     }
 
-    public Valores(Regcuenta regcuenta, Date fecha, String idCuentaContable, String descripcion, Integer numeroTitulos, String tipoValor, String emision, String serie, Date fechaProximoCupon, String grupoRc10, Double precio, String sobretasa, String calificacion, String grupoRc07, Double ponderador, String plazo,Date fechaVencimiento,String moneda,Integer gradoRiesgo) {
+    public Valores(Regcuenta regcuenta, Date fecha, String idCuentaContable, String descripcion, Integer numeroTitulos, String tipoValor, String emision, String serie, Date fechaProximoCupon, String grupoRc10, Double precio, String sobretasa, String calificacion, String grupoRc07, Double ponderador, String plazo, Date fechaVencimiento, String moneda, Integer gradoRiesgo) {
         this.regcuenta = regcuenta;
         this.fecha = fecha;
         this.idCuentaContable = idCuentaContable;
@@ -85,9 +95,9 @@ public class Valores implements java.io.Serializable {
         this.grupoRc07 = grupoRc07;
         this.ponderador = ponderador;
         this.plazo = plazo;
-        this.fechaVencimiento=fechaVencimiento;
-        this.moneda=moneda;
-        this.gradoRiesgo=gradoRiesgo;
+        this.fechaVencimiento = fechaVencimiento;
+        this.moneda = moneda;
+        this.gradoRiesgo = gradoRiesgo;
     }
 
     public Integer getIdTenencia() {
@@ -226,9 +236,8 @@ public class Valores implements java.io.Serializable {
         this.plazo = plazo;
     }
 
-    
     public Valores(Regcuenta regcuenta, Date fecha, String idCuentaContable, String descripcion, Integer numeroTitulos, String tipoValor, String emision, String serie, Date fechaProximoCupon, String grupoRc10) {
-        this.idCuentaContable=idCuentaContable;
+        this.idCuentaContable = idCuentaContable;
         this.regcuenta = regcuenta;
         this.fecha = fecha;
         this.descripcion = descripcion;
@@ -252,25 +261,24 @@ public class Valores implements java.io.Serializable {
     public String getNumeroTitulosFormato() {
         Locale loc = new Locale("us");
         NumberFormat instance = NumberFormat.getInstance(loc);
-        instance.setMaximumFractionDigits(2);
+        instance.setMaximumFractionDigits(6);
         return instance.format(getNumeroTitulos());
     }
 
     public static String[] getColumnsDescriptions() {
         return new String[]{"Fecha", "Tipo Valor", "Emisora", "Serie", "Numero de Títulos"};
     }
-    
-    
-    public  Double getMonto() {
-        return this.numeroTitulos*precio;
+
+    public Double getMonto() {
+        return this.numeroTitulos * precio;
     }
-    
-    public Integer getPlazoRC01(){
-        return Util.daysBetweenDates(fecha,fechaProximoCupon);
+
+    public Integer getPlazoRC01() {
+        return Util.daysBetweenDates(fecha, fechaProximoCupon);
     }
-    
-    public Integer getPlazoRC02(){
-        return Util.daysBetweenDates(fecha,fechaVencimiento);
+
+    public Integer getPlazoRC02() {
+        return Util.daysBetweenDates(fecha, fechaVencimiento);
     }
 
     /**
@@ -313,5 +321,62 @@ public class Valores implements java.io.Serializable {
      */
     public void setGradoRiesgo(Integer gradoRiesgo) {
         this.gradoRiesgo = gradoRiesgo;
+    }
+
+    public void setGradoRiesgoPonderador(List<Emisionriesgo> emiRiesgoPonderador, String grupoRiesgo, String sp, String moodys, String fitch, String hr) {
+        List<Emisionriesgo> listaDefinitiva = new LinkedList<Emisionriesgo>();
+        for (Emisionriesgo em : emiRiesgoPonderador) {
+            if (em.getGrupoRiesgo().equals(grupoRiesgo)) {
+                listaDefinitiva.add(em);
+            }
+        }
+        int numCalifs = 0;
+        numCalifs = sp != null ? numCalifs + 1 : numCalifs;
+        numCalifs = moodys != null ? numCalifs + 1 : numCalifs;
+        numCalifs = hr != null ? numCalifs + 1 : numCalifs;
+        numCalifs = fitch != null ? numCalifs + 1 : numCalifs;
+        for (Emisionriesgo em : listaDefinitiva) {
+            boolean ok = false;
+            if (em.getSp().toUpperCase().equals(getCalificacion().toUpperCase())) {
+                ok = true;
+            }
+            if (ok) {
+                setPonderador(em.getPonderador());
+                setGradoRiesgo(Integer.parseInt(em.getGradoRiesgo()));
+            }
+        }
+        if (grupoRiesgo.equals("III") && numCalifs < 2) {
+            setPonderador(.5);
+        }
+        String grupoRc071 = getGrupoRc07();
+
+        if (grupoRc071.equals("IV")) {
+            String[] bcaDesa = new String[]{"NAFIN", "BACMEXT", "BANOBRA", "BANOB", "NAFF", "NAFR", "CBIC","PIC"};
+            boolean isbca = false;
+            for (String s : bcaDesa) {
+                if (getEmision().contains(s)) {
+                    isbca = true;
+                }
+            }
+            if (isbca) {
+                setPonderador(0.0);
+            } else {
+                setPonderador(0.2);
+            }
+        }
+    }
+
+    /**
+     * @return the mapeado
+     */
+    public Integer getMapeado() {
+        return mapeado;
+    }
+
+    /**
+     * @param mapeado the mapeado to set
+     */
+    public void setMapeado(Integer mapeado) {
+        this.mapeado = mapeado;
     }
 }

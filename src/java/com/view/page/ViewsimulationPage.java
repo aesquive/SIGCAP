@@ -67,7 +67,7 @@ public class ViewsimulationPage extends BorderPage{
     
     public boolean calcular(){
         try {
-            ModelExecutor mc= new ModelExecutor(regCta,false);
+            ModelExecutor mc= new ModelExecutor(regCta);
             mc.start();
             
         setRedirect(IcapPage.class);

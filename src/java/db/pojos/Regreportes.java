@@ -12,7 +12,8 @@ public class Regreportes  implements java.io.Serializable {
      private Integer idRegReportes;
      private String desReportes;
      private String ruta;
-
+     private String nombreCorto;
+     
     public Regreportes() {
     }
 
@@ -41,6 +42,20 @@ public class Regreportes  implements java.io.Serializable {
     
     public void setRuta(String ruta) {
         this.ruta = ruta;
+    }
+
+    /**
+     * @return the nombreCorto
+     */
+    public String getNombreCorto() {
+        return nombreCorto;
+    }
+
+    /**
+     * @param nombreCorto the nombreCorto to set
+     */
+    public void setNombreCorto(String nombreCorto) {
+        this.nombreCorto = nombreCorto;
     }
 
 

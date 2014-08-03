@@ -91,7 +91,7 @@ public class Util {
         return (rangoAnyos * 365) + calLast.get(Calendar.DAY_OF_YEAR) - calInit.get(Calendar.DAY_OF_YEAR);
     }
 
-    public static List<Valores> sortValoresBy(Set<Valores> valoreses, String sortedColumn, boolean sortedAscending) {
+    public static List<Valores> sortValoresBy(List<Valores> valoreses, String sortedColumn, boolean sortedAscending) {
         Map<String, String> map = new HashMap<String, String>();
         Map<Double, String> mapDouble = new HashMap<Double, String>();
         Map<String, Valores> mapValores = new HashMap<String, Valores>();

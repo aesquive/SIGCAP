@@ -44,9 +44,9 @@ public class DAO {
 
         return list;
     }
-    
-    public static void saveRecordt(User user , String text){
-        Tracking tracking= new Tracking(user, text, Calendar.getInstance().getTime());
+
+    public static void saveRecordt(User user, String text) {
+        Tracking tracking = new Tracking(user, text, Calendar.getInstance().getTime());
         save(tracking);
     }
 
@@ -80,48 +80,36 @@ public class DAO {
     }
 
     public static void main(String[] args) {
-        
+
     }
 
     public static void delete(Object object) {
         session.delete(object);
         session.flush();
         session.clear();
-    
     }
 
-    public static void executeSQL(String string) {
-        System.out.println("el sql que correra el dao "+string);
-        Transaction tr=session.beginTransaction();
-        SQLQuery createSQLQuery = session.createSQLQuery(string);
-        int executeUpdate = createSQLQuery.executeUpdate();
-        tr.commit();
-        session.flush();
-        session.clear();
-        session.close();
-        session=null;
-        checkSession();
-    }
-
-    public static void refresh(Object obj){
+    public static void refresh(Object obj) {
         session.refresh(obj);
     }
-    
-    public static void saveUpdateMultiple(List<Object> obj){
-        for(Object o:obj){
-            session.saveOrUpdate(o);
-        }
-        session.flush();
-        session.clear();
-    }
-    
-    public static void saveCargaDatos(List<Object>... objects){
-        for(List<Object> list:objects){
-            for(Object o:list){
+
+    public static void saveCargaDatos(List... objects) {
+        for (List<Object> list : objects) {
+            for (Object o : list) {
                 session.saveOrUpdate(o);
             }
         }
         session.flush();
         session.clear();
+    }
+
+    public static void deletemultiple(List list) {
+        for (Object o : list) {
+            session.delete(o);
+        }
+
+        session.flush();
+        session.clear();
+
     }
 }

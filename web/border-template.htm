@@ -5,19 +5,11 @@
         <title>SICAP $title</title>
         #end
         <link rel="stylesheet" type="text/css" href="$context/css/style.css" title="Style"/>
+        <script type="text/javascript" src="$context/css/methods.js"/>
     </head>
     <body>
         
         <script>
-            function waitPage() {
-                document.getElementById("divProcess").style.display = "block";
-                document.getElementById("divForm").style.display = "none";
-            }
-
-            function stopWaiting() {
-                document.getElementById("divProcess").style.display = "none";
-                document.getElementById("divForm").style.display = "block";
-            }
         </script>
         #if ($connecteduser)
         <a style="font-size: medium">Usuario conectado: $connecteduser</a>

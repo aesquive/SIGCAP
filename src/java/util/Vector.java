@@ -1,7 +1,12 @@
-
 package util;
 
+import db.controller.DAO;
+import db.pojos.Calificacion;
+import db.pojos.Valores;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -21,8 +26,10 @@ public class Vector {
     private String gradoRiesgo;
     private String grupoRiesgo;
     private Double ponderador;
-    
-    public Vector(String tvEmiSerie, Double precioSucio, Date fechaVencimiento, int moneda, String moodys, String fitch, String sp, String hr,String stasa) {
+    private Integer mapeada;
+
+    public Vector(String tvEmiSerie, Double precioSucio, Date fechaVencimiento, int moneda, String moodys, String fitch, String sp, String hr, String stasa) {
+        mapeada = 0;
         this.tvEmiSerie = tvEmiSerie;
         this.precioSucio = precioSucio;
         this.fechaVencimiento = fechaVencimiento;
@@ -31,7 +38,7 @@ public class Vector {
         this.fitch = fitch;
         this.sp = sp;
         this.hr = hr;
-        this.sobretasa=stasa;
+        this.sobretasa = stasa;
     }
 
     /**
@@ -147,15 +154,15 @@ public class Vector {
     }
 
     public void setGradoRiesgo(String value) {
-        this.gradoRiesgo=value;
+        this.gradoRiesgo = value;
     }
 
     public void setGrupoRiesgo(String value) {
-        this.grupoRiesgo=value;
+        this.grupoRiesgo = value;
     }
 
     public void setPonderador(Double aDouble) {
-        this.ponderador=aDouble;
+        this.ponderador = aDouble;
     }
 
     /**
@@ -193,23 +200,216 @@ public class Vector {
         return ponderador;
     }
 
-    public String getCalificacion() {
-        if(sp!=null && !sp.equals("NA") && !sp.equals("-")){
-            return sp;
+    public String getCalificacion(Map<String, Calificacion> calificaciones, Valores valor) {
+        Calificacion calSp = null;
+        Calificacion calMoodys = null;
+        Calificacion calFitch = null;
+        Calificacion calHr = null;
+        if (sp != null && !sp.equals("NA") && !sp.equals("-")) {
+            calSp = calificaciones.get(sp.toUpperCase().trim());
         }
-        if(fitch!=null && !fitch.equals("NA") && !fitch.equals("-")){
-            return fitch;
+        if (moodys != null && !moodys.equals("NA") && !moodys.equals("-")) {
+            calMoodys = calificaciones.get(moodys.toUpperCase().trim());
         }
-        
-        if(moodys!=null && !moodys.equals("NA") && !moodys.equals("-")){
-            return moodys;
+        if (fitch != null && !fitch.equals("NA") && !fitch.equals("-")) {
+            calFitch = calificaciones.get(fitch.toUpperCase().trim());
         }
-        
-        else{
-            return "MxAA";
+        if (hr != null && !hr.equals("NA") && !hr.equals("-")) {
+            calHr = calificaciones.get(hr.toUpperCase().trim());
         }
+        Integer plazoRC02 = valor.getPlazoRC02();
+        if (plazoRC02 <= 365) {
+            if (calSp != null && calSp.getPlazo().toUpperCase().equals("LARGO")) {
+                calSp = null;
+            }
+            if (calMoodys != null && calMoodys.getPlazo().toUpperCase().equals("LARGO")) {
+                calMoodys = null;
+            }
+            if (calFitch != null && calFitch.getPlazo().toUpperCase().equals("LARGO")) {
+                calFitch = null;
+            }
+
+            if (calHr != null && calHr.getPlazo().toUpperCase().equals("LARGO")) {
+                calHr = null;
+            }
+        } else {
+            if (calSp != null && calSp.getPlazo().toUpperCase().equals("CORTO")) {
+                calSp = null;
+            }
+            if (calMoodys != null && calMoodys.getPlazo().toUpperCase().equals("CORTO")) {
+                calMoodys = null;
+            }
+            if (calFitch != null && calFitch.getPlazo().toUpperCase().equals("CORTO")) {
+                calFitch = null;
+            }
+
+            if (calHr != null && calHr.getPlazo().toUpperCase().equals("CORTO")) {
+                calHr = null;
+            }
+        }
+
+        int idSp = calSp == null ? 999 : calificaciones.get(calSp.getCalificadoraReferencia().toUpperCase().trim()).getPonderador();
+        int idMd = calMoodys == null ? 999 : calificaciones.get(calMoodys.getCalificadoraReferencia().toUpperCase().trim()).getPonderador();
+        int idFi = calFitch == null ? 999 : calificaciones.get(calFitch.getCalificadoraReferencia().toUpperCase().trim()).getPonderador();
+        int idHR = calHr == null ? 999 : calificaciones.get(calHr.getCalificadoraReferencia().toUpperCase().trim()).getPonderador();
+        int firstMin = Math.min(idSp, idMd);
+        int secondMin = Math.min(idFi, idHR);
+        int min = Math.min(firstMin, secondMin);
+
+        if (min == 999) {
+
+            return getCalificacionSinPlazo(calificaciones, valor);
+        }
+        if (min == idSp) {
+            return calSp == null ? null : calSp.getCalificadoraReferencia();
+        } else if (min == idMd) {
+            return calMoodys == null ? null : calMoodys.getCalificadoraReferencia();
+        } else if (min == idFi) {
+            return calFitch == null ? null : calFitch.getCalificadoraReferencia();
+        } else if (min == idHR) {
+            return calHr == null ? null : calHr.getCalificadoraReferencia();
+        }
+            return "";
     }
-    
-    
-    
+
+    public static void main(String[] args) {
+        Map<String, Calificacion> calificaciones = new HashMap<String, Calificacion>();
+
+        List<Calificacion> createQueryCals = DAO.createQuery(Calificacion.class, null);
+        for (Calificacion c : createQueryCals) {
+            calificaciones.put(c.getCalificacion(), c);
+            calificaciones.put(c.getCalificacion().toUpperCase(), c);
+            calificaciones.put(c.getCalificacion().toUpperCase().trim(), c);
+        }
+
+        Integer plazoRC02 = 700;
+        String sp = "mxAAA";
+        String moodys = "";
+        String fitch = "AA(mex)";
+        String hr = "";
+        Calificacion calSp = null;
+        Calificacion calMoodys = null;
+        Calificacion calFitch = null;
+        Calificacion calHr = null;
+        if (sp != null && !sp.equals("NA") && !sp.equals("-")) {
+            calSp = calificaciones.get(sp.toUpperCase().trim());
+        }
+        if (moodys != null && !moodys.equals("NA") && !moodys.equals("-")) {
+            calMoodys = calificaciones.get(moodys.toUpperCase().trim());
+        }
+        if (fitch != null && !fitch.equals("NA") && !fitch.equals("-")) {
+            calFitch = calificaciones.get(fitch.toUpperCase().trim());
+        }
+        if (hr != null && !hr.equals("NA") && !hr.equals("-")) {
+            calHr = calificaciones.get(hr.toUpperCase().trim());
+        }
+
+        if (plazoRC02 <= 365) {
+            if (calSp != null && calSp.getPlazo().toUpperCase().equals("LARGO")) {
+                calSp = null;
+            }
+            if (calMoodys != null && calMoodys.getPlazo().toUpperCase().equals("LARGO")) {
+                calMoodys = null;
+            }
+            if (calFitch != null && calFitch.getPlazo().toUpperCase().equals("LARGO")) {
+                calFitch = null;
+            }
+
+            if (calHr != null && calHr.getPlazo().toUpperCase().equals("LARGO")) {
+                calHr = null;
+            }
+        } else {
+            if (calSp != null && calSp.getPlazo().toUpperCase().equals("CORTO")) {
+                calSp = null;
+            }
+            if (calMoodys != null && calMoodys.getPlazo().toUpperCase().equals("CORTO")) {
+                calMoodys = null;
+            }
+            if (calFitch != null && calFitch.getPlazo().toUpperCase().equals("CORTO")) {
+                calFitch = null;
+            }
+
+            if (calHr != null && calHr.getPlazo().toUpperCase().equals("CORTO")) {
+                calHr = null;
+            }
+        }
+
+        int idSp = calSp == null ? 999 : calificaciones.get(calSp.getCalificadoraReferencia().toUpperCase().trim()).getPonderador();
+        int idMd = calMoodys == null ? 999 : calificaciones.get(calMoodys.getCalificadoraReferencia().toUpperCase().trim()).getPonderador();
+        int idFi = calFitch == null ? 999 : calificaciones.get(calFitch.getCalificadoraReferencia().toUpperCase().trim()).getPonderador();
+        int idHR = calHr == null ? 999 : calificaciones.get(calHr.getCalificadoraReferencia().toUpperCase().trim()).getPonderador();
+        int firstMin = Math.min(idSp, idMd);
+        int secondMin = Math.min(idFi, idHR);
+        int min = Math.min(firstMin, secondMin);
+
+        System.out.println("el min " + min);
+        if (min == 999) {
+
+        }
+        if (min == idSp) {
+            System.out.println(calSp.getCalificadoraReferencia());
+        } else if (min == idMd) {
+
+            System.out.println(calMoodys.getCalificadoraReferencia());
+        } else if (min == idFi) {
+
+            System.out.println(calFitch.getCalificadoraReferencia());
+        } else if (min == idHR) {
+
+            System.out.println(calHr.getCalificadoraReferencia());
+        }
+
+    }
+
+    /**
+     * @return the mapeada
+     */
+    public Integer getMapeada() {
+        return mapeada;
+    }
+
+    /**
+     * @param mapeada the mapeada to set
+     */
+    public void setMapeada(Integer mapeada) {
+        this.mapeada = mapeada;
+    }
+
+    private String getCalificacionSinPlazo(Map<String, Calificacion> calificaciones, Valores valor) {
+        Calificacion calSp = null;
+        Calificacion calMoodys = null;
+        Calificacion calFitch = null;
+        Calificacion calHr = null;
+        if (sp != null && !sp.equals("NA") && !sp.equals("-")) {
+            calSp = calificaciones.get(sp.toUpperCase().trim());
+        }
+        if (moodys != null && !moodys.equals("NA") && !moodys.equals("-")) {
+            calMoodys = calificaciones.get(moodys.toUpperCase().trim());
+        }
+        if (fitch != null && !fitch.equals("NA") && !fitch.equals("-")) {
+            calFitch = calificaciones.get(fitch.toUpperCase().trim());
+        }
+        if (hr != null && !hr.equals("NA") && !hr.equals("-")) {
+            calHr = calificaciones.get(hr.toUpperCase().trim());
+        }
+        int idSp = calSp == null ? 999 : calificaciones.get(calSp.getCalificadoraReferencia().toUpperCase().trim()).getPonderador();
+        int idMd = calMoodys == null ? 999 : calificaciones.get(calMoodys.getCalificadoraReferencia().toUpperCase().trim()).getPonderador();
+        int idFi = calFitch == null ? 999 : calificaciones.get(calFitch.getCalificadoraReferencia().toUpperCase().trim()).getPonderador();
+        int idHR = calHr == null ? 999 : calificaciones.get(calHr.getCalificadoraReferencia().toUpperCase().trim()).getPonderador();
+        int firstMin = Math.min(idSp, idMd);
+        int secondMin = Math.min(idFi, idHR);
+        int min = Math.min(firstMin, secondMin);
+
+        if (min == idSp) {
+            return calSp == null ? null : calSp.getCalificadoraReferencia();
+        } else if (min == idMd) {
+            return calMoodys == null ? null : calMoodys.getCalificadoraReferencia();
+        } else if (min == idFi) {
+            return calFitch == null ? null : calFitch.getCalificadoraReferencia();
+        } else if (min == idHR) {
+            return calHr == null ? null : calHr.getCalificadoraReferencia();
+        }
+        return "";
+    }
+
 }

@@ -54,7 +54,7 @@ public class ConsistenciaReportMaker {
             fileOut.close();
             return fileName;
         } catch (Exception ex) {
-            Logger.getLogger(ConsistenciaReportMaker.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ConsistenciaReportMaker.class.getName()).log(Level.INFO, null, ex);
         }
         return null;
     }

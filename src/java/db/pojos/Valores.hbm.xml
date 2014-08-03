@@ -68,5 +68,9 @@
         <property name="gradoRiesgo" type="java.lang.Integer">
             <column name="GradoRiesgo" />
         </property>
+        <property name="mapeado" type="java.lang.Integer">
+            <column name="Mapeado" />
+        </property>
+
     </class>
 </hibernate-mapping>

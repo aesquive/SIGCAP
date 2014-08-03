@@ -1,8 +1,3 @@
-a:link {text-decoration:none;}
-a:visited {text-decoration:none;}
-a:hover {text-decoration:none;}
-a:active {text-decoration:none;}
-
 a:link {color:#FF7519;}      /* unvisited link */
 a:visited {color:#FF7519;}  /* visited link */
 a:hover {color:#FF7519;}  /* mouse over link */
@@ -43,6 +38,40 @@ body {
     color: #202020;
     z-index: -2;
 }
+
+#rootMenuSim {
+    border-style: none ;
+    background-color: black;
+    color: white;
+    font-size: 1em;
+}
+
+#rootMenuSim ul li{
+    display: inline-table;
+    padding-right: .5em;
+}
+
+
+#rootMenuSim ul li a
+{
+    border-radius: 5px;
+    padding: .2em 1em;
+    color: white;
+    font-weight: bolder;
+    border-style: solid ;
+    border-color: #FF7519;
+    font-size: .8em;
+}
+
+#rootMenuSim ul li a:hover
+{
+    color: #FF7519;
+    font-weight: bolder;
+    //color naranja
+    border-style: solid ;
+    border-color: #FF7519;
+}
+
 
 #rootMenu {
     border-style: solid ;
@@ -132,6 +161,20 @@ input[type=submit]{
     padding: .2em 1em;
 }
 
+
+input[type=button]{
+
+    background-color: white;
+    color: black;
+    font-weight: bolder;
+    border-radius: 10px;
+    border-color: black;
+    border-style: solid double;
+    font-size: 1.3em;
+    padding: .2em 1em;
+}
+
+
 label{
     font-size: 1.3em;
     color: white;
@@ -167,6 +210,34 @@ label{
 }
 
 
+
+/*edicion sobre tabla de datos de cuentas*/
+#dataTableSmall{
+    border: 2px solid;
+    border-color: #FF7519;
+    border-spacing: 1em;
+    border-radius: 7px;
+    background-color: black;
+}
+
+#dataTableSmall th{
+    background-color: #FF7519;
+    border-radius: 5px;
+    border-width: 5px;
+    color: black;
+    font-weight: bold;
+    font-size: .7em;
+}
+
+#dataTableSmall td{
+    border: 3px solid white;
+    text-align: center;
+    font-size: .7em;
+}
+
+#dataTableSmall td a{
+    color:white;
+}
 
 
 /*edicion sobre tabla de datos de cuentas*/

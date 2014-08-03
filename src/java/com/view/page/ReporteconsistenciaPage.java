@@ -1,20 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.view.page;
 
 import db.controller.DAO;
 import db.pojos.Consistencia;
 import db.pojos.Regcuenta;
-import edu.stanford.ejalbert.BrowserLauncher;
-import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
-import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import manager.configuration.Configuration;
 import org.apache.click.control.Form;
 import org.apache.click.control.Option;
 import org.apache.click.control.Select;
@@ -46,7 +35,6 @@ public class ReporteconsistenciaPage extends BorderPage {
 
     public boolean generarConsistencia() {
         if (form.isValid()) {
-            try {
                 Regcuenta regCuenta = null;
                 List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
                 for (Regcuenta r : createQuery) {
@@ -54,15 +42,11 @@ public class ReporteconsistenciaPage extends BorderPage {
                         regCuenta = r;
                     }
                 }
-                BrowserLauncher browser = new BrowserLauncher();
-                browser.setNewWindowPolicy(true);
-                browser.openURLinBrowser(Configuration.getValue("direccionReportes") + "?typ=4&pra=" + regCuenta.getIdRegCuenta());
+//                BrowserLauncher browser = new BrowserLauncher();
+//                browser.setNewWindowPolicy(true);
+//                browser.openURLinBrowser(Configuration.getValue("direccionReportes") + "?typ=4&pra=" + regCuenta.getIdRegCuenta());
                 return true;
-            } catch (BrowserLaunchingInitializingException ex) {
-                Logger.getLogger(ReporteconsistenciaPage.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (UnsupportedOperatingSystemException ex) {
-                Logger.getLogger(ReporteconsistenciaPage.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            
 
         }
         return false;

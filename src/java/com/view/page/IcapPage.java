@@ -30,6 +30,7 @@ public class IcapPage extends BorderPage {
                 data.add(c);
             }
         }
+        System.out.println("la data enviada"+data);
         addSessionVar("icapCounter", 0);
         addSessionVar("icapMaxCounter", 0);
         addSessionVar("icapData-0", data);
