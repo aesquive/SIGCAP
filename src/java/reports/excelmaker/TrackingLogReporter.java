@@ -68,7 +68,13 @@ public class TrackingLogReporter {
                 indexTracking++;
             }
             row = sheet.getRow(cr.getRow() + indexTracking);
+            if(row==null){
+                row=sheet.createRow(cr.getRow()+indexTracking);
+            }
             cell = row.getCell(cr.getCol());
+            if(cell==null){
+                cell=row.createCell(cr.getCol());
+            }
         }
         int deleteRow = cr.getRow() + indexTracking ;
         while (deleteRow < 10000) {

@@ -90,8 +90,8 @@ public class TenenciaeditarcalculoPage extends BorderPage {
         numeroTitulos.setNumberFormat(instance);
         sobretasa = new Select("stasa", "Tiene sobretasa ", true);
         sobretasa.setDefaultOption(new Option("-1", "Seleccionar"));
-        sobretasa.add(new Option("SI", "SI"));
-        sobretasa.add(new Option("NO", "NO"));
+        sobretasa.add(new Option("SI", "Si"));
+        sobretasa.add(new Option("NO", "No"));
         grupoRiesgosEmision = new Select("remi", "Grupo de Riesgo de Emisión", true);
         String[] valuesRiesgos = new String[]{"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"};
         for (String s : valuesRiesgos) {
@@ -150,7 +150,7 @@ public class TenenciaeditarcalculoPage extends BorderPage {
         vencimiento.setValue(valor.getGrupoRc10());
         numeroTitulos.setInteger(valor.getNumeroTitulos());
         precio.setDouble(valor.getPrecio());
-        sobretasa.setValue(sobretasa.getValue());
+        sobretasa.setValue(valor.getSobretasa().toUpperCase());
         calificacion.setValue(calificacion.getValue());
         String monedaSel=valor.getMoneda()==null || valor.getMoneda().equalsIgnoreCase("MXN")?"14":valor.getMoneda().equalsIgnoreCase("UDI")?"1":"4";
         moneda.setValue(monedaSel);

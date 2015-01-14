@@ -98,7 +98,7 @@ public class VistareportesPage extends Page {
         for (Cuenta c : cuentas) {
             map.put(c.getCatalogocuenta().getIdCatalogoCuenta().toString(), c);
         }
-        ExcelMaker excelmaker = new ExcelMaker(fileName, selectedReport.getRuta(), map);
+        ExcelMaker excelmaker = new ExcelMaker(fileName, selectedReport.getRuta(),selected, map);
         File makeFile = null;
         try {
             makeFile = excelmaker.makeFile();
@@ -115,7 +115,7 @@ public class VistareportesPage extends Page {
         }
         User user = (User) getContext().getSessionAttribute("user");
         DAO.saveRecordt(user, user.getUser() + " generó reporte " + selectedReport.getDesReportes());
-        setRedirect("/reportes/" + selected.getIdRegCuenta().toString() + "-" + selectedReport.getIdRegReportes().toString() + ".xlsx");
+        setRedirect("/reportes/" + selected.getIdRegCuenta().toString() + "-" + selectedReport.getNombreCorto()+ ".xlsx");
         return true;
     }
 

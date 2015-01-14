@@ -43,4 +43,12 @@ public class NDimensionVector<T extends Comparable> {
             addValue(nv);
         }
     }
+
+    public String toString(){
+        for(Object o:values){
+            System.out.print(o+",");
+        }
+        System.out.println("");
+        return "";
+    }
 }

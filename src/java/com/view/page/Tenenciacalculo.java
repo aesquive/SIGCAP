@@ -68,11 +68,10 @@ public class Tenenciacalculo extends BorderPage {
         }
 
         for (int t = 0; t < tenenciaNoMapeadaLista.size(); t++) {
-            ActionLink act = new ActionLink("act" + tenenciaNoMapeadaLista.get(t).getIdCuentaContable(), "Editar", this, "editar");
-            act.setValue(tenenciaNoMapeadaLista.get(t).getIdCuentaContable());
+            ActionLink act = new ActionLink("act" + tenenciaNoMapeadaLista.get(t).getIdTenencia(), "Editar", this, "editar");
+            act.setValue(tenenciaNoMapeadaLista.get(t).getIdTenencia().toString());
             tenenciaNoMapeadaLista.get(t).setEditLink(act);
             addControl(act);
-            
         }
         Column c = new Column("editar", "Editar");
         c.setDecorator(new Decorator() {
@@ -92,7 +91,7 @@ public class Tenenciacalculo extends BorderPage {
         fsm.add(tableMapeada);
         tableMapeada.setRowList(orderList(tenenciaMapeada, "TipoValorEmisionSerie"));
         Submit sub = new Submit("calc", "Calcular", this, "calcular");
-        javaScriptProcess(sub);
+//        javaScriptProcess(sub);
         FieldSet acciones = new FieldSet("fsA", "Acciones");
         acciones.add(sub);
         form.add(acciones);

@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +20,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import util.CompareObjectReport;
 import util.NDimensionVector;
 
 /**
@@ -28,14 +30,15 @@ import util.NDimensionVector;
 public class ModelComparator {
 
     public static String compareWriteFile(String baseName, String newFileName, Regcuenta first, Collection<Cuenta> cuentasFirst, Regcuenta second, Collection<Cuenta> cuentasSecond, Double minVariance, int numberRegisters) throws IOException {
-        Map<Integer, NDimensionVector> compareProjects = null;
+        List<CompareObjectReport> compareProjects = null;
         if (first != null && second != null) {
             compareProjects = first.compareProjects(second, minVariance, numberRegisters, cuentasFirst, cuentasSecond);
         }
+        Collections.sort(compareProjects);
         return writeFile(baseName, newFileName, compareProjects, first, second);
     }
 
-    private static String writeFile(String baseName, String newFileName, Map<Integer, NDimensionVector> map, Regcuenta first, Regcuenta second) throws IOException {
+    private static String writeFile(String baseName, String newFileName, List<CompareObjectReport> list, Regcuenta first, Regcuenta second) throws IOException {
         File file = new File(baseName);
         FileInputStream fis = new FileInputStream(file);
         XSSFWorkbook wb = new XSSFWorkbook(fis);
@@ -59,89 +62,72 @@ public class ModelComparator {
         CellReference cr = new CellReference("A8");
         Row row = sheet.getRow(cr.getRow());
         Cell cell = row.getCell(cr.getCol());
-        Map<String, Catalogocuenta> ctas = mapCuentas(DAO.createQuery(Catalogocuenta.class, null));
         int numberRows = 0;
-        for (int t = 0; t < map.size(); t++) {
-            NDimensionVector vals = map.get(t);
-            List values = vals.getValues();
-            int data = 4;
-            Set<String> conj = new HashSet<String>();
-            for (int d = 0; d < values.size(); d++) {
-                int mod = d % data;
-                Object value = values.get(d);
-                if (!conj.contains(values.get(0).toString())) {
 
-                    switch (mod) {
-                        case 0:
-                            if (((Double) values.get(d + 3)) == 0) {
+        for (int t = 0; t < list.size(); t++) {
+            CompareObjectReport comp = list.get(t);
+            if (comp != null && comp.getCuenta() != null && comp.getCuenta().getIdCatalogoCuenta() != null
+                    && (comp.getValorPrimero() != Double.NaN && comp.getValorSegundo() != Double.NaN)
+                    && (comp.getValorPrimero() != 0 && comp.getValorSegundo() != 0) &&
+                    (comp.getValorPrimero()!=null && comp.getValorSegundo()!=null) && 
+                    comp.getRazon()!=0 ) {
 
-                            } else {
-                                cell = row.getCell(0);
-                                String idCta = (String) value;
-                                Catalogocuenta catCta = ctas.get(idCta);
-                                cell.setCellValue(catCta.getIdCatalogoCuenta());
-                                cell = row.getCell(2);
-                                cell.setCellValue(catCta.getDesCatalogoCuenta());
-                                numberRows++;
-                            }
-                            break;
-                        case 1:
-                            if (((Double) values.get(d + 2)) == 0) {
-
-                            } else {
-                                Double valor = (Double) value;
-                                cell = row.getCell(3);
-                                cell.setCellValue(valor);
-                            }
-                            break;
-
-                        case 2:
-                            if (((Double) values.get(d + 1)) == 0) {
-
-                            } else {
-                                Double valor2 = (Double) value;
-                                cell = row.getCell(5);
-                                cell.setCellValue(valor2);
-                            }
-                            break;
-                        case 3:
-                            Double valor4 = (Double) value;
-                            if (valor4.isNaN() || valor4.isInfinite()) {
-                                cell = row.getCell(7);
-                                cell.setCellValue("NA");
-                                cell = row.getCell(9);
-                                cell.setCellValue("La variación no esta definida");
-
-                            } else if (valor4 != 0) {
-                                cell = row.getCell(7);
-                                cell.setCellValue(valor4);
-                                cell = row.getCell(9);
-                                if (((Double) values.get(d - 1)).isNaN() || ((Double) values.get(d - 1)).isInfinite()) {
-                                    cell.setCellValue("El valor del primer ejercicio no esta definido");
-                                } else if (((Double) values.get(d - 2)).isNaN() || ((Double) values.get(d - 1)).isInfinite()) {
-                                    cell.setCellValue("El valor del segundo ejercicio no esta definido");
-                                }
-                            }
-                            conj.add((String) values.get(d - 3));
-                            break;
+                cell = row.getCell(0);
+                if (cell == null) {
+                    cell = row.createCell(0);
+                }
+                cell.setCellValue(comp.getCuenta().getIdCatalogoCuenta());
+                cell = row.getCell(2);
+                if (cell == null) {
+                    cell = row.createCell(2);
+                }
+                cell.setCellValue(comp.getCuenta().getDesCatalogoCuenta());
+                if (comp.getValorPrimero() != Double.NaN && comp.getValorPrimero()!=null) {
+                    cell = row.getCell(3);
+                    if (cell == null) {
+                        cell = row.createCell(3);
                     }
+                    cell.setCellValue(comp.getValorPrimero());
+                }
+                if (comp.getValorSegundo() != Double.NaN && comp.getValorSegundo()!=null) {
+                    cell = row.getCell(5);
+                    if (cell == null) {
+                        cell = row.createCell(5);
+                    }
+                    cell.setCellValue(comp.getValorSegundo());
+                }
+
+                cell = row.getCell(7);
+                if (cell == null) {
+                    cell = row.createCell(7);
+                }
+                cell.setCellValue(Math.abs(comp.getRazon()));
+                numberRows++;
+                row = sheet.getRow(cr.getRow() + numberRows);
+
+                if (row == null) {
+                    row = sheet.createRow(cr.getRow() + numberRows);
                 }
             }
-            row = sheet.getRow(cell.getRowIndex() + 1);
         }
         int lastRow = 7 + numberRows;
-        row = sheet.getRow(lastRow);
-        while (row != null) {
-            sheet.removeRow(row);
+        Row row5 = sheet.getRow(lastRow);
+        while (row5 != null) {
+            sheet.removeRow(row5);
             lastRow++;
-            row = sheet.getRow(lastRow);
+            row5 = sheet.getRow(lastRow);
         }
         File fileOutput = new File(manager.configuration.Configuration.getValue("Ruta Reportes") + newFileName + "-" + first.getIdRegCuenta().toString() + "-" + second.getIdRegCuenta() + ".xlsx");
         FileOutputStream fileOut = new FileOutputStream(fileOutput);
+
         wb.write(fileOut);
+
         fileOut.flush();
+
         fileOut.close();
-        return newFileName + "-" + first.getIdRegCuenta().toString() + "-" + second.getIdRegCuenta() + ".xlsx";
+        return newFileName
+                + "-" + first.getIdRegCuenta()
+                .toString() + "-" + second.getIdRegCuenta() + ".xlsx";
     }
 
     private static Map<String, Catalogocuenta> mapCuentas(List<Catalogocuenta> createQuery) {
@@ -152,9 +138,20 @@ public class ModelComparator {
         return map;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static
+            void main(String[] args) throws IOException {
         List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
         //ModelComparator.compareWriteFile(manager.configuration.Configuration.getValue("baseAnalisisComparativo"), createQuery.get(0), createQuery.get(1), 0.0, -1);
+    }
+
+    private static void imprimirMap(Map<Integer, NDimensionVector> compareProjects) {
+        Set<Integer> keySet = compareProjects.keySet();
+        for (Integer t : keySet) {
+
+            System.out.println(t);
+            NDimensionVector get = compareProjects.get(t);
+            System.out.println(get);
+        }
     }
 
 }

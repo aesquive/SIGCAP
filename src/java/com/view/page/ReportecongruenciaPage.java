@@ -60,9 +60,6 @@ public class ReportecongruenciaPage extends BorderPage {
                 message = "Favor de seleccionar un ejercicio válido";
                 return false;
             }
-//                BrowserLauncher browser = new BrowserLauncher();
-//                browser.setNewWindowPolicy(true);
-//                browser.openURLinBrowser(Configuration.getValue("direccionReportes") + "?typ=3&pra=" + regCuentaUno.getIdRegCuenta() + "&prb=" + regCuentaDos.getIdRegCuenta() + "&var=" + tolerancia.getDouble() / 100 + "&num=-1" );
             return true;
 
         }

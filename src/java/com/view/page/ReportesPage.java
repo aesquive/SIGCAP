@@ -121,24 +121,24 @@ public class ReportesPage extends BorderPage {
 
     public boolean okReport()  {
         if (form.isValid()) {
-            Regcuenta r = null;
-            List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
-            for (Regcuenta reg : createQuery) {
-                if (reg.getIdRegCuenta().toString().equals(selectProject.getValue())) {
-                    r = reg;
-                }
-            }
-            boolean complete = false;
-            List<Cuenta> createQuery1 = DAO.createQuery(Cuenta.class, null);
-            for (Cuenta c : createQuery1) {
-                if (c != null && c.getRegcuenta().getIdRegCuenta() == r.getIdRegCuenta() && c.getCatalogocuenta().getIdCatalogoCuenta().toString().equals("1")) {
-                    complete = true;
-                }
-            }
-            if (!complete) {
-                message = "Favor de calcular el modelo antes de obtener algun reporte";
-                return false;
-            }
+//            Regcuenta r = null;
+//            List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
+//            for (Regcuenta reg : createQuery) {
+//                if (reg.getIdRegCuenta().toString().equals(selectProject.getValue())) {
+//                    r = reg;
+//                }
+//            }
+//            boolean complete = false;
+//            List<Cuenta> createQuery1 = DAO.createQuery(Cuenta.class, null);
+//            for (Cuenta c : createQuery1) {
+//                if (c != null && c.getRegcuenta().getIdRegCuenta() == r.getIdRegCuenta() && c.getCatalogocuenta().getIdCatalogoCuenta().toString().equals("1")) {
+//                    complete = true;
+//                }
+//            }
+//            if (!complete) {
+//                message = "Favor de calcular el modelo antes de obtener algun reporte";
+//                return false;
+//            }
             return true;
         }
         return false;

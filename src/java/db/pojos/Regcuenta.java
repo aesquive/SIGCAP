@@ -6,9 +6,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import util.CompareObjectReport;
 import util.NDimensionVector;
 import util.Util;
 
@@ -27,7 +29,6 @@ public class Regcuenta implements java.io.Serializable, Cloneable {
     private Set tarjetacreditos = new HashSet(0);
     private Set reservases = new HashSet(0);
     private Set prestamos = new HashSet(0);
-    private Set regvectors = new HashSet(0);
     private Set regcuentausers = new HashSet(0);
     private Set cuentas = new HashSet(0);
     private Set captacions = new HashSet(0);
@@ -40,7 +41,7 @@ public class Regcuenta implements java.io.Serializable, Cloneable {
         this.desRegCuenta = desRegCuenta;
     }
 
-    public Regcuenta(String desRegCuenta, Date fecha, Set catalogominimos, Set disponibilidads, Set ingresosnetoses, Set valoreses, Set tarjetacreditos, Set reservases, Set prestamos, Set regvectors, Set regcuentausers, Set cuentas, Set captacions, Set consistencias) {
+    public Regcuenta(String desRegCuenta, Date fecha, Set catalogominimos, Set disponibilidads, Set ingresosnetoses, Set valoreses, Set tarjetacreditos, Set reservases, Set prestamos, Set regcuentausers, Set cuentas, Set captacions, Set consistencias) {
         this.desRegCuenta = desRegCuenta;
         this.fecha = fecha;
         this.catalogominimos = catalogominimos;
@@ -50,7 +51,6 @@ public class Regcuenta implements java.io.Serializable, Cloneable {
         this.tarjetacreditos = tarjetacreditos;
         this.reservases = reservases;
         this.prestamos = prestamos;
-        this.regvectors = regvectors;
         this.regcuentausers = regcuentausers;
         this.cuentas = cuentas;
         this.captacions = captacions;
@@ -137,14 +137,6 @@ public class Regcuenta implements java.io.Serializable, Cloneable {
         this.prestamos = prestamos;
     }
 
-    public Set getRegvectors() {
-        return this.regvectors;
-    }
-
-    public void setRegvectors(Set regvectors) {
-        this.regvectors = regvectors;
-    }
-
     public Set getRegcuentausers() {
         return this.regcuentausers;
     }
@@ -183,65 +175,54 @@ public class Regcuenta implements java.io.Serializable, Cloneable {
      * requeridos
      *
      */
-    public Map compareProjects(Regcuenta comparable, double minVariance, int numberRegisters, Collection ownCuentasParam, Collection otherCuentasParam) {
-        // sacamos los valores de las cuentas y los comparamos
-        List<Catalogocuenta> createQuery = DAO.createQuery(Catalogocuenta.class, null);
-        Map<String, NDimensionVector> mapping = new HashMap<String, NDimensionVector>();
-        Map<Double, NDimensionVector> sortly = new HashMap<Double, NDimensionVector>();
-        Map<String, Cuenta> ownCuentas = mapCuentas(this, ownCuentasParam);
-        Map<String, Cuenta> compareCuentas = mapCuentas(comparable, otherCuentasParam);
-        for (Catalogocuenta count : createQuery) {
-            String numberCount = count.getIdCatalogoCuenta().toString();
-            Cuenta ownValue = ownCuentas.get(numberCount);
-            Cuenta compareValue = compareCuentas.get(numberCount);
-            Set<String> numberCountSet = new HashSet<String>();
-            if (ownValue != null && compareValue != null) {
-
-                Double value1 = ownValue.getValor() == null ? Double.NaN : ownValue.getValor();
-                Double value2 = compareValue.getValor() == null ? Double.NaN : compareValue.getValor();
-                Double compare = value1 == Double.NaN || value2 == Double.NaN ? Double.NaN : Math.abs((value2 / value1) - 1);
-                if (!numberCountSet.contains(numberCount)) {
-
-                    mapping.put(numberCount, new NDimensionVector(value1, value2, compare));
-                    if (sortly.get(compare) == null) {
-                        sortly.put(compare, new NDimensionVector<Double>());
-                    }
-                    NDimensionVector get = sortly.get(compare);
-                    get.addValue(numberCount);
-                    numberCountSet.add(numberCount);
-                    sortly.put(compare, get);
+    public List<CompareObjectReport> compareProjects(Regcuenta comparable, double minVariance, int numberRegisters, Collection<Cuenta> ownCuentasParam, Collection<Cuenta> otherCuentasParam) {
+        List<Catalogocuenta> catCtas = sacarCatalogosCuentas(ownCuentasParam, otherCuentasParam);
+        List<CompareObjectReport> ans = new LinkedList<CompareObjectReport>();
+        Map<String, Cuenta> ctasPrimeroMapeadas = mapCuentas(ownCuentasParam);
+        Map<String, Cuenta> ctasSegundoMapeadas = mapCuentas(otherCuentasParam);
+        for (Catalogocuenta c : catCtas) {
+            Cuenta primera = ctasPrimeroMapeadas.get(c.getIdCatalogoCuenta().toString());
+            Cuenta dos = ctasSegundoMapeadas.get(c.getIdCatalogoCuenta().toString());
+            Double valorUno = Double.NaN;
+            Double valorDos = Double.NaN;
+            
+            if (dos != null) {
+                if (dos.getValor() != null) {
+                    valorDos = dos.getValor();
                 }
             }
-        }
-        //ordenamos por comparacion
-        List<Double> sortedCompare = Util.sortDoubleValues(sortly.keySet());
-        Map<Integer, NDimensionVector> answer = new HashMap<Integer, NDimensionVector>();
-        int maxRegisters = numberRegisters < 0 ? sortedCompare.size() : numberRegisters;
-        int actualRegisters = 0;
-        int counter = 0;
-        //empezamos a meter solo los registros que necesitamos
-        while (maxRegisters > 0 && counter < sortedCompare.size()) {
-            Double compareVal = sortedCompare.get(sortedCompare.size() - 1 - counter);
-            if (compareVal >= minVariance || !compareVal.isNaN()) {
-                NDimensionVector numberCounts = sortly.get(compareVal);
-                NDimensionVector newVector = new NDimensionVector();
-                List<String> values = numberCounts.getValues();
-                for (String s : values) {
-                    if (maxRegisters > 0) {
-                        newVector.addValue(s);
-                        newVector.addValues(mapping.get(s));
-                        if (answer.get(actualRegisters) == null) {
-                            answer.put(actualRegisters, newVector);
-                        }
-                        maxRegisters--;
-                        actualRegisters++;
-                    }
+            if (primera != null) {
+                if (primera.getValor() != null) {
+                    valorUno = primera.getValor();
                 }
             }
-
-            counter++;
+            CompareObjectReport com = new CompareObjectReport(c, valorUno, valorDos);
+            ans.add(com);
         }
-        return answer;
+        return ans;
+    }
+
+    private Map<String, Cuenta> mapCuentas(Collection<Cuenta> ownCuentasParam) {
+        Map<String, Cuenta> map = new HashMap<String, Cuenta>();
+        for (Cuenta c : ownCuentasParam) {
+            map.put(c.getCatalogocuenta().getIdCatalogoCuenta().toString(), c);
+        }
+        return map;
+    }
+
+    private List<Catalogocuenta> sacarCatalogosCuentas(Collection<Cuenta> ctasUno, Collection<Cuenta> ctasDos) {
+        List<Catalogocuenta> lis = new LinkedList<Catalogocuenta>();
+        for (Cuenta c : ctasUno) {
+            if (c.getCatalogocuenta() != null && c.getValor()!=null) {
+                lis.add(c.getCatalogocuenta());
+            }
+        }
+        for (Cuenta c : ctasDos) {
+            if (c.getCatalogocuenta() != null && c.getValor()!=null) {
+                lis.add(c.getCatalogocuenta());
+            }
+        }
+        return lis;
     }
 
     public static void main(String[] args) {

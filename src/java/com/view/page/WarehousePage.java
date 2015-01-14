@@ -29,7 +29,7 @@ public class WarehousePage extends BorderPage{
         fsr.setColumns(1);
         fsr.add(new Submit("consistencia","Reporte de Consistencia", this, "consistencia"));
         fsr.add(new Submit("congruencia","Reporte de Congruencia", this, "congruencia"));
-        fsr.add(new Submit("integridad","Reporte de Integridad", this, "integridad"));
+        //fsr.add(new Submit("integridad","Reporte de Integridad", this, "integridad"));
         form.add(fsc);
         form.add(fsr);
         addControl(form);
@@ -41,7 +41,7 @@ public class WarehousePage extends BorderPage{
     }
     
     public boolean consistencia(){
-        setRedirect(ReporteconsistenciaPage.class);
+        setRedirect(ReporteconsPage.class);
         return true;
     }
     

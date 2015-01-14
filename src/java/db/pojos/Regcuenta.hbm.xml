@@ -56,12 +56,6 @@
             </key>
             <one-to-many class="db.pojos.Prestamo" />
         </set>
-        <set name="regvectors" table="regvector" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="IdRegCuenta" />
-            </key>
-            <one-to-many class="db.pojos.Regvector" />
-        </set>
         <set name="regcuentausers" table="regcuentauser" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="IdRegCuenta" not-null="true" />

@@ -2,6 +2,7 @@ package reports.excelmaker;
 
 import db.controller.DAO;
 import db.pojos.Cuenta;
+import db.pojos.Regcuenta;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -24,11 +25,13 @@ public class ExcelMaker {
     private String fileName;
     private String baseName;
     private Map<String, Cuenta> datos;
+    private Regcuenta reg;
 
-    public ExcelMaker(String fileName, String baseName, Map<String, Cuenta> datos) {
+    public ExcelMaker(String fileName, String baseName, Regcuenta reg,Map<String, Cuenta> datos) {
         this.fileName = fileName;
         this.baseName = baseName;
         this.datos = datos;
+        this.reg=reg;
     }
 
     public File makeFile() throws IOException, InvalidFormatException {
@@ -50,7 +53,7 @@ public class ExcelMaker {
                     if (!isFormula) {
                         String cellContents = getValue(cell);
                         if (!cellContents.equals("") && cellContents.charAt(0) == '?') {
-                            cell.setCellValue(mapGetValue(cellContents.substring(1, cellContents.length())));
+                            mapGetValue(cell,cellContents.substring(1, cellContents.length()));
                         }
                     }else{
                         cell.setCellFormula(cell.getCellFormula());
@@ -72,7 +75,7 @@ public class ExcelMaker {
         for (Cuenta c : createQuery) {
             map.put(c.getCatalogocuenta().getIdCatalogoCuenta().toString(), c);
         }
-        ExcelMaker ex = new ExcelMaker("archivo.xlsx", "baseRC01.xlsx", map);
+//        ExcelMaker ex = new ExcelMaker("archivo.xlsx", "baseRC01.xlsx", map);
 //        String makeFile = ex.makeFile();
     }
 
@@ -86,12 +89,14 @@ public class ExcelMaker {
 
     }
 
-    private double mapGetValue(String substring) {
+    private void mapGetValue(Cell cell,String substring) {
         Cuenta get = datos.get(substring);
         if (get != null) {
-            return get.getValor();
+            cell.setCellValue(get.getValor());
         }
-        return -1.0;
+        if(substring.equalsIgnoreCase("fecha")){
+            cell.setCellValue(reg.getFecha());
+        }
     }
 
     private boolean isFormula(Cell cell) {
