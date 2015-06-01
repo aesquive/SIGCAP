@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 15/07/2014 09:37:00 PM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
-    <class name="db.pojos.Emision" table="emision" catalog="prueba">
+    <class name="db.pojos.Emision" table="emision" >
         <id name="idEmision" type="java.lang.Integer">
             <column name="IdEmision" />
             <generator class="identity" />

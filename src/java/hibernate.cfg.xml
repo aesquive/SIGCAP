@@ -4,7 +4,8 @@
     <session-factory>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/prueba?autoReconnect=true</property>
+        <!-- el rewrite batched statements funciona para hacer mas eficiente el select,update,insert creando el SQL y no en HQL-->
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/sigcap?autoReconnect=true&amp;rewriteBatchedStatements=true</property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">root</property>
         <property name="hibernate.connection.autocommit">true</property>
@@ -14,6 +15,8 @@
         <property name="hibernate.c3p0.timeout">250</property>
         <property name="hibernate.c3p0.max_statements">0</property>
         <property name="hibernate.c3p0.idle_test_period">150</property>
+        <property name="hibernate.jdbc.batch_size">1000</property>
+        
         <!--
         <property name="hibernate.c3p0.validate">true</property>
         <property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>

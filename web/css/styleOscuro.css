@@ -1,37 +1,21 @@
-a:link {color:#B40404;}      /* unvisited link */
-a:visited {color:#B40404;}  /* visited link */
-a:hover {color:#B40404;}  /* mouse over link */
-a:active {color:#B40404;}  /* selected link */
+a:link {color:#FF7519;}      /* unvisited link */
+a:visited {color:#FF7519;}  /* visited link */
+a:hover {color:#FF7519;}  /* mouse over link */
+a:active {color:#FF7519;}  /* selected link */
 
 
 body {
-    font:1em "Lucida Sans Unicode","Lucida Grande",courier;
+    font:1em "Lucida Sans Unicode","Lucida Grande",sans-serif;
     //background: -webkit-linear-gradient(bottom,black, grey); /* For Safari */
     //background: -o-linear-gradient(bottom,black, grey); /* For Opera 11.1 to 12.0 */
     //background: -moz-linear-gradient(bottom,black, grey); /* For Firefox 3.6 to 15 */
     //background: linear-gradient(bottom,black, grey); /* Standard syntax */
-    background: -webkit-radial-gradient(whitesmoke, whitesmoke); /* For Safari */
-    background: -o-radial-gradient(whitesmoke, whitesmoke); /* For Opera 11.1 to 12.0 */
-    background: -moz-radial-gradient(whitesmoke, whitesmoke); /* For Firefox 3.6 to 15 */
-    background: radial-gradient(whitesmoke, whitesmoke); /* Standard syntax */
-    color: #2E64FE;
-    //font-weight: bold;
-}
-
-#divIzquierda{
-     position: relative; 
-     width: 20%;
-     top: 0; 
-     left: 0;
-     float: left; 
-}
-
-#divDerecha{
-     position: relative; 
-     width: 78%;
-     top: 0; 
-     right: 0;
-     float: right;
+    background: -webkit-radial-gradient(black, black); /* For Safari */
+    background: -o-radial-gradient(black, black); /* For Opera 11.1 to 12.0 */
+    background: -moz-radial-gradient(black, black); /* For Firefox 3.6 to 15 */
+    background: radial-gradient(black, black); /* Standard syntax */
+    color: white;
+    font-weight: bold;
 }
 
 #loginContainer{
@@ -55,58 +39,75 @@ body {
     z-index: -2;
 }
 
-
-#rootMenu {
-    
-    border-style: solid ;
-    background-color: whitesmoke;
-    width: 100%;
-    border-radius: 10px;
-    border-color: #2E64FE;
-    color: #2E64FE;
-    font-size: .75em;
+#rootMenuSim {
+    border-style: none ;
+    background-color: black;
+    color: white;
+    font-size: 1em;
 }
 
-#rootMenu ul{
-    margin-left: -5%;
+#rootMenuSim ul li{
+    display: inline-table;
+    padding-right: .5em;
+}
+
+
+#rootMenuSim ul li a
+{
+    border-radius: 5px;
+    padding: .2em 1em;
+    color: white;
+    font-weight: bolder;
+    border-style: solid ;
+    border-color: #FF7519;
+    font-size: .8em;
+}
+
+#rootMenuSim ul li a:hover
+{
+    color: #FF7519;
+    font-weight: bolder;
+    //color naranja
+    border-style: solid ;
+    border-color: #FF7519;
+}
+
+
+#rootMenu {
+    border-style: solid ;
+    background-color: black;
+    border-radius: 25px;
+    border-color: #FF7519;
+    color: white;
+    font-size: 1em;
 }
 
 #rootMenu ul li{
-    padding-bottom: 1em;
-    display: list-item;
-    padding-right: .2em;
+    padding-bottom: 2.2em;
+    display: inline-table;
+    padding-right: .5em;
 }
-
-
-.submenu{
-    padding-top: .75em;
-    display: none;
-}
-
 
 
 #rootMenu ul li a
 {
     border-radius: 5px;
     padding: .2em 1em;
-    color: #2E64FE;
+    color: white;
     font-weight: bolder;
     border-style: solid ;
-    border-color: #2E64FE;
+    border-color: white;
     font-size: .8em;
 }
 
 #rootMenu ul li a:hover
 {
-    color: #B40404;
+    color: #FF7519;
     font-weight: bolder;
     //color naranja
     border-style: solid ;
-    border-color: #B40404;
-    
+    border-color: #FF7519;
 }
-
-
 
 #backLink{
     position: absolute;
@@ -133,48 +134,50 @@ body {
 
 input[type=text]{
     width: 15em;
-    color: #3A01DF;
+    color: black;
     font-weight: bold;
     font-size: 1.3em;
-    background-color: #A9A9F5;
+    background-color: #FF7519;
 }
 
 
 input[type=password]{
     width: 15em;
-    color: #3A01DF;
+    color: black;
     font-weight: bold;
     font-size: 1.3em;
-    background-color: #A9A9F5;
+    background-color: #FF7519;
 }
 
 input[type=submit]{
 
-    background-color: #0080FF;
-    color: white;
-    border-radius: 5px;
+    background-color: white;
+    color: black;
+    font-weight: bolder;
+    border-radius: 10px;
     border-color: black;
     border-style: solid double;
-    font-size: 1em;
+    font-size: 1.3em;
     padding: .2em 1em;
 }
 
 
 input[type=button]{
 
-    background-color: #0080FF;
-    color: white;
-    border-radius: 5px;
+    background-color: white;
+    color: black;
+    font-weight: bolder;
+    border-radius: 10px;
     border-color: black;
     border-style: solid double;
-    font-size: 1em;
+    font-size: 1.3em;
     padding: .2em 1em;
 }
 
 
 label{
     font-size: 1.3em;
-    color: #2E64FE;
+    color: white;
 }
 
 /*definicion de la parte del usuario*/
@@ -193,7 +196,7 @@ label{
     padding: .2em .5em;
     margin-left: 2em;
     background-color: transparent;
-    color:red; 
+    color:white; 
     font-size: .5em;
     font-weight: bolder;
 }
@@ -211,69 +214,66 @@ label{
 /*edicion sobre tabla de datos de cuentas*/
 #dataTableSmall{
     border: 2px solid;
-    border-color: #2E64FE;
+    border-color: #FF7519;
     border-spacing: 1em;
     border-radius: 7px;
-    background-color: #EFFBFB;
+    background-color: black;
 }
 
 #dataTableSmall th{
-    background-color: #2E64FE;
+    background-color: #FF7519;
     border-radius: 5px;
     border-width: 5px;
-    color: white;
+    color: black;
     font-weight: bold;
     font-size: .7em;
 }
 
 #dataTableSmall td{
-    border: 3px solid #2E64FE;
+    border: 3px solid white;
     text-align: center;
     font-size: .7em;
-    color: black;
 }
 
+#dataTableSmall td a{
+    color:white;
+}
 
 
 /*edicion sobre tabla de datos de cuentas*/
 #dataTable{
     border: 2px solid;
-    border-color: #2E64FE;
+    border-color: #FF7519;
     border-spacing: 1em;
     border-radius: 7px;
-    background-color: #EFFBFB;
+    background-color: black;
 }
 
 #dataTable th{
-    background-color: #2E64FE;
+    background-color: #FF7519;
     border-radius: 5px;
     border-width: 5px;
-    color: white;
+    color: black;
     font-weight: bold;
     font-size: 1em;
 }
 
 #dataTable td{
-    border: 3px solid #2E64FE;
+    border: 3px solid white;
     text-align: center;
     font-size: 1em;
-    color:black;
 }
 
 #dataTable td a{
-    color:red;
-}
-
-#dataTable td a:hover{
-    color:#380B61;
+    color:white;
 }
 
 select{
     width: 15em;
-    color: #3A01DF;
+    color: black;
     font-weight: bold;
     font-size: 1.3em;
-    background-color: #A9A9F5;
+    background-color: #FF7519;
 }
 
 
@@ -294,12 +294,12 @@ iframe.ie6_blocker {
 
 .calendar_date_select thead th {
   font-weight:bold;
-  background-color: #380B61;
+  background-color: #FF7519;
   border-top:2px solid #777;
   border-bottom:2px solid black;
   border-right: 2px solid #777;
-  border-color: #380B61;
-  color: white !important;
+  border-color: #FF7519;
+  color: black !important;
 }
 
 .calendar_date_select .cds_buttons {
@@ -319,19 +319,19 @@ iframe.ie6_blocker {
   margin: 0px;
   padding: 0px;
   
-  border-top: 3px solid #380B61;
-  border-right: 3px solid #380B61;
-  border-left:  3px solid #380B61;
-  border-bottom: 3px solid #380B61;
+  border-top: 3px solid #FF7519;
+  border-right: 3px solid #FF7519;
+  border-left:  3px solid #FF7519;
+  border-bottom: 3px solid #FF7519;
   
 }
 
 
 .calendar_date_select .cds_header {
   background-color: black;
-  border-top: 3px solid #380B61;
-  border-right: 3px solid #380B61;
-  border-left:  3px solid #380B61;
+  border-top: 3px solid #FF7519;
+  border-right: 3px solid #FF7519;
+  border-left:  3px solid #FF7519;
   border-bottom: 3px solid black;
   text-align:center;
   padding-top: 1px;
@@ -397,10 +397,10 @@ iframe.ie6_blocker {
 }
 
 .calendar_date_select td div {
-  color: white;
+  color: #FF7519;
 }
 .calendar_date_select td div.other {
-  color: grey;
+  color: gray;
   
 }
 .calendar_date_select td.selected div {
@@ -431,43 +431,3 @@ iframe.ie6_blocker {
 }
 
 //calendar end
-
-
-//init menu simulacion
-
-#menuSim {
-    border-style: solid ;
-    background-color: whitesmoke;
-    border-radius: 10px;
-    border-color: #2E64FE;
-    color: #2E64FE;
-    font-size: 1em;
-}
-
-
-#menuSim ul li{
-    padding-bottom: 1em;
-    display: inline-table;
-    padding-right: .2em;
-}
-
-
-#menuSim ul li a
-{
-    border-radius: 5px;
-    padding: .2em 1em;
-    color: #2E64FE;
-    font-weight: bolder;
-    border-style: solid ;
-    border-color: #2E64FE;
-    font-size: .8em;
-}
-
-#menuSim ul li a:hover
-{
-    color: #B40404;
-    font-weight: bolder;
-    //color naranja
-    border-style: solid ;
-    border-color: #B40404;
-}

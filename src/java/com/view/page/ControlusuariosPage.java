@@ -16,10 +16,10 @@ public class ControlusuariosPage extends BorderPage {
     @Override
     public void init() {
 
-        if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer)) && dte.get(numPer) == true) {
-            setRedirect(NocontratadoPage.class);
-            return;
-        }
+//        if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer)) && dte.get(numPer) == true) {
+//            setRedirect(NocontratadoPage.class);
+//            return;
+//        }
         form = new Form("form");
         addControl(form);
         form.add(new Submit("alta", "Alta de Usuario", this, "alta"));

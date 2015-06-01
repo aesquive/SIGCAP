@@ -1,7 +1,5 @@
 package com.view.page;
 
-import db.pojos.Regcuenta;
-import org.apache.click.control.Form;
 import org.apache.click.control.Label;
 import org.apache.click.extras.control.Menu;
 import org.apache.click.extras.security.RoleAccessController;
@@ -10,26 +8,27 @@ import org.apache.click.extras.security.RoleAccessController;
  *
  * @author Admin
  */
-public  class SimulacionPage extends BorderPage {
+public abstract class SimulacionPage extends BorderPage {
 
-    private Form form;
-    private Regcuenta regCta;
-    private Menu simMenu;
+    Menu menuSim;
+    Label name;
     
-    
+    @Override
     public void init() {
-        setForm(new Form("form"));
-        setRegCta((Regcuenta) getSessionVar("prySim"));
-        setSimMenu(new Menu("rootMenuSim"));
-        getSimMenu().add(createMenu("Simulador Tenencia", "simulaciontenencia.htm"));
-        getSimMenu().add(createMenu("Simulador Captación", "simulacioncaptacion.htm"));
-        getSimMenu().add(createMenu("Simulador Disponibilidades", "simulaciondisponibilidad.htm"));
-        getSimMenu().add(createMenu("Simulador Prestamos", "simulacionprestamo.htm"));
-        getSimMenu().add(createMenu("Simulador Tarjeta", "simulaciontarjeta.htm"));
-        form.add(new Label("txt", "Ejercicio :"+regCta.getDesRegCuenta()));
-        getForm().add(getSimMenu());
-        addControl(getForm());
-        
+        name=new Label("name", "Simulador");
+        addControl(name);
+        initMenu();
+        initSimulacionComponents();
+    }
+
+    public abstract void initSimulacionComponents();
+
+    private void initMenu() {
+        menuSim = new Menu("menuSim");
+
+        menuSim.add(createMenu("Simulación de Cuentas", "simulacioncuentas.htm"));
+        menuSim.add(createMenu("Simulación de Tenencia", "simulaciontenencia.htm"));
+        addControl(menuSim);
     }
 
     private Menu createMenu(String label, String path) {
@@ -39,48 +38,6 @@ public  class SimulacionPage extends BorderPage {
         menu.setPath(path);
         menu.setTitle(label);
         return menu;
-    }
-
-    /**
-     * @return the form
-     */
-    public Form getForm() {
-        return form;
-    }
-
-    /**
-     * @param form the form to set
-     */
-    public void setForm(Form form) {
-        this.form = form;
-    }
-
-    /**
-     * @return the regCta
-     */
-    public Regcuenta getRegCta() {
-        return regCta;
-    }
-
-    /**
-     * @param regCta the regCta to set
-     */
-    public void setRegCta(Regcuenta regCta) {
-        this.regCta = regCta;
-    }
-
-    /**
-     * @return the simMenu
-     */
-    public Menu getSimMenu() {
-        return simMenu;
-    }
-
-    /**
-     * @param simMenu the simMenu to set
-     */
-    public void setSimMenu(Menu simMenu) {
-        this.simMenu = simMenu;
     }
 
 }

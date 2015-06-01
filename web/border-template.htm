@@ -1,38 +1,24 @@
-<meta content="text/html;charset=UTF-8">
+<!--<meta content="text/html;charset=UTF-8">-->
 <html>
     <head>
-        #if ($title)
-        <title>SICAP $title</title>
-        #end
-        <link rel="stylesheet" type="text/css" href="$context/css/style.css" title="Style"/>
-        <script type="text/javascript" src="$context/css/methods.js"/>
-    </head>
-    <body>
-        
+        <title>SIGCAP</title>
+        <link rel="stylesheet" type="text/css" href="$context/css/style.css" title="Style">
+        <script type="text/javascript" src="$context/css/methods.js"></script>
         <script>
+            function waitPageLogin() {
+                document.getElementById("divProcess").style.display = "block";
+                document.getElementById("divForm").style.display = "none";
+            }
+
+            function stopWaitingLogin() {
+                document.getElementById("divProcess").style.display = "none";
+                document.getElementById("divForm").style.display = "block";
+            }
         </script>
-        #if ($connecteduser)
-        <a style="font-size: medium">Usuario conectado: $connecteduser</a>
-        <a href="salir.htm">&nbsp;&nbsp;&nbsp;Cerrar Sesi&oacute;n</a>
-        <br/>
-        #end
-        <br/>
-        #if ($rootMenu)
-        $rootMenu
-        #end
 
-        #if ($forwardForm)
-        $forwardForm
-        #end
+    </head>
 
-        #if ($backwardForm)
-        $backwardForm
-        #end
-
-
-        #if ($message)
-        <a>$message</a>
-        #end
+    <body onload="mostrarSubmenu('')">
 
         <div id="divProcess" style="display: none;width: 150px;height: 200px;margin-left: auto;margin-right: auto">
             <br/>
@@ -43,7 +29,44 @@
             <a>Procesando...</a>
         </div>
 
-        <div id="divForm" style="display:block">
+
+        #if ($connecteduser)
+        <a style="font-size: medium;font-weight: bold;">Usuario conectado: $connecteduser</a>
+        <a href="salir.htm">
+            Cerrar Sesi&oacute;n</a>
+        <br/>
+        #end
+        <br/>
+
+        #if ($message)
+        <a>$message</a>
+        #end
+
+
+
+        #if ($forwardForm)
+        $forwardForm
+        #end
+
+        #if ($backwardForm)
+        $backwardForm
+        #end
+
+
+        <div id="divIzquierda">
+            #if ($rootMenu)
+            $rootMenu
+            #end
+
+            #if ($login)
+            <center>
+                <img   src="img/sigcap.jpg"/>  
+            </center>
+            #end
+        </div>
+
+
+        <div id="divDerecha">
             <center>
                 #if ($title)
                 <h3 id="title" style="width: 100%;font-size:1.3em">$title</h3>
@@ -60,15 +83,26 @@
                 #parse($path)
             </div>
             #end
+
+
+            <br/>
+
+            
+            #if ($rootMenu)
+            <center>
+                <a style="font-size: xx-large;font-weight: bolder">SIGCAP</a>
+            </center>
+            <br/>
+
+            <a style="font-size: small">Wired & Wireless Networks SA de CV</a>
+            <a style="font-size: small">Acapulco 62 piso 5, Colonia Roma Norte</a>
+            <a style="font-size: small">CP 06700, Distrito Federal Tel 55 4434-0155</a>
+
+            #end
+
+
         </div>
-        <br/>
-    
-        
-    <center>
-        <img src="img/banco.png" id="logoBancoPage"/>
-    </center>
 
-    
 
-</body>
+    </body>
 </html> 

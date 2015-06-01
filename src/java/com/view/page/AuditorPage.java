@@ -22,10 +22,10 @@ public class AuditorPage extends BorderPage {
     @Override
     public void init() {
         
-        if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer))&& dte.get(numPer)==true) {
-            setRedirect(NocontratadoPage.class);
-            return;
-        }
+//        if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer))&& dte.get(numPer)==true) {
+//            setRedirect(NocontratadoPage.class);
+//            return;
+//        }
         form = new Form("form");
         form.add(new Submit("comp","Reporte de Validación", this, "comparator"));
         form.add(new Submit("subTracking", "Tracking Log",this,"tracking"));

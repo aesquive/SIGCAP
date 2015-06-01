@@ -4,6 +4,7 @@ import db.controller.DAO;
 import db.pojos.Cuenta;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.Resource;
 import org.apache.click.Context;
 import org.apache.click.control.ActionLink;
@@ -13,7 +14,6 @@ import org.apache.click.control.FieldSet;
 import org.apache.click.control.Form;
 import org.apache.click.control.Table;
 import org.apache.click.extras.control.FormTable;
-import util.Util;
 
 /**
  * Clase que se encarga de poner detalles de cuentas pasados los datos deben de
@@ -111,15 +111,17 @@ public class TablePage extends BorderPage {
         for (int t = 0; t < data.size(); t++) {
             if (data.get(t).getActionLink().isClicked()) {
                 Cuenta ref = data.get(t);
+                Set<Cuenta> cuentas = ref.getRegcuenta().getCuentas();
+                
                 List<Cuenta> newData = new LinkedList<Cuenta>();
-                List<Cuenta> createQuery = DAO.createQuery(Cuenta.class, null);
                 if (ref.getRef() == null || ref.getRef().equals("")) {
                     newData.add(ref);
-                } else {
+                } 
+                else {
                     String[] split = ref.getRef().split(",");
                     for (String sp : split) {
-                        for (Cuenta c : createQuery) {
-                            if (c.getIdCuenta().toString().equals(sp)) {
+                        for (Cuenta c : cuentas) {
+                            if (c.getCatalogocuenta().getIdCatalogoCuenta().toString().equals(sp)) {
                                 newData.add(c);
                             }
                         }

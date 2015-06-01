@@ -1,5 +1,5 @@
 //var direccionReportes="http://54.191.48.171:8080/SICAP/vistareportes.htm";
-var direccionReportes="http://localhost:8080/SICAP/vistareportes.htm";
+var direccionReportes="http://localhost:8081/SICAP/vistareportes.htm";
 
 
 
@@ -58,4 +58,26 @@ function createTenencia() {
     var idRegCta = document.getElementsByName("pryName")[0].value;
     window.open(direccionReportes+"?typ=5&pro=" + idRegCta, "Reporte");
     return true;
+}
+
+function mostrarSubmenu(numSubmenu){
+    var idsSubsShow=numSubmenu;
+    var split=idsSubsShow.split("|");
+    quitarSubMenus();
+    for(var t=0;t<split.length;t++){
+        var element=document.getElementById("sub"+split[t]);
+        element.style.display="block";
+        element.parentNode.parentNode.style.display="block";
+    }
+}
+
+
+function quitarSubMenus(){
+    for(var t=1;t<20;t++){
+        var element=document.getElementById("sub"+t);
+        if(element!=null){
+            element.style.display="none";
+            element.parentNode.parentNode.style.display="none";
+        }
+    }
 }

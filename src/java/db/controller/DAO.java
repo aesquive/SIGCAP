@@ -1,21 +1,22 @@
 package db.controller;
 
-import db.pojos.Permisos;
 import db.pojos.Tracking;
 import db.pojos.User;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 
 /**
  * Se encarga de entablar la comunicacion con la base de datos
  *
- * @author zorin
+ * @author WWN
  */
 public class DAO {
 
@@ -40,11 +41,21 @@ public class DAO {
                 createCriteria.add(cr);
             }
         }
-        List list = createCriteria.list();
+        try {
 
-        return list;
+            List list = createCriteria.list();
+
+            return list;
+        } catch (Exception e) {
+            return new LinkedList();
+        }
     }
 
+    /**
+     * guarda un registro dentro del tracking log
+     * @param user
+     * @param text 
+     */
     public static void saveRecordt(User user, String text) {
         Tracking tracking = new Tracking(user, text, Calendar.getInstance().getTime());
         save(tracking);
@@ -61,49 +72,72 @@ public class DAO {
         session.setCacheMode(CacheMode.IGNORE);
     }
 
+    /**
+     * guarda un solo elemento
+     * @param object 
+     */
     public static void save(Object object) {
         session.save(object);
         session.flush();
         session.clear();
     }
 
+    /**
+     * guarda o actualiza el elemento del parametro
+     * @param obj 
+     */
     public static void saveOrUpdate(Object obj) {
         session.saveOrUpdate(obj);
         session.flush();
         session.clear();
     }
 
+    /**
+     * actualiza el elemento del parametro, debe existir previamente en la base de datos
+     * @param obj 
+     */
     public static void update(Object obj) {
         session.update(obj);
         session.flush();
         session.clear();
     }
 
-    public static void main(String[] args) {
-
-    }
-
+    /**
+     * borra un elemento de la base de datos
+     * @param object 
+     */
     public static void delete(Object object) {
         session.delete(object);
         session.flush();
         session.clear();
     }
 
+    /**
+     * actualiza un registro para obtener sus nuevos valores
+     * @param obj 
+     */
     public static void refresh(Object obj) {
         session.refresh(obj);
     }
 
-    public static void saveCargaDatos(List... objects) {
-        for (List<Object> list : objects) {
-            for (Object o : list) {
-                session.saveOrUpdate(o);
-            }
+    /**
+     * guarda multiples objetos dentro de la base, todos deben ser instancias de objetos mapeados
+     * @param objects 
+     */
+    public static void saveMultiple(Collection objects) {
+        for (Object o : objects) {
+            session.save(o);
         }
         session.flush();
         session.clear();
-    }
 
-    public static void deletemultiple(List list) {
+    }
+    
+    /**
+     * borra multiples objetos dentro de la base, todos deben estar almacenados en base previamente
+     * @param list 
+     */
+    public static void deletemultiple(Collection list) {
         for (Object o : list) {
             session.delete(o);
         }
@@ -112,4 +146,20 @@ public class DAO {
         session.clear();
 
     }
+
+    /**
+     * ejecuta codigo sql dado por el usuario
+     * @param sql 
+     */
+    public static void executeSQL(String sql) {
+                checkSession();
+
+        SQLQuery createSQLQuery = session.createSQLQuery(sql);
+        createSQLQuery.executeUpdate();
+    }
+
+    public static void main(String[] args) {
+        DAO.executeSQL("delete from cuenta where idRegCuenta=23");
+    }
+
 }

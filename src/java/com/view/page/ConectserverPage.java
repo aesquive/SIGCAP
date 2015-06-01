@@ -27,7 +27,6 @@ public class ConectserverPage extends Page{
     Form form;
     PasswordField password;
     RadioGroup radios;
-    Select select;
     Label label;
         /**
      * obtienes la parte del estilo de la pagina
@@ -48,16 +47,10 @@ public class ConectserverPage extends Page{
         password=new PasswordField("pass","Password de Cliente",20,true);
         radios=new RadioGroup("radios", "Opciones", true);
         radios.add(new Radio(String.valueOf(ProviderServerConnection.UNLOCK_USER), "Desbloquear Administrador del Sistema"));
-        radios.add(new Radio(String.valueOf(ProviderServerConnection.UNLOCK_MODULE), "Desbloquear Módulo"));
-        select=new Select("select","Módulo a desbloquear");
-        List<Permisos> createQuery = DAO.createQuery(Permisos.class, null);
-        for(Permisos p:createQuery){
-            select.add(new Option(p.getIdPermiso(), p.getDesPermiso()));
-        }
+        radios.add(new Radio(String.valueOf(ProviderServerConnection.UNLOCK_MODULE), "Desbloquear Modulos"));
         label=new Label("label", message);
         form.add(password);
         form.add(radios);
-        form.add(select);
         form.add(new Submit("sub","Enviar al Servidor Central", this, "enviar"));
         form.add(label);
         addControl(form);
@@ -67,7 +60,7 @@ public class ConectserverPage extends Page{
         if(form.isValid()){
             try {
                 ProviderServerConnection pr=new ProviderServerConnection();
-                String message=pr.execute(Integer.parseInt(radios.getValue()),Integer.parseInt(select.getValue()),password.getValue());
+                String message=pr.execute(Integer.parseInt(radios.getValue()),password.getValue());
                 getContext().setSessionAttribute("msg",message);
                 setRedirect(ConectserverPage.class);
                 return true;

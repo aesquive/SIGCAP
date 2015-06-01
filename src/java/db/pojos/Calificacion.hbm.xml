@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 14/07/2014 09:36:59 PM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
-    <class name="db.pojos.Calificacion" table="calificacion" catalog="prueba">
+    <class name="db.pojos.Calificacion" table="calificacion">
         <id name="idCalificacion" type="java.lang.Integer">
             <column name="IdCalificacion" />
             <generator class="identity" />

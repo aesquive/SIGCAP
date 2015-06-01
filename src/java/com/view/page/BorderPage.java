@@ -83,15 +83,32 @@ public abstract class BorderPage extends Page {
             }
         }
         Collections.sort(listPermisos);
-        String[] label = new String[]{"DataWarehouse","Generador de RC´s","Gestión de Capital","Tenencia", "Auditor","Simulación de Capital", "Administrador de Usuarios"};
-        String[] path = new String[]{"warehouse.htm", "reportes.htm", "icap.htm","menutenencia.htm","auditor.htm" ,"whatif.htm","controlusuarios.htm"};
-        for (int t = 0; t < label.length; t++) {
-            if (listPermisos.size() > t && listPermisos.get(t).getValor() == 1) {
-                //if (isActive(listPermisos.get(t).getPermisos(),fileInfo)) {
-                rootMenu.add(createMenu(label[t], path[t]));
-                //}
-            }
+
+        //creamos el menu
+        String[] menuPrincipal = new String[]{"DataWarehouse","Generador de Reportes","Gestión de Capital","Auditor","Simulación de Capital", "Administrador de Usuarios"};
+        String[] subMenus=new String[]{"","Generador RC's|Tenencia","","Reporte de Cambios|Tracking Log","",""};
+        String[] path = new String[]{"warehouse.htm","reportes.htm|menutenencia.htm", "icap.htm","reportecambios.htm|trackinglog.htm","whatif.htm","controlusuarios.htm"};
+        String[] identSUbs=new String[]{"","1|2","","3|4","","",""};
+        for (int t = 0; t < menuPrincipal.length; t++) {
+                Menu pestania=null;
+                if(subMenus[t].equals("")){
+                    pestania=createMenu(menuPrincipal[t], path[t]);
+                }else{
+                   pestania=createMenu(menuPrincipal[t], "#");
+                    String[] splitSubmenus = subMenus[t].split("\\|");
+                    String[] splitSubsIds=identSUbs[t].split("\\|");
+                    String[] splitPaths=path[t].split("\\|");
+                    for(int x=0;x<splitSubmenus.length;x++){
+                       Menu createMenu = createMenu(splitSubmenus[x], splitPaths[x]);
+                       createMenu.setId("sub"+splitSubsIds[x]);
+                       pestania.add(createMenu);
+                    }
+                }
+                pestania.setAttribute("onmouseup", "mostrarSubmenu('"+identSUbs[t]+"')");
+                rootMenu.add(pestania);
         }
+        
+        
         addControl(rootMenu);
 
     }
@@ -114,18 +131,18 @@ public abstract class BorderPage extends Page {
                     String asciiText = Util.getAsciiText(p.getCodigo().substring(p.getCodigo().length() - 16, p.getCodigo().length()), 2);
                     Date parse = form.parse(asciiText);
                     if (parse.compareTo(Calendar.getInstance().getTime()) < 0) {
-                        dte.put(p.getIdPermiso(), false);
+                        dte.put(p.getIdPermiso()-1, false);
                         per.add(null);
                     } else {
                         per.add(p.getCodigo().substring(0, p.getCodigo().length() - 18));
-                        dte.put(p.getIdPermiso(), true);
+                        dte.put(p.getIdPermiso()-1, true);
                     }
                 } catch (Exception ex) {
-                    dte.put(p.getIdPermiso(), true);
+                    dte.put(p.getIdPermiso()-1, true);
                     per.add(p.getCodigo());
                 }
             } else {
-                dte.put(p.getIdPermiso(), false);
+                dte.put(p.getIdPermiso()-1, false);
                 per.add("");
             }
         }

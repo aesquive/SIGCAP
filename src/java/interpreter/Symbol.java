@@ -4,10 +4,20 @@ import java.util.Map;
 
 /**
  *
- * @author Admin
+ * @author WWN
  */
 public class Symbol {
 
+    /**
+     * interpreta una operacion matematica de 2 operandos, se debe brindar el mapa de variables
+     * para poder buscar sus valores
+     * @param sym
+     * @param param1
+     * @param param2
+     * @param variableMap
+     * @return
+     * @throws MathInterpreterException 
+     */
     public static String interp(String sym, String param1, String param2, Map<String, Double> variableMap) throws MathInterpreterException {
         Double value1 = 0.0;
         Double value2 = 0.0;
@@ -20,7 +30,7 @@ public class Symbol {
         if (String.valueOf(param1.charAt(0)).equals("=")) {
             Double value = variableMap.get(param1.replace("=", ""));
             if (value == null) {
-                System.out.println("Not existing variable " + param1.replace("=", ""));
+            //    System.out.println("Not existing variable " + param1.replace("=", ""));
                 value1 = 0.0;
             } else {
 
@@ -30,7 +40,7 @@ public class Symbol {
         if (String.valueOf(param2.charAt(0)).equals("=")) {
             Double value = variableMap.get(param2.replace("=", ""));
             if (value == null) {
-                System.out.println("Not existing variable " + param1.replace("=", ""));
+            //    System.out.println("Not existing variable " + param1.replace("=", ""));
                 value2 = 0.0;
             } else {
                 value2 = value;

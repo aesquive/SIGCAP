@@ -67,7 +67,7 @@ public class ReportesPage extends BorderPage {
         fsCalc.add(new Submit("calc", "Calcular Ejercicio", this, "calc"));
         fsDel.add(selectDelete);
         fsDel.add(new Submit("del", "Borrar Ejercicio", this, "borrar"));
-        form.add(fsCalc);
+//        form.add(fsCalc);
         form.add(fsReporte);
         form.add(fsDel);
         addControl(form);

@@ -260,10 +260,10 @@ public class Regcuenta implements java.io.Serializable, Cloneable {
         return null;
     }
 
-    public Cuenta getCuentaById(String id, Collection<Cuenta> cuentas1) {
+    public Cuenta getCuentaByCatalogoId(String id, Collection<Cuenta> cuentas1) {
         for (Cuenta c : cuentas1) {
             if (c.getRegcuenta().getIdRegCuenta().toString().equals(this.getIdRegCuenta().toString())
-                    && c.getIdCuenta().toString().equals(id)) {
+                    && c.getCatalogocuenta().getIdCatalogoCuenta().toString().equals(id)) {
                 return c;
             }
         }

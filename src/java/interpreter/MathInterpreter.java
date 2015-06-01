@@ -14,7 +14,7 @@ import java.util.Map;
  * 
  * Recibe un mapeo con nombres de variables por si estas se quieren utilizar durante el calculo  , el mapeo es de <String,Double> , solo evalua expresiones matematicas
  *
- * @author Alberto Emmanuel Esquivel Vega
+ * @author WWN
  */
 public class MathInterpreter {
     

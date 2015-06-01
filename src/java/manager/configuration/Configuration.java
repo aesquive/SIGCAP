@@ -39,5 +39,17 @@ public class Configuration {
             configuration=new HashMap<String, String>();
         }
     }
+
+    public static void setValue(String var, String valueOf) {
+        List<Configuracion> createQuery = DAO.createQuery(Configuracion.class, null);
+        for(Configuracion c:createQuery){
+            if(c.getDesConfiguracion().equals(var)){
+                c.setValor(valueOf);
+                DAO.update(c);
+                break;
+            }
+        }
+        System.out.println("se updateo el valor del login a "+valueOf);
+    }
     
 }

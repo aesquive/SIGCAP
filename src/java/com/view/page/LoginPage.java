@@ -5,6 +5,7 @@ import db.pojos.Cuenta;
 import db.pojos.User;
 import java.util.LinkedList;
 import java.util.List;
+import manager.configuration.Configuration;
 import org.apache.click.Page;
 import org.apache.click.control.Form;
 import org.apache.click.control.PasswordField;
@@ -79,7 +80,7 @@ public class LoginPage extends Page {
             return false;
         }
         User user = verifyUser(userField.getValue(), passwordField.getValue());
-        if (user == null) {
+/*        if (user == null) {
             message = "Usuario y/o password incorrecto";
             return false;
         }
@@ -90,7 +91,16 @@ public class LoginPage extends Page {
         if(user.getActivo()==2){
             message="El usuario esta dado de baja";
             return false;
+        }*/
+        int actualValue=user.getNumlogin();
+        int maxValue=Integer.parseInt(Configuration.getValue("MaxLogin").replace("\"", ""));
+        
+        if(maxValue>0 && actualValue>maxValue){
+            message="Esta es una versión de prueba, favor de contactar al administrador";
+            return false;
         }
+        user.setNumlogin(user.getNumlogin()+1);
+        DAO.update(user);
         user.setActivo(1);
         DAO.update(user);
         getContext().setSessionAttribute("user", user);

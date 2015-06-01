@@ -102,7 +102,7 @@ public class Tenenciacalculo extends BorderPage {
 
     public boolean calcular() {
         try {
-            ModelExecutor mex = new ModelExecutor(sessionVar);
+            ModelExecutor mex = new ModelExecutor(sessionVar,true);
             mex.start();
             setRedirect(IcapPage.class);
             return true;

@@ -57,7 +57,7 @@ public class CargadatosPage extends BorderPage {
         this.form = new Form("form");
 //        if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer)) || !dte.get(numPer)) {
 //            setRedirect(NocontratadoPage.class);
-//            return;
+//           return;
 //        }
         name = new TextField("name", "Nombre del Ejercicio", true);
         dateField = new DateField("dateField", "Fecha de Ejercicio (dd/mm/aaaa)", true);
@@ -498,7 +498,9 @@ public class CargadatosPage extends BorderPage {
     }
 
     private void saveAll(List<Object>... objects) {
-        DAO.saveCargaDatos(objects);
+        for(List l:objects){
+            DAO.saveMultiple(l);
+        }
     }
 
 }

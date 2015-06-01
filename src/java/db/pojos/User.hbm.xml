@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 26/06/2014 12:43:39 AM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
-    <class name="db.pojos.User" table="user" catalog="prueba">
+    <class name="db.pojos.User" table="user" >
         <id name="iduser" type="java.lang.Integer">
             <column name="iduser" />
             <generator class="identity" />
@@ -17,6 +17,10 @@
         <property name="activo" type="java.lang.Integer">
             <column name="activo" />
         </property>
+        <property name="numlogin" type="java.lang.Integer">
+            <column name="numlogin" />
+        </property>
+
         <set name="regcuentausers" table="regcuentauser" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="IdUser" not-null="true" />

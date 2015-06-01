@@ -109,11 +109,21 @@ public class Cuenta implements java.io.Serializable, Cloneable {
         return this.catalogocuenta.getDesCatalogoCuenta();
     }
 
+    public String getNumCuenta() {
+        return this.catalogocuenta.getIdCatalogoCuenta().toString();
+    }
+
     public String getResultado() {
         Locale loc = new Locale("us");
         NumberFormat instance = NumberFormat.getInstance(loc);
         instance.setMaximumFractionDigits(2);
-        return instance.format(getValor());
+        try {
+
+            return instance.format(getValor());
+        }catch(Exception e){
+            
+        }
+        return "0";
 
     }
 

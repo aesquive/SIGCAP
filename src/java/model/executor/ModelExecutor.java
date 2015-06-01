@@ -2,7 +2,6 @@ package model.executor;
 
 import db.controller.DAO;
 import db.pojos.Catalogocuenta;
-import db.pojos.Catalogominimo;
 import db.pojos.Cuenta;
 import db.pojos.Moneda;
 import db.pojos.Operacion;
@@ -14,7 +13,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import model.wrappers.BaseModeloMathInterpreter;
 import org.hibernate.criterion.Criterion;
 
@@ -24,7 +22,7 @@ import org.hibernate.criterion.Criterion;
  * sido calculado aun va a calcularlo , si no hay forma de calcular el valor
  * entonces lanzara una excepcion.
  *
- * @author Alberto Emmanuel Esquivel Vega
+ * @author WWN
  */
 public class ModelExecutor {
 
@@ -35,26 +33,24 @@ public class ModelExecutor {
     public Map<String, Double> valores;
     public Map<String, Operacion> operaciones;
     public Regcuenta regCuenta;
+    private boolean updateValues;
     private Criterion[] criterios;
-    public int numOperaciones;
-    
-    public ModelExecutor(Regcuenta regCuenta) throws IOException {
-        numOperaciones=0;
-//        List borrables = new LinkedList();
-//        for (Cuenta c : cuentas1) {
-//            if (c.getMoneda() == null && (c.getStatus() == null || c.getStatus() != 2)) {
-//                borrables.add(c);
-//            }
-//        }
-//        DAO.deletemultiple(borrables);
+   
+    public ModelExecutor(Regcuenta regCuenta, boolean updateValues) throws IOException {
+        this.updateValues = updateValues;
         this.valores = new HashMap<String, Double>();
         this.cuentas = new HashMap<String, Cuenta>();
         this.operaciones = mapOperaciones(DAO.createQuery(Operacion.class, null));
         this.regCuenta = regCuenta;
-        //sacamos las cuentas base
+        //sacamos las cuentas base del calculo
         BaseModeloMathInterpreter base = new BaseModeloMathInterpreter(regCuenta);
         base.calculate();
+        //este map trae el resultado de todo el modelo
         Map<String, Double> map = base.getMap();
+        
+        //en caso de que se tenga updateValues=true sera necesario eliminar las cuentas antes calculadas
+        if(updateValues){DAO.executeSQL("delete from cuenta where idRegCuenta="+regCuenta.getIdRegCuenta());}
+        
         //sacamos los datos del mapeo de catalogos de cuentas
         List<Catalogocuenta> queryCatalogos = DAO.createQuery(Catalogocuenta.class, criterios);
         Map<String, Catalogocuenta> mapCatalogosCuentas = new HashMap<String, Catalogocuenta>();
@@ -68,47 +64,50 @@ public class ModelExecutor {
                 peso = m;
             }
         }
-        //generamos las nuevas cuentas
-        for (String s : map.keySet()) {
-            //     System.out.println("intentando " + s);
-            Cuenta c = new Cuenta();
-            c.setCatalogocuenta(mapCatalogosCuentas.get(s));
-            c.setValor(map.get(s));
-            c.setRegcuenta(regCuenta);
-            c.setMoneda(peso);
-            c.setRef("");
-            guardarCuenta(c);
-        }
-        Set<Catalogominimo> catalogominimos = regCuenta.getCatalogominimos();
-        List<Cuenta> ctas = new LinkedList<Cuenta>();
-        for (Catalogominimo cat : catalogominimos) {
-            try {
+        
+        //generamos las nuevas cuentas de valores iniciales del calculo    ESTO NO SE DEBE HACER SI SOLO SE QUIERE CORRER UN ESCENARIO
+        //SOLO SE DEBE HACER SI SE QUIERE MODIFICAR LAS CUENTAS DEL PROYECTO
+        if (updateValues) {
+            List<Cuenta> ctasTemp=new LinkedList<Cuenta>();
+            for (String s : map.keySet()) {
                 Cuenta c = new Cuenta();
-                c.setCatalogocuenta(cat.getCatalogocuenta());
-                c.setValor(cat.getValor());
-                c.setRegcuenta(cat.getRegcuenta());
+                c.setCatalogocuenta(mapCatalogosCuentas.get(s));
+                c.setValor(map.get(s));
+                c.setRegcuenta(regCuenta);
                 c.setMoneda(peso);
                 c.setRef("");
-                ctas.add(c);
-            } catch (Exception e) {
-                System.out.println(e);
+                ctasTemp.add(c);
+            }
+            DAO.saveMultiple(ctasTemp);
+        }
+        
+        
+        
+        //copiamos las cuentas guardadas y los valores a los mapeos correspondientes
+        List<Cuenta> queryCuentas = DAO.createQuery(Cuenta.class, null);
+        for (Cuenta c : queryCuentas) {
+            if (c.getRegcuenta().getIdRegCuenta() == regCuenta.getIdRegCuenta()) {
+                cuentas.put(c.getCatalogocuenta().getIdCatalogoCuenta().toString(), c);
             }
         }
-        DAO.saveCargaDatos(ctas);
-        mapCuentas((List<Cuenta>) DAO.createQuery(Cuenta.class, null));
-        for (String s : cuentas.keySet()) {
+        for (String s : map.keySet()) {
             Cuenta c = cuentas.get(s);
             valores.put(c.getCatalogocuenta().getIdCatalogoCuenta().toString(), c.getValor());
         }
     }
 
-    public void start() throws MathInterpreterException {
+    public Map<String, Cuenta> start() throws MathInterpreterException {
         System.out.println("-----CALCULO INICIADO-----");
-    
-        while (!operationsCompleted()) {
-            startOperations();
+        startOperations();
+        if(updateValues){
+            List<Cuenta> tmps=new LinkedList<Cuenta>();
+            for(String k:cuentas.keySet()){
+                tmps.add(cuentas.get(k));
+            }
+            DAO.saveMultiple(tmps);
         }
         System.out.println("-----CALCULO TERMINADO-----");
+        return cuentas;
     }
 
     /**
@@ -131,21 +130,11 @@ public class ModelExecutor {
     private void startOperations() throws MathInterpreterException {
         System.out.println("empezando calculo");
         for (String s : operaciones.keySet()) {
-                makeOperacion(operaciones.get(s));
+            makeOperacion(operaciones.get(s));
         }
+        System.out.println("finalizando el calculo");
     }
 
-    /**
-     * checa si las operaciones ya fueron todas realizadas
-     *
-     * @return
-     */
-    public boolean operationsCompleted() {
-        if(numOperaciones==operaciones.size()){
-            return true;
-        }
-        return false;
-    }
 
     /**
      * realiza todas las operaciones del modelo
@@ -154,7 +143,10 @@ public class ModelExecutor {
      * @throws MathInterpreterException
      */
     private void makeOperacion(Operacion operacion) throws MathInterpreterException {
-        System.out.println("haciendo la operacion de " + operacion.getCatalogocuenta().getIdCatalogoCuenta());
+        if(cuentas.get(operacion.getCatalogocuenta().getIdCatalogoCuenta().toString())!=null){
+            return;
+        }
+        //System.out.println("haciendo la operacion de " + operacion.getCatalogocuenta().getIdCatalogoCuenta());     
         String valOperacion = operacion.getValOperacion();
         String[] split = valOperacion.split("=");
         String ctasRef = "";
@@ -169,17 +161,14 @@ public class ModelExecutor {
                 }
             }
             //checamos si necesitamos calcular alguna otra cosa ante
-            if (cuentas.get(idRef) == null) {
-                //            System.out.println("solicito " + idRef);
-                if (operaciones.get(idRef) != null) {
-                    //               System.out.println("la operacion " + operaciones.get(idRef).getValOperacion());
-                    makeOperacion(operaciones.get(idRef));
-                }
+            if (cuentas.get(idRef) == null && operaciones.get(idRef) != null) {
+                makeOperacion(operaciones.get(idRef));
+
             }
             //agregamos 
             Cuenta ctaRef = cuentas.get(idRef);
             if (ctaRef != null) {
-                ctasRef = ctasRef.equals("") ? ctaRef.getIdCuenta() + "," : ctasRef + ctaRef.getIdCuenta() + ",";
+                ctasRef = ctasRef.equals("") ? ctaRef.getCatalogocuenta().getIdCatalogoCuenta()+ "," : ctasRef + ctaRef.getCatalogocuenta().getIdCatalogoCuenta()+ ",";
             }
         }
         //a este momento ya todas las cuentas de referencia deben estar hechas , entonces ahora si realizamos la operacion
@@ -192,10 +181,9 @@ public class ModelExecutor {
             nueva.setValor(Double.valueOf(interp));
             nueva.setRef(ctasRef);
             nueva.setStatus(0);
-        }else{
-         nueva = new Cuenta(null, regCuenta, operacion.getCatalogocuenta(), Double.valueOf(interp), ctasRef, 0);
+        } else {
+            nueva = new Cuenta(null, regCuenta, operacion.getCatalogocuenta(), Double.valueOf(interp), ctasRef, 0);
         }
-        guardarCuenta(nueva);
         cuentas.put(operacion.getCatalogocuenta().getIdCatalogoCuenta().toString(), nueva);
         valores.put(operacion.getCatalogocuenta().getIdCatalogoCuenta().toString(), Double.valueOf(interp));
     }
@@ -207,7 +195,7 @@ public class ModelExecutor {
      * @throws MathInterpreterException
      */
     public static void main(String[] args) throws MathInterpreterException, IOException {
-        int regCuenta = 23;
+        int regCuenta = 20;
         List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
         Regcuenta c = new Regcuenta();
         for (Regcuenta r : createQuery) {
@@ -215,24 +203,10 @@ public class ModelExecutor {
                 c = r;
             }
         }
-        System.out.println(c.getCaptacions().size());
-        ModelExecutor m = new ModelExecutor(c);
-        m.start();
-    }
-
-    private void guardarCuenta(Object obj) {
-        //if (isSimulation) {
-        //    DAO.update(obj);
-        //}
-        DAO.saveOrUpdate(obj);
-    }
-
-    private void mapCuentas(List<Cuenta> list) {
-        for (Cuenta c : list) {
-            if (c.getRegcuenta().getIdRegCuenta() == regCuenta.getIdRegCuenta()) {
-                cuentas.put(c.getCatalogocuenta().getIdCatalogoCuenta().toString(), c);
-            }
-        }
+        ModelExecutor m = new ModelExecutor(c,true);
+        Map<String, Cuenta> start = m.start();
+        System.out.println("acabo y el valor de 1 es :");
+        System.out.println(start.get("1").getValor());
     }
 
 }

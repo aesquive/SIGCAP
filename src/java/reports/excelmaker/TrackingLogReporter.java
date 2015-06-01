@@ -41,6 +41,7 @@ public class TrackingLogReporter {
                 trackingList.add(t);
             }
         }
+        System.out.println("saving the file");
         saveFile(trackingList, new File(manager.configuration.Configuration.getValue("Ruta Reportes") + fileName));
         return fileName;
     }

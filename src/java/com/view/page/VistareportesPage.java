@@ -226,13 +226,15 @@ public class VistareportesPage extends Page {
     }
 
     private void tenenciaReport(int parseInt) {
-            List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
+        System.out.println("llega aqui del reporte de tenencia "+parseInt);
+        List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
             Regcuenta reg1 = null;
             for (Regcuenta r : createQuery) {
                 if (r.getIdRegCuenta() == parseInt) {
                     reg1 = r;
                 }
             }
+            System.out.println("el reg1 "+reg1);
             String nameFile=reports.excelmaker.TenenciaReportMaker.makeReport(Configuration.getValue("baseAnalisisTenencia"),reg1);
             setRedirect("/reportes/"+nameFile);
     }

@@ -71,7 +71,7 @@ public class AdministradormodelosPage extends BorderPage {
                         update = true;
                     }
                 }
-                ModelExecutor m = new ModelExecutor( regCta);
+                ModelExecutor m = new ModelExecutor(regCta,true);
                 m.start();
                 DAO.saveRecordt(user, user.getUser() + " calculó el ICAP de " + regCta.getDesRegCuenta());
                 setRedirect(IcapPage.class);

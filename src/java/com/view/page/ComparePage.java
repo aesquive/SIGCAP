@@ -122,7 +122,7 @@ public class ComparePage extends BorderPage {
                     String[] split = value.split(",");
                     for (String idCount : split) {
                         if (!idCount.equals("")) {
-                            Cuenta cuentaById = regCuentaUno.getCuentaById(idCount, regCuentaUno.getCuentas());
+                            Cuenta cuentaById = regCuentaUno.getCuentaByCatalogoId(idCount, regCuentaUno.getCuentas());
                             if (cuentaById != null) {
                                 l.add(cuentaById.getCatalogocuenta().getIdCatalogoCuenta().toString());
                             }
