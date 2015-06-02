@@ -1,18 +1,13 @@
 package com.view.page;
 
 import db.controller.DAO;
-import db.pojos.Permisos;
 import db.pojos.Permisosuser;
 import db.pojos.User;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import manager.configuration.Configuration;
 import org.apache.click.Page;
 import org.apache.click.control.ActionLink;
 import org.apache.click.control.Form;
@@ -23,23 +18,25 @@ import util.Util;
 
 public abstract class BorderPage extends Page {
 
+    //titulo mostrado en la aplicacion (muestra en que ventana estas parado actualmente)
     public String title;
+    //almacena la direccion de reportes que tomaran los javascripts
+    public static String direccionReportes=Configuration.getValue("direccionReportes");
+    //es el mensaje que mostrara el sistema a traves de los javascripts
     public String message;
+    //menu principal dentro del sistema
     private Menu rootMenu;
+    //flechas para ir atras o adelante
     public ActionLink goBack;
     public ActionLink goForward;
     public Form forwardForm;
     public Form backwardForm;
-    public boolean showPage;
+    //almacena la licencia de usuario
     public static List<String> lic = Util.readFile(manager.configuration.Configuration.getValue("license"));
-    public List<String> per;
-    public Map<Integer, Boolean> dte;
     public String connecteduser;
     
     public BorderPage() {
-        showPage = false;
         title="Título default";
-        checkLic();
         connectedUser();
         addCommonControls();
         init();
@@ -85,10 +82,14 @@ public abstract class BorderPage extends Page {
         }
         Collections.sort(listPermisos);
 
-        //creamos el menu
+        //creamos el menu principal de toda la aplicacion
+        //indica los menus principales a mostrar
         String[] menuPrincipal = new String[]{"DataWarehouse","Generador de Reportes","Gestión de Capital","Auditor","Simulación de Capital", "Administrador de Usuarios"};
+        //indica los submenus a mostrar, en caso de que no existan submenus debera ponerse ""
         String[] subMenus=new String[]{"Alta Ejericio|Baja Ejercicio","Generador RC's|Reporte de Tenencia|Reporte de Consistencia|Reporte de Congruencia","","Análisis Comparativo|Tracking Log","","Alta Usuarios|Editar Usuario"};
+        //indica la ruta a la que apunta ya sea el menu principal o los submenus si es que los tiene
         String[] path = new String[]{"cargadatos.htm|bajadatos.htm","reportes.htm|menutenencia.htm|reportecons.htm|reportecongruencia.htm", "icap.htm","reportecambios.htm|trackinglog.htm","whatif.htm","altausuarios.htm|editarusuarios.htm"};
+        //identificador de los submenus dentro del sistema
         String[] identSUbs=new String[]{"1|2","3|4|5|6","","7|8","","9|10"};
         for (int t = 0; t < menuPrincipal.length; t++) {
                 Menu pestania=null;
@@ -115,52 +116,43 @@ public abstract class BorderPage extends Page {
     }
 
     
-    
+    /**
+     * agregar un evento de javascript al hacer submit sobre un boton
+     * @param submit 
+     */
     public void javaScriptProcess(Submit submit) {
         submit.setAttribute("onclick", "waitPage();");
     }
 
-    
-    private void checkLic() {
-        List<Permisos> createQuery = DAO.createQuery(Permisos.class, null);
-        dte = new HashMap<Integer, Boolean>();
-        per = new LinkedList<String>();
-        for (Permisos p : createQuery) {
-            if (p.getCodigo() != null) {
-                try {
-                    SimpleDateFormat form = new SimpleDateFormat("yyyyddMM");
-                    String asciiText = Util.getAsciiText(p.getCodigo().substring(p.getCodigo().length() - 16, p.getCodigo().length()), 2);
-                    Date parse = form.parse(asciiText);
-                    if (parse.compareTo(Calendar.getInstance().getTime()) < 0) {
-                        dte.put(p.getIdPermiso()-1, false);
-                        per.add(null);
-                    } else {
-                        per.add(p.getCodigo().substring(0, p.getCodigo().length() - 18));
-                        dte.put(p.getIdPermiso()-1, true);
-                    }
-                } catch (Exception ex) {
-                    dte.put(p.getIdPermiso()-1, true);
-                    per.add(p.getCodigo());
-                }
-            } else {
-                dte.put(p.getIdPermiso()-1, false);
-                per.add("");
-            }
-        }
-    }
-
+    /**
+     * agrega una variable a la sesion de trabajo
+     * @param nameVar
+     * @param value 
+     */
     public void addSessionVar(String nameVar,Object value){
         getContext().setSessionAttribute(nameVar, value);
     }
     
+    /**
+     * obtiene una variable de la sesion de trabajo
+     * @param name
+     * @return 
+     */
     public Object getSessionVar(String name){
         return getContext().getSessionAttribute(name);
     }
     
+    /**
+     * elimina una variable de la sesion de trabajo
+     * @param nameVar 
+     */
     public void removeSessionVar(String nameVar){
         getContext().removeSessionAttribute(nameVar);
     }
     
+    /**
+     * limpia todas las variables de la sesion de trabajo
+     */
     public void cleanSession(){
         Enumeration<String> attributeNames = getContext().getSession().getAttributeNames();
         List<String> elms=new LinkedList<String>();
@@ -172,6 +164,9 @@ public abstract class BorderPage extends Page {
         }
     }
 
+    /**
+     * obtiene al usuario que esta actualmente loggeado en el sistema
+     */
     private void connectedUser() {
         Object sessionVar = getSessionVar("user");
         if(sessionVar!=null){

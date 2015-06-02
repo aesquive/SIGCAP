@@ -1,5 +1,3 @@
-//var direccionReportes="http://54.191.48.171:8080/SICAP/vistareportes.htm";
-var direccionReportes = "http://localhost:8081/SICAP/vistareportes.htm";
 
 
 function checkMessages() {
@@ -33,6 +31,7 @@ function stopWaitingLogin() {
 }
 
 function reportes() {
+    var direccionReportes=document.getElementById("direccionReportes").textContent;
     var project = document.getElementsByName("selectProject")[0].value;
     var report = document.getElementsByName("selectReport")[0].value;
     window.open(direccionReportes + "?typ=0&pro=" + project + "&rep=" + report, "Reporte");
@@ -40,6 +39,7 @@ function reportes() {
 }
 
 function trackingLog() {
+    var direccionReportes=document.getElementById("direccionReportes").textContent;
     var fecIni = document.getElementsByName("init")[0].value;
     var fecFin = document.getElementsByName("end")[0].value;
     window.open(direccionReportes + "?typ=1&ini=" + fecIni + "&end=" + fecFin, "Tracking Log");
@@ -48,6 +48,7 @@ function trackingLog() {
 
 
 function createComparativo() {
+    var direccionReportes=document.getElementById("direccionReportes").textContent;
     var pra = document.getElementsByName("hiddenPrimer")[0].value;
     var prb = document.getElementsByName("hiddenSegundo")[0].value;
     var cambio = document.getElementsByName("hiddenVar")[0].value;
@@ -56,7 +57,7 @@ function createComparativo() {
 }
 
 function comparativoCongruencia() {
-
+    var direccionReportes=document.getElementById("direccionReportes").textContent;
     var pra = document.getElementsByName("pra")[0].value;
     var prb = document.getElementsByName("prb")[0].value;
     var cambio = document.getElementsByName("tolerancia")[0].value / 100;
@@ -66,6 +67,7 @@ function comparativoCongruencia() {
 
 
 function comparativoCons() {
+    var direccionReportes=document.getElementById("direccionReportes").textContent;
     var pra = document.getElementsByName("pra")[0].value;
     window.open(direccionReportes + "?typ=4&pra=" + pra + "&num=-1", "Comparativo");
     return true;
@@ -73,6 +75,7 @@ function comparativoCons() {
 
 
 function createTenencia() {
+    var direccionReportes=document.getElementById("direccionReportes").textContent;
     var idRegCta = document.getElementsByName("pryName")[0].value;
     window.open(direccionReportes + "?typ=5&pro=" + idRegCta, "Reporte");
     return true;
