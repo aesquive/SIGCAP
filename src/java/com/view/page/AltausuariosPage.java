@@ -34,6 +34,7 @@ public class AltausuariosPage extends BorderPage {
 
     @Override
     public void init() {
+        title="Alta de Usuario";
         initComponents();
         createCheckBoxes();
         addControl(form);
@@ -76,7 +77,7 @@ public class AltausuariosPage extends BorderPage {
     public boolean guardar() {
         if (form.isValid()) {
             if (!password.getValue().equals(checkPassword.getValue())) {
-                message = "Los password no coinciden";
+                message="Los password no coinciden";
                 return false;
             } else {
                 List<User> createQuery = DAO.createQuery(User.class, null);

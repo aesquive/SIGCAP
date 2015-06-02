@@ -53,6 +53,7 @@ public class CargadatosPage extends BorderPage {
 
     @Override
     public void init() {
+        title="DataWarehouse - Alta Ejercicio";
         catalogoCuenta=DAO.createQuery(Catalogocuenta.class, null);
         this.form = new Form("form");
 //        if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer)) || !dte.get(numPer)) {

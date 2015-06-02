@@ -38,6 +38,7 @@ public abstract class BorderPage extends Page {
     
     public BorderPage() {
         showPage = false;
+        title="Título default";
         checkLic();
         connectedUser();
         addCommonControls();
@@ -86,9 +87,9 @@ public abstract class BorderPage extends Page {
 
         //creamos el menu
         String[] menuPrincipal = new String[]{"DataWarehouse","Generador de Reportes","Gestión de Capital","Auditor","Simulación de Capital", "Administrador de Usuarios"};
-        String[] subMenus=new String[]{"","Generador RC's|Tenencia","","Reporte de Cambios|Tracking Log","",""};
-        String[] path = new String[]{"warehouse.htm","reportes.htm|menutenencia.htm", "icap.htm","reportecambios.htm|trackinglog.htm","whatif.htm","controlusuarios.htm"};
-        String[] identSUbs=new String[]{"","1|2","","3|4","","",""};
+        String[] subMenus=new String[]{"Alta Ejericio|Baja Ejercicio","Generador RC's|Reporte de Tenencia|Reporte de Consistencia|Reporte de Congruencia","","Análisis Comparativo|Tracking Log","","Alta Usuarios|Editar Usuario"};
+        String[] path = new String[]{"cargadatos.htm|bajadatos.htm","reportes.htm|menutenencia.htm|reportecons.htm|reportecongruencia.htm", "icap.htm","reportecambios.htm|trackinglog.htm","whatif.htm","altausuarios.htm|editarusuarios.htm"};
+        String[] identSUbs=new String[]{"1|2","3|4|5|6","","7|8","","9|10"};
         for (int t = 0; t < menuPrincipal.length; t++) {
                 Menu pestania=null;
                 if(subMenus[t].equals("")){

@@ -30,6 +30,7 @@ public class ReportecambiosPage extends BorderPage {
     
     @Override
     public void init() {
+        title="Auditor - Reporte de Cambios";
         form = new Form("form");
         minVariance = new DoubleField("var", "% de Tolerancia", 3, true);
         //numberFields = new IntegerField("fie", "Número de Registros", 5, true);

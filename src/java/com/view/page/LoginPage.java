@@ -80,18 +80,18 @@ public class LoginPage extends Page {
             return false;
         }
         User user = verifyUser(userField.getValue(), passwordField.getValue());
-/*        if (user == null) {
+        if (user == null) {
             message = "Usuario y/o password incorrecto";
             return false;
         }
-        if(user.getActivo()==1){
+        /*if(user.getActivo()==1){
             message="El usuario esta actualmente conectado";
             return false;
-        }
+        }*/
         if(user.getActivo()==2){
             message="El usuario esta dado de baja";
             return false;
-        }*/
+        }
         int actualValue=user.getNumlogin();
         int maxValue=Integer.parseInt(Configuration.getValue("MaxLogin").replace("\"", ""));
         

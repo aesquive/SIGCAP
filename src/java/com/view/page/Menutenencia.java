@@ -26,6 +26,7 @@ public class Menutenencia extends BorderPage{
     private Select select;
     @Override
     public void init() {
+        title="Reporte de Tenencia";
         form=new Form("form");
         select=new Select("ten","Ejercicio", true);
         List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);

@@ -18,6 +18,7 @@ public class TrackinglogPage extends BorderPage {
 
     @Override
     public void init() {
+        title="Auditor - Tracking Log";
         form = new Form("form");
         initDate = new DateField("init", "Fecha Inicial", true);
         initDate.setFormatPattern("dd/MM/yyyy");

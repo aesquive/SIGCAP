@@ -21,6 +21,7 @@ public class ReporteconsPage extends BorderPage {
 
     @Override
     public void init() {
+        title="Reporte de consistencia";
         form = new Form("form");
         selectA = new Select("pra", "Seleccionar Ejercicio", true);
         selectA.setDefaultOption(new Option("-1", "Seleccione"));

@@ -26,6 +26,7 @@ public class EditarusuariosPage extends BorderPage {
 
     @Override
     public void init() {
+        title=" Editar Usuario";
         form = new Form("form");
         addControl(form);
         select = new Select("select", "Seleccionar Usuario", true);

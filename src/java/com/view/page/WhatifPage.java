@@ -24,7 +24,6 @@ import org.apache.click.control.Option;
 import org.apache.click.control.Select;
 import org.apache.click.control.Submit;
 import org.apache.click.control.TextField;
-import util.Util;
 
 /**
  *
@@ -48,10 +47,7 @@ public class WhatifPage extends BorderPage {
 
     @Override
     public void init() {
-        //if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer)) && dte.get(numPer) == true) {
-        //    setRedirect(NocontratadoPage.class);
-        //    return;
-        //}
+        title="Simulador de Capital";
         form = new Form("form");
         formView = new Form("formView");
         onceClicked = true;

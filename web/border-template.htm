@@ -4,44 +4,27 @@
         <title>SIGCAP</title>
         <link rel="stylesheet" type="text/css" href="$context/css/style.css" title="Style">
         <script type="text/javascript" src="$context/css/methods.js"></script>
-        <script>
-            function waitPageLogin() {
-                document.getElementById("divProcess").style.display = "block";
-                document.getElementById("divForm").style.display = "none";
-            }
-
-            function stopWaitingLogin() {
-                document.getElementById("divProcess").style.display = "none";
-                document.getElementById("divForm").style.display = "block";
-            }
-        </script>
-
+        
     </head>
 
-    <body onload="mostrarSubmenu('')">
+    <body onload="checkMessages();mostrarSubmenu('');">
 
-        <div id="divProcess" style="display: none;width: 150px;height: 200px;margin-left: auto;margin-right: auto">
-            <br/>
-            <br/>
-            <img src="img/block-loading.gif"/>
-            <br/>
-            <br/>
-            <a>Procesando...</a>
-        </div>
 
 
         #if ($connecteduser)
-        <a style="font-size: medium;font-weight: bold;">Usuario conectado: $connecteduser</a>
-        <a href="salir.htm">
-            Cerrar Sesi&oacute;n</a>
-        <br/>
-        #end
-        <br/>
-
-        #if ($message)
-        <a>$message</a>
+        <div id="divUser">
+            <a id="userDetail">Usuario conectado: $connecteduser</a>
+            <a href="salir.htm">
+                Cerrar Sesi&oacute;n</a>
+        </div>
         #end
 
+        
+        <a id="message">$message</a>
+
+
+        <br/>
+        <br/>
 
 
         #if ($forwardForm)
@@ -52,10 +35,25 @@
         $backwardForm
         #end
 
+        #if($title)    
+
+        <div id="divTitle">
+            <a id="title">$title</a>
+        </div>    
+        #end
+
+        <br/>
+        <br/><br/>
 
         <div id="divIzquierda">
             #if ($rootMenu)
+            <a class="titulosMenu">M&oacute;dulos</a>
             $rootMenu
+            <br/>
+            <a class="titulosMenu" href="bienvenida.htm">Menu Principal</a>
+            <br/>
+            <br/>
+            <a class="titulosMenu" href="contacto.htm">Contacto</a>
             #end
 
             #if ($login)
@@ -66,12 +64,17 @@
         </div>
 
 
+        <div id="divProcess" style="display: none;width: 150px;height: 200px;">
+            <br/>
+            <br/>
+            <img src="img/block-loading.gif"/>
+            <br/>
+            <br/>
+            <a>Procesando...</a>
+        </div>
+        
+        
         <div id="divDerecha">
-            <center>
-                #if ($title)
-                <h3 id="title" style="width: 100%;font-size:1.3em">$title</h3>
-                #end
-            </center>
 
             #if ($login)
             <div id="loginContainer">
@@ -87,16 +90,12 @@
 
             <br/>
 
-            
+
             #if ($rootMenu)
             <center>
                 <a style="font-size: xx-large;font-weight: bolder">SIGCAP</a>
             </center>
             <br/>
-
-            <a style="font-size: small">Wired & Wireless Networks SA de CV</a>
-            <a style="font-size: small">Acapulco 62 piso 5, Colonia Roma Norte</a>
-            <a style="font-size: small">CP 06700, Distrito Federal Tel 55 4434-0155</a>
 
             #end
 

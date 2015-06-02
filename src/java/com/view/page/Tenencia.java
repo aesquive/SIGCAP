@@ -40,6 +40,7 @@ public class Tenencia extends BorderPage {
 
     @Override
     public void init() {
+        title="Reporte de Tenencia";
         form = new Form("form");
         sessionVar = (Regcuenta) getSessionVar("regCtaTenencia");
         form.add(new HiddenField("pryName", sessionVar.getIdRegCuenta()));
@@ -64,7 +65,6 @@ public class Tenencia extends BorderPage {
         String[] tenenciaDesColumns = Valores.getTenenciaDesColumns();
         for (int t = 0; t < tenenciaColumns.length; t++) {
             Column c = new Column(tenenciaColumns[t], tenenciaDesColumns[t]);
-            c.setWidth("900 px");
             table.addColumn(c);
         }
         FieldSet fs = new FieldSet("fs", "Tenencia " + sessionVar.getDesRegCuenta());

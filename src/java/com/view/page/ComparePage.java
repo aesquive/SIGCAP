@@ -32,7 +32,8 @@ public class ComparePage extends BorderPage {
     private Regcuenta regCuentaDos;
     private Catalogocuenta catalogoCuenta;
     private ActionLink downloadReport;
-
+    public String titlePage;
+    
     /**
      * constructor
      */
@@ -43,6 +44,7 @@ public class ComparePage extends BorderPage {
 
     @Override
     public void init() {
+        title="Análisis Comparativo";
         form = new Form("form");
         Submit sub = new Submit("descargar", "Descargar Reporte", this, "makeReport");
         sub.setAttribute("onclick", "createComparativo()");
@@ -55,6 +57,7 @@ public class ComparePage extends BorderPage {
         String[] compareCount = (String[]) getContext().getSessionAttribute("compareC-" + counter);
         regCuentaUno = (Regcuenta) getContext().getSessionAttribute("ex1-" + counter);
         regCuentaDos = (Regcuenta) getContext().getSessionAttribute("ex2-" + counter);
+        titlePage=regCuentaUno.getDesRegCuenta()+" vs "+regCuentaDos.getDesRegCuenta();
         obtenerWrappers(compareCount);
         checkBackForward(counter, (Integer) getContext().getSessionAttribute("maxCounterCompare"));
         for (int t = 0; t < cuentas.size(); t++) {
@@ -103,7 +106,7 @@ public class ComparePage extends BorderPage {
         table.addColumn(col3);
 
         //pegamos todo en nuestro fieldset
-        FieldSet fs = new FieldSet("Comparativo");
+        FieldSet fs = new FieldSet("Análisis Comparativo");
         form.add(fs);
         fs.add(table);
         //System.out.println("la cantidad de links " + links.length);

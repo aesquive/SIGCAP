@@ -22,6 +22,7 @@ public class ReportecongruenciaPage extends BorderPage {
 
     @Override
     public void init() {
+        title="Reporte de congruencia";
         form = new Form("form");
         selectA = new Select("pra", "Seleccionar Ejercicio", true);
         selectB = new Select("prb", "Seleccionar Ejercicio", true);

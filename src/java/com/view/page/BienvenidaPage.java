@@ -9,6 +9,7 @@ public class BienvenidaPage extends BorderPage{
 
     @Override
     public void init() {       
+        title="SIGCAP";
     }
     
 }

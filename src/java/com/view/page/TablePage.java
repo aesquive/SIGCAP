@@ -1,6 +1,5 @@
 package com.view.page;
 
-import db.controller.DAO;
 import db.pojos.Cuenta;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,6 +14,7 @@ import org.apache.click.control.Form;
 import org.apache.click.control.Table;
 import org.apache.click.extras.control.FormTable;
 
+
 /**
  * Clase que se encarga de poner detalles de cuentas pasados los datos deben de
  * estar en el SessionController con el nombre "data"
@@ -28,7 +28,7 @@ public class TablePage extends BorderPage {
     @Resource(name = "data")
     List<Cuenta> data;
     private static int numPer = 2;
-    String titlePage;
+    public String titlePage;
     private Integer counter;
     private String regCta;
 
@@ -42,11 +42,7 @@ public class TablePage extends BorderPage {
 
     @Override
     public void init() {
-//        if (!Util.getAsciiText(per.get(numPer), 2).equals(lic.get(numPer)) && dte.get(numPer) == true) {
-//            System.out.println("Pagina valida");
-//            setRedirect(NocontratadoPage.class);
-//            return;
-//        }
+        title="Gestión de Capital";
         form = new Form("form");
         counter = (Integer) getSessionVar("icapCounter");
         checkBackForward(counter, (Integer) getSessionVar("icapMaxCounter"));
@@ -57,8 +53,7 @@ public class TablePage extends BorderPage {
         table = new FormTable("table", form);
         table.setName("dataTable");
         table.setPageNumber(0);
-        table.setClass(Table.CLASS_ORANGE2);
-        title = titlePage;
+        table.setClass(Table.CLASS_ORANGE2);    
         for (int t = 0; t < data.size(); t++) {
             ActionLink actionLink = new ActionLink("link" + data.get(t).getIdCuenta(), data.get(t).getResultado(), this, "onLinkClick");
             actionLink.setValue(data.get(t).getIdCuenta().toString());
