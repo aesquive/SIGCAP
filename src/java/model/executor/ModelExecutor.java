@@ -36,8 +36,8 @@ public class ModelExecutor {
     private boolean updateValues;
     private Criterion[] criterios;
    
-    public ModelExecutor(Regcuenta regCuenta, boolean updateValues) throws IOException {
-        this.updateValues = updateValues;
+    public ModelExecutor(Regcuenta regCuenta, boolean updateDataBase) throws IOException {
+        this.updateValues = updateDataBase;
         this.valores = new HashMap<String, Double>();
         this.cuentas = new HashMap<String, Cuenta>();
         this.operaciones = mapOperaciones(DAO.createQuery(Operacion.class, null));
@@ -45,7 +45,7 @@ public class ModelExecutor {
         //sacamos las cuentas base del calculo
         BaseModeloMathInterpreter base = new BaseModeloMathInterpreter(regCuenta);
         base.calculate();
-        //este map trae el resultado de todo el modelo
+        //este map trae el resultado de todo el modelo, no la parte de los rcs, si no la contable
         Map<String, Double> map = base.getMap();
         
         //en caso de que se tenga updateValues=true sera necesario eliminar las cuentas antes calculadas
@@ -67,8 +67,7 @@ public class ModelExecutor {
         
         //generamos las nuevas cuentas de valores iniciales del calculo    ESTO NO SE DEBE HACER SI SOLO SE QUIERE CORRER UN ESCENARIO
         //SOLO SE DEBE HACER SI SE QUIERE MODIFICAR LAS CUENTAS DEL PROYECTO
-        if (updateValues) {
-            List<Cuenta> ctasTemp=new LinkedList<Cuenta>();
+        
             for (String s : map.keySet()) {
                 Cuenta c = new Cuenta();
                 c.setCatalogocuenta(mapCatalogosCuentas.get(s));
@@ -76,24 +75,12 @@ public class ModelExecutor {
                 c.setRegcuenta(regCuenta);
                 c.setMoneda(peso);
                 c.setRef("");
-                ctasTemp.add(c);
+                cuentas.put(c.getCatalogocuenta().getIdCatalogoCuenta().toString(),c);
+                valores.put(c.getCatalogocuenta().getIdCatalogoCuenta().toString(),c.getValor());
             }
-            DAO.saveMultiple(ctasTemp);
-        }
+            
         
-        
-        
-        //copiamos las cuentas guardadas y los valores a los mapeos correspondientes
-        List<Cuenta> queryCuentas = DAO.createQuery(Cuenta.class, null);
-        for (Cuenta c : queryCuentas) {
-            if (c.getRegcuenta().getIdRegCuenta() == regCuenta.getIdRegCuenta()) {
-                cuentas.put(c.getCatalogocuenta().getIdCatalogoCuenta().toString(), c);
-            }
-        }
-        for (String s : map.keySet()) {
-            Cuenta c = cuentas.get(s);
-            valores.put(c.getCatalogocuenta().getIdCatalogoCuenta().toString(), c.getValor());
-        }
+            
     }
 
     public Map<String, Cuenta> start() throws MathInterpreterException {
@@ -195,7 +182,7 @@ public class ModelExecutor {
      * @throws MathInterpreterException
      */
     public static void main(String[] args) throws MathInterpreterException, IOException {
-        int regCuenta = 20;
+        int regCuenta = 27;
         List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
         Regcuenta c = new Regcuenta();
         for (Regcuenta r : createQuery) {
@@ -203,7 +190,7 @@ public class ModelExecutor {
                 c = r;
             }
         }
-        ModelExecutor m = new ModelExecutor(c,true);
+        ModelExecutor m = new ModelExecutor(c,false);
         Map<String, Cuenta> start = m.start();
         System.out.println("acabo y el valor de 1 es :");
         System.out.println(start.get("1").getValor());

@@ -34,7 +34,6 @@ public class SimulacioncuentasPage extends SimulacionPage {
 
     @Override
     public void initSimulacionComponents() {
-        name.setLabel("Simulador de Cuentas");
         form = new Form("formSim");
 //creamos el panel de edicion de cuentas
         createFSEditVar();

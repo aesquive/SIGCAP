@@ -1,5 +1,6 @@
 package com.view.page;
 
+import db.pojos.Regcuenta;
 import org.apache.click.control.Label;
 import org.apache.click.extras.control.Menu;
 import org.apache.click.extras.security.RoleAccessController;
@@ -10,16 +11,22 @@ import org.apache.click.extras.security.RoleAccessController;
  */
 public abstract class SimulacionPage extends BorderPage {
 
+    
     Menu menuSim;
-    Label name;
+    public Regcuenta regCuenta;
+    public String ejercicio;
+    public String icapActual;
     
     @Override
     public void init() {
-        name=new Label("name", "Simulador");
-        addControl(name);
+        title="Simulación de Capital";
+        regCuenta=(Regcuenta) getSessionVar("prySim");
+        ejercicio=regCuenta.getDesRegCuenta();
+        icapActual=regCuenta.getCuenta("1",regCuenta.getCuentas()).getValor().toString();
         initMenu();
         initSimulacionComponents();
     }
+    
 
     public abstract void initSimulacionComponents();
 

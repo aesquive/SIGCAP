@@ -39,8 +39,8 @@ public class ExcelMaker {
         FileInputStream fis = new FileInputStream(file);
         XSSFWorkbook wb = new XSSFWorkbook(fis);
         Sheet sheet = wb.getSheetAt(0);
-        int maxRows = 200;
-        int maxColumns = 150;
+        int maxRows = 100;
+        int maxColumns = 50;
         for (int t = 0; t < maxRows; t++) {
             Row row = sheet.getRow(t);
             for (int c = 0; c < maxColumns; c++) {
@@ -75,8 +75,6 @@ public class ExcelMaker {
         for (Cuenta c : createQuery) {
             map.put(c.getCatalogocuenta().getIdCatalogoCuenta().toString(), c);
         }
-//        ExcelMaker ex = new ExcelMaker("archivo.xlsx", "baseRC01.xlsx", map);
-//        String makeFile = ex.makeFile();
     }
 
     private String getValue(Cell cell) {

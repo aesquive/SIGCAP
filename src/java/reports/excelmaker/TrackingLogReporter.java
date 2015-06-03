@@ -78,7 +78,7 @@ public class TrackingLogReporter {
             }
         }
         int deleteRow = cr.getRow() + indexTracking ;
-        while (deleteRow < 10000) {
+        while (deleteRow < 1000) {
             if (sheet.getRow(deleteRow) != null) {
                 sheet.removeRow(sheet.getRow(deleteRow));
             }

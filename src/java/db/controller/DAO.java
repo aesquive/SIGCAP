@@ -8,9 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 
 /**
@@ -125,12 +125,14 @@ public class DAO {
      * @param objects 
      */
     public static void saveMultiple(Collection objects) {
+        Transaction tr=session.beginTransaction();
+        tr.begin();
         for (Object o : objects) {
             session.save(o);
         }
+        tr.commit();
         session.flush();
         session.clear();
-
     }
     
     /**
@@ -147,6 +149,7 @@ public class DAO {
 
     }
 
+    
     /**
      * ejecuta codigo sql dado por el usuario
      * @param sql 

@@ -7,23 +7,28 @@ import db.pojos.Consistencia;
 import db.pojos.Cuenta;
 import db.pojos.Disponibilidad;
 import db.pojos.Ingresosnetos;
+import db.pojos.Prestamo;
 import db.pojos.Regcuenta;
 import db.pojos.Regcuentauser;
 import db.pojos.Reservas;
 import db.pojos.Tarjetacredito;
 import db.pojos.User;
 import db.pojos.Valores;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.executor.ModelExecutor;
 import org.apache.click.control.Form;
 import org.apache.click.control.Option;
 import org.apache.click.control.Select;
 import org.apache.click.control.Submit;
 import org.apache.click.control.TextField;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -39,15 +44,17 @@ public class WhatifPage extends BorderPage {
     TextField nameSimulation;
     boolean onceClicked;
     User user;
-    private static int numPer = 5;
 
     public WhatifPage() {
         super();
     }
 
+    /**
+     * crea los menus y datos de inicio de la pagina
+     */
     @Override
     public void init() {
-        title="Simulador de Capital";
+        title = "Simulador de Capital";
         form = new Form("form");
         formView = new Form("formView");
         onceClicked = true;
@@ -77,7 +84,8 @@ public class WhatifPage extends BorderPage {
     }
 
     /**
-     * evento de inicio de la simulación
+     * evento de inicio de la simulación, inicia con el copiado del proyecto y
+     * despues te manda a la pantalla de simulación
      *
      * @return
      */
@@ -86,12 +94,32 @@ public class WhatifPage extends BorderPage {
             return false;
         }
         if (onceClicked) {
-            copiarProyecto();
-            setRedirect(SimulacioninicialPage.class);
+            try {
+                Regcuenta nuevoEjercicio = copiarProyecto();
+                List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
+                for (Regcuenta r : createQuery) {
+                    if (r.getIdRegCuenta() == nuevoEjercicio.getIdRegCuenta()) {
+                        ModelExecutor executor = new ModelExecutor(r, true);
+                        Map<String, Cuenta> start = executor.start();
+                        addSessionVar("prySim", r);
+                        System.out.println("termina de calcular y el icap es " + start.get("1").getValor());
+                        setRedirect(SimulacioninicialPage.class);
+                    }
+                }
+            } catch (Exception ex) {
+                message = "Ocurrio algun error " + ex;
+                Logger.getLogger(WhatifPage.class.getName()).log(Level.INFO, null, ex);
+                return false;
+            }
         }
         return true;
     }
 
+    /**
+     * evento que inicia la simulacion , este evento no copia el proyecto
+     *
+     * @return
+     */
     public boolean okViewClicked() {
         Regcuenta regCta = null;
         List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
@@ -105,16 +133,25 @@ public class WhatifPage extends BorderPage {
         return true;
     }
 
-    private void copiarProyecto() {
+    /**
+     * proceso para copiar un ejercicio, solo copia valores iniciales, no copia
+     * nada de las cuentas calculadas
+     */
+    private Regcuenta copiarProyecto() {
         try {
             Regcuenta regCuenta = new Regcuenta();
-            Calendar c = Calendar.getInstance();
             regCuenta.setDesRegCuenta(nameSimulation.getValue());
-            regCuenta.setFecha(c.getTime());
+            Regcuenta base = null;
+            List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
+            for (Regcuenta rc : createQuery) {
+                if (Integer.parseInt(selectProject.getValue()) == rc.getIdRegCuenta()) {
+                    base = (Regcuenta) rc.clone();
+                }
+            }
+            regCuenta.setFecha(base.getFecha());
             DAO.save(regCuenta);
             copiarCuentas(regCuenta);
             Regcuenta selected = null;
-            List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
             for (Regcuenta rc : createQuery) {
                 if (Integer.parseInt(selectProject.getValue()) == rc.getIdRegCuenta()) {
                     selected = (Regcuenta) rc.clone();
@@ -123,12 +160,19 @@ public class WhatifPage extends BorderPage {
             Regcuentauser rUser = new Regcuentauser(regCuenta, user);
             DAO.save(rUser);
             DAO.saveRecordt(user, "Creo una simulación de " + selected.getDesRegCuenta() + " llamada " + regCuenta.getDesRegCuenta());
-            addSessionVar("prySim", regCuenta);
+            return regCuenta;
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(WhatifPage.class.getName()).log(Level.FINE, null, ex);
         }
+        return null;
     }
 
+    /**
+     * copia cada una de las cuentas iniciales del proyecto
+     *
+     * @param regNuevo
+     * @throws CloneNotSupportedException
+     */
     private void copiarCuentas(Regcuenta regNuevo) throws CloneNotSupportedException {
         Regcuenta regCta = null;
         List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
@@ -137,27 +181,27 @@ public class WhatifPage extends BorderPage {
                 regCta = (Regcuenta) rc.clone();
             }
         }
+        //prestamos
+        Set<Prestamo> prestamos = regCta.getPrestamos();
+        //captacion
         Set<Captacion> captacions = regCta.getCaptacions();
+        //catalogo
         Set<Catalogominimo> catMin = regCta.getCatalogominimos();
         Consistencia consistenciaAnterior = (Consistencia) regCta.getConsistencias().iterator().next();
+        //disponibilidades
         Set<Disponibilidad> disponibilidades = regCta.getDisponibilidads();
+        //ingresos
         Set<Ingresosnetos> ingresos = regCta.getIngresosnetoses();
+        //reservas
         Set<Reservas> reservas = regCta.getReservases();
+        //tarjeta
         Set<Tarjetacredito> tarjeta = regCta.getTarjetacreditos();
+        //tenencia
         Set<Valores> valores = regCta.getValoreses();
-        Set<Cuenta> cuentasReg = regCta.getCuentas();
         List<Object> items = new LinkedList<Object>();
         Consistencia cons = new Consistencia(regNuevo, consistenciaAnterior.getDisponibilidadesLeidos(),
                 consistenciaAnterior.getTenenciaLeidos(), consistenciaAnterior.getCaptacionLeidos(), consistenciaAnterior.getTarjetaCreditoLeidos(), consistenciaAnterior.getPrestamosLeidos(), consistenciaAnterior.getCatalogoMinimoLeidos(), consistenciaAnterior.getReservasLeidos(), consistenciaAnterior.getIngresosLeidos());
         items.add(cons);
-        for (Cuenta c : cuentasReg) {
-            System.out.println("revisando "+c.getCatalogocuenta().getIdCatalogoCuenta().toString());
-            if (c.getRef() == null || c.getRef().equals("")) {
-                Cuenta cta = new Cuenta(c.getMoneda(), regNuevo, c.getCatalogocuenta(), c.getValor(), null, c.getStatus());
-                items.add(cta);
-            }
-        }
-        System.out.println("acaba las cuentas");
         for (Captacion c : captacions) {
             Captacion nueva = new Captacion(regNuevo, c.getCatalogocuenta(), c.getFecha(), c.getDescripcion(), c.getIdCuentaCaptacion(), c.getMonto(), c.getFechaVencimiento());
             items.add(nueva);
@@ -166,7 +210,6 @@ public class WhatifPage extends BorderPage {
             Catalogominimo nueva = new Catalogominimo(regNuevo, c.getCatalogocuenta(), c.getFecha(), c.getValor(), c.getMoneda());
             items.add(nueva);
         }
-        System.out.println("acaba catmin");
         for (Disponibilidad c : disponibilidades) {
             Disponibilidad nueva = new Disponibilidad(regNuevo, c.getCatalogocuenta(), c.getFecha(), c.getDescripcion(), c.getMonto(), c.getFechaVencimiento());
             items.add(nueva);
@@ -175,7 +218,6 @@ public class WhatifPage extends BorderPage {
             Ingresosnetos nueva = new Ingresosnetos(regNuevo, c.getFecha(), c.getNumeroMes(), c.getIngresoNeto());
             items.add(nueva);
         }
-        System.out.println("acaba ing");
         for (Reservas c : reservas) {
             Reservas nueva = new Reservas(regNuevo, c.getFecha(), c.getEstatusCrediticio(), c.getMonto());
             items.add(nueva);
@@ -184,15 +226,15 @@ public class WhatifPage extends BorderPage {
             Tarjetacredito nueva = new Tarjetacredito(regNuevo, c.getCatalogocuenta(), c.getFecha(), c.getDescripcion(), c.getIdCredito(), c.getSaldoInsoluto(), c.getFechaCorte(), c.getTipoTarjeta(), c.getRelevante());
             items.add(nueva);
         }
-
         for (Valores c : valores) {
             Valores nueva = new Valores(regNuevo, c.getFecha(), c.getIdCuentaContable(), c.getDescripcion(), c.getNumeroTitulos(), c.getTipoValor(), c.getEmision(), c.getSerie(), c.getFechaProximoCupon(), c.getGrupoRc10(), c.getPrecio(), c.getSobretasa(), c.getCalificacion(), c.getGrupoRc07(), c.getPonderador(), c.getPlazo(), c.getFechaVencimiento(), c.getMoneda(), c.getGradoRiesgo());
             items.add(nueva);
         }
-        System.out.println("acaba todos datos");
-        System.out.println("el numero de datos"+items.size());
+        for (Prestamo c : prestamos) {
+            Prestamo nueva = new Prestamo(regNuevo, c.getCatalogocuenta(), c.getFecha(), c.getDescripcion(), c.getIdCuentaPrestamo(), c.getSaldo(), c.getFechaDeCorte(), c.getTipoPrestamo(), c.getRelevante());
+            items.add(nueva);
+        }
         DAO.saveMultiple(items);
-        System.out.println("acaba de guardar");
     }
 
 }

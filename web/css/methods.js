@@ -1,14 +1,4 @@
 
-
-function checkMessages() {
-    var valor = document.getElementById("message").textContent;
-    if(valor!="" && valor!=null && valor!="$message"){
-        alert("MENSAJE SIGCAP "+valor);
-        
-    }
-    
-}
-
 function waitPage() {
     document.getElementById("divProcess").style.display = "block";
     document.getElementById("divDerecha").style.display = "none";
@@ -100,5 +90,15 @@ function quitarSubMenus() {
             element.style.display = "none";
             element.parentNode.parentNode.style.display = "none";
         }
+    }
+}
+
+
+
+function checkMessages() {
+    var valor = document.getElementById("message").textContent;
+    if(valor!="" && valor!=null && valor!="$message"){
+        alert("MENSAJE SIGCAP "+valor);
+        
     }
 }

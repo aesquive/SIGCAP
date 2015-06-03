@@ -11,9 +11,9 @@ package com.view.page;
  */
 public class SimulacioninicialPage extends SimulacionPage{
 
+    
     @Override
     public void initSimulacionComponents() {
-        System.out.println("cargado la base de simulación");
     }
     
 }

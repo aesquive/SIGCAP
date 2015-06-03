@@ -41,7 +41,6 @@ public class SimulaciontenenciaPage extends SimulacionPage {
 
     @Override
     public void initSimulacionComponents() {
-        name.setLabel("Simulador de Tenencia");
         form = new Form("formSim");
         createFSEditTenencia();
         addControl(form);
