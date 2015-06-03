@@ -5,7 +5,7 @@
  */
 package com.view.page;
 
-import db.pojos.Valores;
+import db.pojos.Captacion;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,37 +13,37 @@ import java.util.List;
  *
  * @author desarrollo
  */
-public class SimulaciontenenciaPage extends SimulacionGenerico {
+public class SimulacioncaptacionPage extends SimulacionGenerico {
 
     @Override
     public String[] getColumnMethods() {
-        return Valores.getTenenciaColumns();
+        return Captacion.getSimColumns();
     }
 
     @Override
     public String[] getColumnName() {
-        return Valores.getTenenciaDesColumns();
+        return Captacion.getSimDesColumns();
     }
 
     @Override
     public List<Object> getValues() {
-        return new LinkedList<Object>(regCtaSimulada.getValoreses());
+        return new LinkedList<Object>(regCtaSimulada.getCaptacions());
     }
 
     @Override
     public String getActionLinkIdName() {
-        return "getIdTenencia";
+        return "getIdCaptacion";
     }
 
     @Override
     public String getFieldSetName() {
-        return "Tenencia";
+        return "Captación";
     }
 
 
     @Override
     public void createPreContent() {
-        title="Simulación de Capital - Tenencia";
+        title="Simulación de Capital - Captación";
         return;
     }
 

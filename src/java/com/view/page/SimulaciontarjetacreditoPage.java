@@ -5,7 +5,9 @@
  */
 package com.view.page;
 
-import db.pojos.Valores;
+import db.pojos.Disponibilidad;
+import db.pojos.Prestamo;
+import db.pojos.Tarjetacredito;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,37 +15,37 @@ import java.util.List;
  *
  * @author desarrollo
  */
-public class SimulaciontenenciaPage extends SimulacionGenerico {
+public class SimulaciontarjetacreditoPage extends SimulacionGenerico {
 
     @Override
     public String[] getColumnMethods() {
-        return Valores.getTenenciaColumns();
+        return Tarjetacredito.getSimColumns();
     }
 
     @Override
     public String[] getColumnName() {
-        return Valores.getTenenciaDesColumns();
+        return Tarjetacredito.getSimDesColumns();
     }
 
     @Override
     public List<Object> getValues() {
-        return new LinkedList<Object>(regCtaSimulada.getValoreses());
+        return new LinkedList<Object>(regCtaSimulada.getTarjetacreditos());
     }
 
     @Override
     public String getActionLinkIdName() {
-        return "getIdTenencia";
+        return "getIdTarjetaCredito";
     }
 
     @Override
     public String getFieldSetName() {
-        return "Tenencia";
+        return "Tarjeta de Crédito";
     }
 
 
     @Override
     public void createPreContent() {
-        title="Simulación de Capital - Tenencia";
+        title="Simulación de Capital - Tarjeta de Crédito";
         return;
     }
 

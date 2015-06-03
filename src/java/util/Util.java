@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import static java.lang.Double.parseDouble;
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -159,6 +160,18 @@ public class Util {
             }
         }
         return vals;
+    }
+
+    public static String reflectionString(Object object, String idmethodName) {
+        try {
+            Class classObject = object.getClass();
+            Method method = classObject.getMethod(idmethodName, null);
+            Object invoke = method.invoke(object, null);
+            return invoke.toString();
+        } catch (Exception ex) {
+            System.out.println("Error "+ex);
+        }
+        return null;
     }
 
 }

@@ -12,6 +12,7 @@ import org.apache.click.control.ActionLink;
  */
 public class Captacion implements java.io.Serializable,Comparable {
 
+
     @Override
     public int compareTo(Object t) {
         Captacion comp=(Captacion)t;

@@ -107,6 +107,7 @@ body {
     font-size: large;
 }
 
+
 .cuadroMenu:hover{
     cursor: pointer;
 }
@@ -123,6 +124,19 @@ body {
     color:#605BF9;
     font-weight: bolder;
     font-family: verdana;
+}
+
+
+.simEjercicio{
+    color: #605BF9;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.simIcap{
+    color:red;
+    font-size: 2em;
+    font-weight: bold;
 }
 
 #rootMenu {

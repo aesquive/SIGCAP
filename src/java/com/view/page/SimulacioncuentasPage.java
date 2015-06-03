@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.view.page;
 
+import db.pojos.Catalogominimo;
 import db.pojos.Cuenta;
 import db.pojos.Regcuenta;
 import java.util.LinkedList;
@@ -29,13 +25,14 @@ public class SimulacioncuentasPage extends SimulacionPage {
 
     Form form;
     Regcuenta regCta;
-    List<Cuenta> cuentas;
+    List<Catalogominimo> cuentas;
     TextField fieldSearch;
-
+    Table resultadoBusqueda;
+    
     @Override
     public void initSimulacionComponents() {
         form = new Form("formSim");
-//creamos el panel de edicion de cuentas
+        //creamos el panel de edicion de cuentas
         createFSEditVar();
 
         addControl(form);
@@ -49,7 +46,7 @@ public class SimulacioncuentasPage extends SimulacionPage {
     private FieldSet createFSEditVar() {
         regCta = (Regcuenta) getSessionVar("prySim");
         //fieldset de busqueda de variable
-        FieldSet fset = new FieldSet("Simulador de Cuentas", "Editar Variable de " + regCta.getDesRegCuenta());
+        FieldSet fset = new FieldSet("Simulador de Cuentas", "Simulador de Cuentas Catalogo Mínimo");
         fieldSearch = new TextField("search", "Nombre variable:");
         fieldSearch.setValue(getSessionVar("busquedaSim") != null ? (String) getSessionVar("busquedaSim") : "");
         fset.add(fieldSearch);
@@ -57,8 +54,8 @@ public class SimulacioncuentasPage extends SimulacionPage {
         buscar.setAttribute("onclick", "waitPage();");
         fset.add(buscar);
         form.add(fset);
-        FormTable editVar_filtrarCuentas = editVar_filtrarCuentas(fieldSearch.getValue(), fset);
-        form.add(editVar_filtrarCuentas);
+        resultadoBusqueda = editVar_filtrarCuentas(fieldSearch.getValue());
+        form.add(resultadoBusqueda);
         return fset;
     }
 
@@ -70,14 +67,12 @@ public class SimulacioncuentasPage extends SimulacionPage {
      * @param form
      * @return
      */
-    public FormTable editVar_filtrarCuentas(String value, FieldSet form) {
+    public Table editVar_filtrarCuentas(String value) {
         if (!value.equals("")) {
-            cuentas = new LinkedList<Cuenta>();
+            cuentas = new LinkedList<Catalogominimo>();
             cuentas = editVar_buscarCuentas(value);
             if (cuentas != null && !cuentas.isEmpty()) {
-                FieldSet fs = new FieldSet("fsCtas", "Cuentas");
-                FormTable generarCuadroCuentas = editVar_generarCuadroCuentas(cuentas);
-                fs.add(generarCuadroCuentas);
+                Table generarCuadroCuentas = editVar_generarCuadroCuentas();
                 return generarCuadroCuentas;
             }
         }
@@ -86,14 +81,14 @@ public class SimulacioncuentasPage extends SimulacionPage {
 
     /**
      * agrega el valor de la variable a la sesion para buscarlo en la siguiente
-     * carga
+     * carga de la misma pagina
      *
      * @param value
      * @return
      */
     public boolean editVar_buscarVariable() {
-        addSessionVar("busquedaSim", fieldSearch.getValue());
-        setRedirect(SimulacionPage.class);
+        addSessionVar("busquedaSim",fieldSearch.getValue());
+        setRedirect(SimulacioncuentasPage.class);
         return true;
     }
 
@@ -104,11 +99,10 @@ public class SimulacioncuentasPage extends SimulacionPage {
      * @param value
      * @return
      */
-    private List<Cuenta> editVar_buscarCuentas(String value) {
-        Set<Cuenta> cuentasSet = regCta.getCuentas();
-        List<Cuenta> resultado = new LinkedList<Cuenta>();
-        for (Cuenta cuenta : cuentasSet) {
-            if (cuenta.getRef() == null || cuenta.getRef().equals("")) {
+    private List<Catalogominimo> editVar_buscarCuentas(String value) {
+        Set<Catalogominimo> cuentasSet = regCta.getCatalogominimos();
+        List<Catalogominimo> resultado = new LinkedList<Catalogominimo>();
+        for (Catalogominimo cuenta : cuentasSet) {
                 String datosCuenta = cuenta.getCatalogocuenta().getDesCatalogoCuenta() + cuenta.getCatalogocuenta().getIdCatalogoCuenta().toString();
                 String datosCuentaMayus = datosCuenta.trim().toUpperCase();
                 String[] argumentos = value.split(" ");
@@ -121,7 +115,7 @@ public class SimulacioncuentasPage extends SimulacionPage {
                 if (paso) {
                     resultado.add(cuenta);
                 }
-            }
+            
         }
         return resultado;
     }
@@ -133,18 +127,18 @@ public class SimulacioncuentasPage extends SimulacionPage {
      * @param form
      * @return
      */
-    private FormTable editVar_generarCuadroCuentas(List<Cuenta> cuentas) {
-        FormTable table = new FormTable("table");
+    private Table editVar_generarCuadroCuentas() {
+        Table table = new Table("table");
         table.setName("dataTable");
         table.setPageNumber(0);
         table.setClass(Table.CLASS_ORANGE2);
-        for (int t = 0; t < cuentas.size(); t++) {
-            ActionLink actionLink = new ActionLink("link" + cuentas.get(t).getIdCuenta(), "Editar", this, "editVar_onVarEdit");
-            actionLink.setValue(cuentas.get(t).getIdCuenta().toString());
-            cuentas.get(t).setActionLink(actionLink);
+        for (Catalogominimo c:cuentas) {
+            ActionLink actionLink = new ActionLink("link" + c.getIdCatalogoMinimo().toString(), "Editar", this, "clickAction");
+            actionLink.setValue(c.getIdCatalogoMinimo().toString());
+            c.setActionLink(actionLink);
             addControl(actionLink);
         }
-        String[] columns = new String[]{"NumCuenta", "Detalle", "Resultado", "Accion?"};
+        String[] columns = new String[]{"Cuenta", "Detalle", "Resultado", "Accion?"};
         for (String c : columns) {
             Column col = new Column(c);
             col.setWidth("900 px");
@@ -153,7 +147,7 @@ public class SimulacioncuentasPage extends SimulacionPage {
                 col.setDecorator(new Decorator() {
                     @Override
                     public String render(Object object, Context context) {
-                        Cuenta c = (Cuenta) object;
+                        Catalogominimo c = (Catalogominimo) object;
                         return c.getActionLink().toString();
                     }
                 });
@@ -170,16 +164,15 @@ public class SimulacioncuentasPage extends SimulacionPage {
      *
      * @return
      */
-    public boolean editVar_onVarEdit() {
-
-        for (int t = 0; t < cuentas.size(); t++) {
-            if (cuentas.get(t).getActionLink().isClicked()) {
-                Cuenta ref = cuentas.get(t);
-                addSessionVar("variableEditSim", ref);
+    public boolean clickAction() {
+        System.out.println("las cuentas son "+cuentas.size());
+        for (Catalogominimo c:cuentas) {
+            if (c.getActionLink().isClicked()) {
+                addSessionVar("variableEditSim", c);
                 setRedirect(EditarsimPage.class);
             }
         }
-        return true;
+        return false;
     }
 
 }

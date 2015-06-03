@@ -1,7 +1,7 @@
 package com.view.page;
 
+import db.controller.DAO;
 import db.pojos.Regcuenta;
-import org.apache.click.control.Label;
 import org.apache.click.extras.control.Menu;
 import org.apache.click.extras.security.RoleAccessController;
 
@@ -14,6 +14,7 @@ public abstract class SimulacionPage extends BorderPage {
     
     Menu menuSim;
     public Regcuenta regCuenta;
+    //dice si quiere que se calcule cada ocasion que se modifique una variable
     public String ejercicio;
     public String icapActual;
     
@@ -22,7 +23,8 @@ public abstract class SimulacionPage extends BorderPage {
         title="Simulación de Capital";
         regCuenta=(Regcuenta) getSessionVar("prySim");
         ejercicio=regCuenta.getDesRegCuenta();
-        icapActual=regCuenta.getCuenta("1",regCuenta.getCuentas()).getValor().toString();
+        DAO.refresh(regCuenta);
+        icapActual=regCuenta.getCuenta("1",regCuenta.getCuentas()).getResultado();
         initMenu();
         initSimulacionComponents();
     }
@@ -33,8 +35,14 @@ public abstract class SimulacionPage extends BorderPage {
     private void initMenu() {
         menuSim = new Menu("menuSim");
 
-        menuSim.add(createMenu("Simulación de Cuentas", "simulacioncuentas.htm"));
-        menuSim.add(createMenu("Simulación de Tenencia", "simulaciontenencia.htm"));
+        //menuSim.add(createMenu("Simulador de Cuentas Catalogo Mínimo", "simulacioncuentas.htm"));
+        menuSim.add(createMenu("Tenencia", "simulaciontenencia.htm"));
+        menuSim.add(createMenu("Disponbilidades", "simulaciondisponibilidad.htm"));
+        menuSim.add(createMenu("Captación", "simulacioncaptacion.htm"));
+        menuSim.add(createMenu("Ingresos Netos", "simulacioningresos.htm"));
+        menuSim.add(createMenu("Prestamos", "simulacionprestamo.htm"));
+        menuSim.add(createMenu("Tarjeta de Crédito", "simulaciontarjetacredito.htm"));
+        
         addControl(menuSim);
     }
 
