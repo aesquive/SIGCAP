@@ -365,7 +365,7 @@ select{
 //calendar beginning
 
 .calendar_date_select {
-  color:white;
+  color:#605BF9;
   border:blue 1px solid;
   display:block;
   width:195px;
@@ -384,7 +384,7 @@ iframe.ie6_blocker {
   border-bottom:2px solid black;
   border-right: 2px solid #777;
   border-color: #380B61;
-  color: white !important;
+  color: #605BF9 !important;
 }
 
 .calendar_date_select .cds_buttons {
@@ -394,7 +394,7 @@ iframe.ie6_blocker {
 }
 
 .calendar_date_select .cds_footer {
-  background-color: black;
+  background-color: whitesmoke;
   padding:3px;
   font-size:12px;
   text-align:center;
@@ -425,7 +425,7 @@ iframe.ie6_blocker {
 
 .calendar_date_select .cds_header span {
   font-size:15px;
-  color: white;
+  color: black;
   font-weight: bold;
 }
 
@@ -473,7 +473,7 @@ iframe.ie6_blocker {
   height: 21px;
   text-align:center;
   vertical-align: middle;
-  background-color: black;
+  background-color: white;
 }
 .calendar_date_select td.weekend {
   background-color: black;

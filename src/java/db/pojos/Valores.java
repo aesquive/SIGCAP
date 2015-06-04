@@ -67,6 +67,9 @@ public class Valores implements java.io.Serializable {
         return new String[]{"TV", "Emisión", "Serie", "Precio", "Numero de Títulos", "Sobretasa", "Calificación", "Riesgo Emisión", "Fecha de Vencimiento", "Moneda", "Ponderador", "Grado Riesgo"};
     }
     
+    public static String getSimEditScreenName(){
+        return "Tenencia";
+    }
     
     /**
      * Son las columnas que se muestran dentro de la simulacion pero no pueden
@@ -75,7 +78,7 @@ public class Valores implements java.io.Serializable {
      * @return
      */
     public static String[] getSimNoEditColumns() {
-return null;
+         return new String[]{"TipoValor","Emision","Serie","Moneda","SobretasaLleno"};
     }
 
     /**
@@ -84,8 +87,8 @@ return null;
      *
      * @return
      */
-    public static String[] getSimNoEditColumnsDes() {
-return null;
+    public static String[] getSimNoEditColumnsDes(){
+        return new String[]{"Tipo Valor","Emisión","Serie","Moneda","Sobretasa"};
     }
 
     /**
@@ -95,7 +98,7 @@ return null;
      * @return
      */
     public static String[] getSimEditColumns() {
-return null;
+        return new String[]{"Precio","NumeroTitulos","Calificacion","FechaVencimiento"};
     }
 
     /**
@@ -105,7 +108,7 @@ return null;
      * @return
      */
     public static String[] getSimEditColumnsDes() {
-return null;
+        return new String[]{"Precio","Número de Títulos","Calificación","Fecha de Vencimiento"};
     }
 
     

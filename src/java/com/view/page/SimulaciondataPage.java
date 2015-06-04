@@ -121,9 +121,10 @@ public class SimulaciondataPage extends SimulacionPage {
         for (String key : keySet) {
             if (actionLinks.get(key).isClicked()) {
                 actionClicked = actionLinks.get(key);
-                target=mapActionLinkValues.get(keySet);
+                target=mapActionLinkValues.get(key);
             }
         }
+        System.out.println("el objeto clickeado es "+target);
         //Sacamos las columnas que no se pueden editar pero si ver
         addSessionVar("simNoEditColumns",Util.reflectionInvoke(target, "getSimNoEditColumns"));
         addSessionVar("simNoEditColumnsDes",Util.reflectionInvoke(target, "getSimNoEditColumnsDes"));
@@ -131,6 +132,7 @@ public class SimulaciondataPage extends SimulacionPage {
         //Sacamos las columnas que se pueden editar 
         addSessionVar("simEditColumns",Util.reflectionInvoke(target, "getSimEditColumns"));
         addSessionVar("simEditColumnsDes",Util.reflectionInvoke(target, "getSimEditColumnsDes"));
+        addSessionVar("simEditScreenName", Util.reflectionInvoke(target, "getSimEditScreenName"));
         //agregamos el target sobre el que se ejecutara la edicion
         addSessionVar("simEditTarget", target);
         //redireccionamos al editor de variables

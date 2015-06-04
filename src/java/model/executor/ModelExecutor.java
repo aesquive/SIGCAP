@@ -182,7 +182,7 @@ public class ModelExecutor {
      * @throws MathInterpreterException
      */
     public static void main(String[] args) throws MathInterpreterException, IOException {
-        int regCuenta = 27;
+        int regCuenta = 33;
         List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
         Regcuenta c = new Regcuenta();
         for (Regcuenta r : createQuery) {
@@ -190,7 +190,7 @@ public class ModelExecutor {
                 c = r;
             }
         }
-        ModelExecutor m = new ModelExecutor(c,false);
+        ModelExecutor m = new ModelExecutor(c,true);
         Map<String, Cuenta> start = m.start();
         System.out.println("acabo y el valor de 1 es :");
         System.out.println(start.get("1").getValor());

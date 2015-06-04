@@ -36,12 +36,16 @@ public class Captacion implements java.io.Serializable,Comparable {
         return new String[]{"Catalogo Mínimo", "Descripción", "Cuenta Captación", "Monto ", "Fecha de Vencimiento"};
     }
     
+    public static String getSimEditScreenName(){
+        return "Captación";
+    }
+    
     /**
      * Son las columnas que se muestran dentro de la simulacion pero no pueden editarse , metodos
      * @return 
      */
     public static String[] getSimNoEditColumns(){
-        return null;
+        return new String[]{"CatalogoMinimoDetail","Descripcion","IdCuentaCaptacion"};
     }
     
     /**
@@ -49,7 +53,7 @@ public class Captacion implements java.io.Serializable,Comparable {
      * @return 
      */
     public static String[] getSimNoEditColumnsDes(){
-        return null;
+        return new String[]{"Cuenta Contable","Descripción"," Cuenta Captación"};
     }
     
     /**
@@ -57,7 +61,7 @@ public class Captacion implements java.io.Serializable,Comparable {
      * @return 
      */
     public static String[] getSimEditColumns(){
-        return null;
+        return new String[]{"Monto","FechaVencimiento"};
     }
     
     /**
@@ -65,7 +69,7 @@ public class Captacion implements java.io.Serializable,Comparable {
      * @return 
      */
     public static String[] getSimEditColumnsDes(){
-        return null;
+        return new String[]{"Monto","Fecha de Vencimiento"};
     }
     
 

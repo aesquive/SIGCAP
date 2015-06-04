@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import static java.lang.Double.parseDouble;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -217,9 +218,19 @@ public class Util {
             Object invoke = method.invoke(object, null);
             return invoke;
         } catch (Exception ex) {
-            System.out.println("Error "+ex);
+            System.out.println("Error reflection invoke"+ex);
         }
         return null;
+    }
+    
+    public static boolean reflectionInvokeSet(Object target,Method method,Object ... args){
+        try {
+            method.invoke(target, args);
+            return true;
+        } catch (Exception ex) {
+            Logger.getLogger(Util.class.getName()).log(Level.INFO, null, ex);
+            return false;
+        }
     }
 
     
@@ -235,5 +246,30 @@ public class Util {
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         return df.format(date);
     }
-    
+
+    /**
+     * saca un metodo por reflexión dado su nombre y la clase en la cual se busca
+     * @param target
+     * @param name
+     * @param params
+     * @return 
+     */
+    public static Method getMethod(Class target,String name,Class... params){
+        try {
+            return target.getMethod(name,params);
+        } catch (Exception ex) {
+            System.out.println("Error Util.getMethod :"+target.toString()+" Method: "+name);
+            return null;
+        }  
+    }
+
+    /**
+     * Saca el tipo de objeto que regresa un metodo
+     * @param aClass
+     * @param method
+     * @return 
+     */
+    public static Class getReturnType( Method method) {
+        return method.getReturnType();
+    }
 }

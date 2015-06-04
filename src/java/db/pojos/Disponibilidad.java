@@ -2,10 +2,7 @@ package db.pojos;
 // Generated 26/06/2014 12:43:36 AM by Hibernate Tools 3.6.0
 
 
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import util.Util;
 
 /**
@@ -80,12 +77,16 @@ public class Disponibilidad  implements java.io.Serializable {
         return new String[]{"ID","Cuenta Contable","Descripción","Monto","Fecha de Vencimiento"};
     }
     
+    public static String getSimEditScreenName(){
+        return "Disponibilidad";
+    }
+    
     /**
      * Son las columnas que se muestran dentro de la simulacion pero no pueden editarse , metodos
      * @return 
      */
     public static String[] getSimNoEditColumns(){
-        return null;
+        return new String[]{"IdCuentaContable","Descripcion","IdDisponibilidad"};
     }
     
     /**
@@ -93,7 +94,7 @@ public class Disponibilidad  implements java.io.Serializable {
      * @return 
      */
     public static String[] getSimNoEditColumnsDes(){
-        return null;
+        return new String[]{"Cuenta Contable","Descripción","Cuenta Disponibilidad"};
     }
     
     /**
@@ -101,7 +102,7 @@ public class Disponibilidad  implements java.io.Serializable {
      * @return 
      */
     public static String[] getSimEditColumns(){
-        return null;
+        return new String[]{"Monto","FechaVencimiento"};
     }
     
     /**
@@ -109,7 +110,7 @@ public class Disponibilidad  implements java.io.Serializable {
      * @return 
      */
     public static String[] getSimEditColumnsDes(){
-        return null;
+        return new String[]{"Monto","Fecha de Vencimiento"};
     }
     
     public String getIdCuentaContable(){

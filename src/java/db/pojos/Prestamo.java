@@ -129,6 +129,9 @@ public class Prestamo  implements java.io.Serializable {
         return new String[]{"ID","Cuenta Contable","Descripción","Saldo","Fecha de Corte","Relevante"};
     }
     
+    public static String getSimEditScreenName(){
+        return "Prestamo";
+    }
     
     
     /**
@@ -136,7 +139,7 @@ public class Prestamo  implements java.io.Serializable {
      * @return 
      */
     public static String[] getSimNoEditColumns(){
-        return null;
+        return new String[]{"IdCuentaContable","Descripcion","IdCuentaPrestamo","RelevanteFormato"};
     }
     
     /**
@@ -144,7 +147,7 @@ public class Prestamo  implements java.io.Serializable {
      * @return 
      */
     public static String[] getSimNoEditColumnsDes(){
-        return null;
+        return new String[]{"Cuenta Contable","Descripción","ID Prestamo","Relevante"};
     }
     
     /**
@@ -152,7 +155,7 @@ public class Prestamo  implements java.io.Serializable {
      * @return 
      */
     public static String[] getSimEditColumns(){
-        return null;
+        return new String[]{"Saldo","FechaDeCorte"};
     }
     
     /**
@@ -160,7 +163,7 @@ public class Prestamo  implements java.io.Serializable {
      * @return 
      */
     public static String[] getSimEditColumnsDes(){
-        return null;
+        return new String[]{"Saldo","Fecha de Corte"};
     }
     
     

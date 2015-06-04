@@ -2,9 +2,7 @@ package db.pojos;
 // Generated 26/06/2014 12:43:36 AM by Hibernate Tools 3.6.0
 
 
-import java.text.NumberFormat;
 import java.util.Date;
-import java.util.Locale;
 import util.Util;
 
 /**
@@ -28,13 +26,16 @@ public class Ingresosnetos  implements java.io.Serializable {
         return new String[]{"ID","Mes","Ingreso Neto"};
     }
 
+    public static String getSimEditScreenName(){
+        return "Ingresos Netos";
+    }
     
     /**
      * Son las columnas que se muestran dentro de la simulacion pero no pueden editarse , metodos
      * @return 
      */
     public static String[] getSimNoEditColumns(){
-        return null;
+        return new String[]{"IdIngresosNetos","NumeroMes"};
     }
     
     /**
@@ -42,7 +43,7 @@ public class Ingresosnetos  implements java.io.Serializable {
      * @return 
      */
     public static String[] getSimNoEditColumnsDes(){
-        return null;
+        return new String[]{"ID Ingreso Neto","Número de Mes"};
     }
     
     /**
@@ -50,7 +51,7 @@ public class Ingresosnetos  implements java.io.Serializable {
      * @return 
      */
     public static String[] getSimEditColumns(){
-        return null;
+        return new String[]{"IngresoNeto"};
     }
     
     /**
@@ -58,7 +59,7 @@ public class Ingresosnetos  implements java.io.Serializable {
      * @return 
      */
     public static String[] getSimEditColumnsDes(){
-        return null;
+        return new String[]{"Ingreso Neto"};
     }
     
     public String getIngresoNetoFormato(){

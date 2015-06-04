@@ -135,6 +135,11 @@ public class Tarjetacredito implements java.io.Serializable {
         return new String[]{"ID", "Cuenta Contable", "Descripción", "Saldo", "Fecha de Corte", "Relevante"};
     }
 
+    
+    public static String getSimEditScreenName(){
+        return "Tarjeta de Crédito";
+    }
+    
     /**
      * Son las columnas que se muestran dentro de la simulacion pero no pueden
      * editarse , metodos
@@ -142,7 +147,7 @@ public class Tarjetacredito implements java.io.Serializable {
      * @return
      */
     public static String[] getSimNoEditColumns() {
-return null;
+         return new String[]{"IdCuentaContable","Descripcion","IdCredito","RelevanteFormato"};
     }
 
     /**
@@ -152,7 +157,7 @@ return null;
      * @return
      */
     public static String[] getSimNoEditColumnsDes() {
-return null;
+        return new String[]{"Cuenta Contable","ID Tarjeta","Descripción","Relevante"};
     }
 
     /**
@@ -162,7 +167,7 @@ return null;
      * @return
      */
     public static String[] getSimEditColumns() {
-return null;
+        return new String[]{"SaldoInsoluto","FechaCorte"};
     }
 
     /**
@@ -172,7 +177,7 @@ return null;
      * @return
      */
     public static String[] getSimEditColumnsDes() {
-return null;
+        return new String[]{"Saldo Insoluto","Fecha de Corte"};
     }
 
     public String getIdCuentaContable() {
