@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import static java.lang.Double.parseDouble;
 import java.lang.reflect.Method;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -14,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -28,6 +30,11 @@ import org.apache.click.control.Label;
  */
 public class Util {
 
+    /**
+     * ordena valores double
+     * @param keySet
+     * @return 
+     */
     public static List<Double> sortDoubleValues(Set<Double> keySet) {
         List<Double> list = new LinkedList<Double>();
         for (Double d : keySet) {
@@ -37,6 +44,11 @@ public class Util {
         return list;
     }
 
+    /**
+     * lee un archivo y regresa su contenido en una lista de cadenas
+     * @param fileName
+     * @return 
+     */
     public static List<String> readFile(String fileName) {
         try {
             List<String> values = new LinkedList<String>();
@@ -54,6 +66,12 @@ public class Util {
         return null;
     }
 
+    /**
+     * genera el texto ascii, nos da los numeros que queramos por letra encriptada
+     * @param valor
+     * @param numbersPerLetter
+     * @return 
+     */
     public static String getAsciiText(String valor, int numbersPerLetter) {
         String cad = "";
         if (valor == null) {
@@ -82,6 +100,12 @@ public class Util {
         }
     }
 
+    /**
+     * Saca la diferencia en dias de dos fechas
+     * @param init
+     * @param last
+     * @return 
+     */
     public static int daysBetweenDates(Date init, Date last) {
         Calendar calLast = Calendar.getInstance();
         calLast.setTime(last);
@@ -162,6 +186,12 @@ public class Util {
         return vals;
     }
 
+    /**
+     * metodo con reflexion sobre el objeto para ejecutar un metodo y regresarlo como cadena de texto
+     * @param object
+     * @param idmethodName
+     * @return 
+     */
     public static String reflectionString(Object object, String idmethodName) {
         try {
             Class classObject = object.getClass();
@@ -173,5 +203,37 @@ public class Util {
         }
         return null;
     }
+    
+    /**
+     * metodo con reflexion sobre el objeto para ejecutar un metodo
+     * @param object
+     * @param nmethod
+     * @return 
+     */
+    public static Object reflectionInvoke(Object object, String nmethod){
+        try {
+            Class classObject = object.getClass();
+            Method method = classObject.getMethod(nmethod, null);
+            Object invoke = method.invoke(object, null);
+            return invoke;
+        } catch (Exception ex) {
+            System.out.println("Error "+ex);
+        }
+        return null;
+    }
 
+    
+    public static String formatNumber(Number num){
+        Locale loc = new Locale("us");
+        NumberFormat instance = NumberFormat.getInstance(loc);
+        instance.setMaximumFractionDigits(2);
+        return instance.format(num);
+    }
+    
+    
+    public static String formatDate(Date date){
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        return df.format(date);
+    }
+    
 }

@@ -61,8 +61,8 @@ public class Tenencia extends BorderPage {
         table.setPageNumber(0);
         table.setClass(Table.CLASS_ORANGE2);
         String columnSort = getSessionVar("tenenciaOrdenar") == null ? "TipoValorEmisionSerie" : (String) getSessionVar("tenenciaOrdenar");
-        String[] tenenciaColumns = Valores.getTenenciaColumns();
-        String[] tenenciaDesColumns = Valores.getTenenciaDesColumns();
+        String[] tenenciaColumns = Valores.getSimColumns();
+        String[] tenenciaDesColumns = Valores.getSimDesColumns();
         for (int t = 0; t < tenenciaColumns.length; t++) {
             Column c = new Column(tenenciaColumns[t], tenenciaDesColumns[t]);
             table.addColumn(c);

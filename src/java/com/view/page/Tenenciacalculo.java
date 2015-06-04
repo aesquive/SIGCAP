@@ -58,8 +58,8 @@ public class Tenenciacalculo extends BorderPage {
         tableNoMapeada = new FormTable("dataTableSmall");
         tableNoMapeada.setPageNumber(0);
         tableNoMapeada.setClass(Table.CLASS_ORANGE2);
-        String[] tenenciaColumns = Valores.getTenenciaColumns();
-        String[] tenenciaDesColumns = Valores.getTenenciaDesColumns();
+        String[] tenenciaColumns = Valores.getSimColumns();
+        String[] tenenciaDesColumns = Valores.getSimDesColumns();
         for (int t = 0; t < tenenciaColumns.length; t++) {
             Column c = new Column(tenenciaColumns[t], tenenciaDesColumns[t]);
             c.setWidth("900 px");

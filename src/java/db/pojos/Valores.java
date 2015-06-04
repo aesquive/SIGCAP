@@ -48,14 +48,72 @@ public class Valores implements java.io.Serializable {
     private Integer mapeado;
     
     public String getFechaVencimientoFormato() {
-        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        return df.format(fechaVencimiento);
+        return Util.formatDate(fechaVencimiento);
     }
 
-    public static String[] getTenenciaColumns() {
+    /**
+     * Columnas que se muestran dentro de la simulacion , metodos
+     *
+     * @return
+     */
+    public static String[] getSimColumns() {
         return new String[]{"TipoValor", "Emision", "Serie", "Precio", "NumeroTitulosFormato", "SobretasaLleno", "Calificacion", "GrupoRc07", "FechaVencimientoFormato", "Moneda", "Ponderador", "GradoRiesgo"};
     }
+    /**
+     * Columnas que se muestran dentro de la simulacion, nombres
+     * @return 
+     */
+    public static String[] getSimDesColumns() {
+        return new String[]{"TV", "Emisión", "Serie", "Precio", "Numero de Títulos", "Sobretasa", "Calificación", "Riesgo Emisión", "Fecha de Vencimiento", "Moneda", "Ponderador", "Grado Riesgo"};
+    }
+    
+    
+    /**
+     * Son las columnas que se muestran dentro de la simulacion pero no pueden
+     * editarse , metodos
+     *
+     * @return
+     */
+    public static String[] getSimNoEditColumns() {
+return null;
+    }
 
+    /**
+     * Son las columnas que se muestran dentro de la simulacion pero no pueden
+     * editarse , nombres
+     *
+     * @return
+     */
+    public static String[] getSimNoEditColumnsDes() {
+return null;
+    }
+
+    /**
+     * Son las columnas que se muestran dentro de la simulacion pero pueden
+     * editarse , metodos
+     *
+     * @return
+     */
+    public static String[] getSimEditColumns() {
+return null;
+    }
+
+    /**
+     * Son las columnas que se muestran dentro de la simulacion pero pueden
+     * editarse , nombres
+     *
+     * @return
+     */
+    public static String[] getSimEditColumnsDes() {
+return null;
+    }
+
+    
+
+    /**
+     * Columas Utilizadas para el reporte de la tenencia
+     * @return 
+     */
     public static String[] getTenenciaReport() {
         return new String[]{"TipoValor", "Emision", "Serie", "Precio", "NumeroTitulos", "Sobretasa", "Calificacion", "GrupoRc07", "FechaVencimientoFormato", "Moneda", "Ponderador", "GradoRiesgo"};
     }
@@ -71,10 +129,7 @@ public class Valores implements java.io.Serializable {
         return tipoValor + emision + serie;
     }
 
-    public static String[] getTenenciaDesColumns() {
-        return new String[]{"TV", "Emisión", "Serie", "Precio", "Numero de Títulos", "Sobretasa", "Calificación", "Riesgo Emisión", "Fecha de Vencimiento", "Moneda", "Ponderador", "Grado Riesgo"};
-    }
-
+    
     public Valores() {
     }
 
