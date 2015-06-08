@@ -38,4 +38,9 @@ public class IcapPage extends BorderPage {
         addSessionVar("regCta-0", "Datos");
         setRedirect(TablePage.class);
     }
+
+    @Override
+    public Integer getPermisoNumber() {
+        return -1;
+    }
 }

@@ -57,4 +57,9 @@ public class ReporteconsPage extends BorderPage {
         return false;
     }
 
+    @Override
+    public Integer getPermisoNumber() {
+        return 5;
+    }
+
 }

@@ -117,12 +117,13 @@ public class LoginPage extends Page {
      * @return
      */
     private User verifyUser(String user, String pass) {
-        List<User> createQuery = DAO.createQuery(User.class, new Criterion[]{Restrictions.and(
-            Restrictions.eq("user", user), Restrictions.eq("password", pass))});
-        if (createQuery.isEmpty()) {
-            return null;
+        List<User> createQuery = DAO.createQuery(User.class, null);
+        for(User u:createQuery){
+            if(u.getUser().equals(user) && u.getPassword().equals(pass)){
+                return u;
+            }
         }
-        return createQuery.get(0);
+        return null;
     }
 
     

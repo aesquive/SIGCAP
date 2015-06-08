@@ -212,4 +212,9 @@ public class MapeoPage extends BorderPage {
         Calificacion get = cals.get("MxAA");
         System.out.println(get);
     }
+
+    @Override
+    public Integer getPermisoNumber() {
+        return -1;
+    }
 }

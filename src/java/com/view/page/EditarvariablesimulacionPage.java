@@ -181,4 +181,9 @@ public class EditarvariablesimulacionPage extends BorderPage {
         }
     }
 
+    @Override
+    public Integer getPermisoNumber() {
+        return -1;
+    }
+
 }

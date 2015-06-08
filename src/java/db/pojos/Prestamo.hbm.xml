@@ -27,7 +27,7 @@
             <column name="Saldo" precision="15" scale="5" />
         </property>
         <property name="fechaDeCorte" type="timestamp">
-            <column name="`Fecha de Corte`" length="19" />
+            <column name="`FechaCorte`" length="19" />
         </property>
         <property name="tipoPrestamo" type="string">
             <column name="TipoPrestamo" />

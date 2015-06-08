@@ -218,4 +218,9 @@ public class MapeoeditPage extends BorderPage {
         form.add(gradoRiesgo);
     }
 
+    @Override
+    public Integer getPermisoNumber() {
+        return -1;
+    }
+
 }

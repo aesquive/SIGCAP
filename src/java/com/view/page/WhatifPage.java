@@ -237,4 +237,9 @@ public class WhatifPage extends BorderPage {
         DAO.saveMultiple(items);
     }
 
+    @Override
+    public Integer getPermisoNumber() {
+        return 10;
+    }
+
 }

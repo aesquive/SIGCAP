@@ -11,5 +11,10 @@ public class BienvenidaPage extends BorderPage{
     public void init() {       
         title="SIGCAP";
     }
+
+    @Override
+    public Integer getPermisoNumber() {
+        return -1;
+    }
     
 }

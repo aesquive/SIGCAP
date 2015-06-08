@@ -209,4 +209,9 @@ public class ComparePage extends BorderPage {
 //            browser.openURLinBrowser(Configuration.getValue("direccionReportes") + "?typ=2&pra=" + regCuentaUno.getIdRegCuenta() + "&prb=" + regCuentaDos.getIdRegCuenta() + "&var=" + ((Double) getContext().getSessionAttribute("minVariance")) / 100 + "&num=" + ((Integer) getContext().getSessionAttribute("numRegs")));
         return true;
     }
+
+    @Override
+    public Integer getPermisoNumber() {
+        return -1;
+    }
 }

@@ -51,4 +51,9 @@ public class TrackinglogPage extends BorderPage {
         }
         return false;
     }
+
+    @Override
+    public Integer getPermisoNumber() {
+        return 9;
+    }
 }

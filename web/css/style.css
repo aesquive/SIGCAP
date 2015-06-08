@@ -390,7 +390,7 @@ iframe.ie6_blocker {
 .calendar_date_select .cds_buttons {
   text-align:center;
   padding:5px 0px;
-  background-color: black;
+  background-color: whitesmoke;
 }
 
 .calendar_date_select .cds_footer {
@@ -476,20 +476,20 @@ iframe.ie6_blocker {
   background-color: white;
 }
 .calendar_date_select td.weekend {
-  background-color: black;
+  background-color: white;
   border-left:1px solid #ddd;
   border-right:1px solid #ddd;
 }
 
 .calendar_date_select td div {
-  color: white;
+  color: blue;
 }
 .calendar_date_select td div.other {
   color: grey;
   
 }
 .calendar_date_select td.selected div {
-  color:white;
+  color:blue;
 }
 
 .calendar_date_select tbody td {

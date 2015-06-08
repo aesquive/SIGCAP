@@ -5,8 +5,10 @@ import db.pojos.Permisosuser;
 import db.pojos.User;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import manager.configuration.Configuration;
 import org.apache.click.Page;
 import org.apache.click.control.ActionLink;
@@ -34,14 +36,18 @@ public abstract class BorderPage extends Page {
     //almacena la licencia de usuario
     public static List<String> lic = Util.readFile(manager.configuration.Configuration.getValue("license"));
     public String connecteduser;
+    public User user;
     
     public BorderPage() {
         title="Título default";
+        
         connectedUser();
         addCommonControls();
+        checkPermiso();
         init();
     }
 
+    
     /**
      * casa clase que herede debe implementar como iniciar la pantalla
      */
@@ -72,16 +78,7 @@ public abstract class BorderPage extends Page {
         //cargamos el menu
         rootMenu = new Menu("rootMenu");
         User user = (User) getSessionVar("user");
-        List<Permisosuser> createQuery = DAO.createQuery(Permisosuser.class, null);
-        List<Permisosuser> listPermisos = new LinkedList<Permisosuser>();
-        for (Permisosuser ps : createQuery) {
-            if (ps.getUser().getIduser() == user.getIduser()) {
- //               DAO.refresh(ps);
-                listPermisos.add(ps);
-            }
-        }
-        Collections.sort(listPermisos);
-
+      
         //creamos el menu principal de toda la aplicacion
         //indica los menus principales a mostrar
         String[] menuPrincipal = new String[]{"DataWarehouse","Generador de Reportes","Gestión de Capital","Auditor","Simulación de Capital", "Administrador de Usuarios"};
@@ -91,6 +88,7 @@ public abstract class BorderPage extends Page {
         String[] path = new String[]{"cargadatos.htm|bajadatos.htm","reportes.htm|menutenencia.htm|reportecons.htm|reportecongruencia.htm", "icap.htm","reportecambios.htm|trackinglog.htm","whatif.htm","altausuarios.htm|editarusuarios.htm"};
         //identificador de los submenus dentro del sistema
         String[] identSUbs=new String[]{"1|2","3|4|5|6","","7|8","","9|10"};
+      
         for (int t = 0; t < menuPrincipal.length; t++) {
                 Menu pestania=null;
                 if(subMenus[t].equals("")){
@@ -170,8 +168,23 @@ public abstract class BorderPage extends Page {
     private void connectedUser() {
         Object sessionVar = getSessionVar("user");
         if(sessionVar!=null){
-            User u=(User)sessionVar;
-            connecteduser=u.getUser();
+            user=(User)sessionVar;
+            connecteduser=user.getUser();
         }
+    }
+
+    public abstract Integer getPermisoNumber();
+    
+    private void checkPermiso() {
+        if(getPermisoNumber()==-1){
+            return;
+        }
+        List<Permisosuser> createQuery = DAO.createQuery(Permisosuser.class, null);
+        for(Permisosuser per:createQuery){
+            if(per.getUser().getIduser()==user.getIduser() && getPermisoNumber()==per.getPermisos().getIdPermiso() && per.getValor()==1){
+                return;
+            }
+        }
+        setRedirect(SinpermisoPage.class);
     }
 }

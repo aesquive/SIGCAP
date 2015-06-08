@@ -58,4 +58,9 @@ public class EditarusuariosPage extends BorderPage {
         }
         return false;
     }
+
+    @Override
+    public Integer getPermisoNumber() {
+        return 12;
+    }
 }

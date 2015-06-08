@@ -16,5 +16,10 @@ public class ReporteintegridadPage extends BorderPage{
     public void init() {
         title="Reporte de Integridad";
     }
+
+    @Override
+    public Integer getPermisoNumber() {
+        return -1;
+    }
     
 }

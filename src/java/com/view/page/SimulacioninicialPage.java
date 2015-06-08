@@ -15,5 +15,10 @@ public class SimulacioninicialPage extends SimulacionPage{
     public void initSimulacionComponents() {
         return;
     }
+
+    @Override
+    public Integer getPermisoNumber() {
+        return -1;
+    }
     
 }

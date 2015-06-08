@@ -81,4 +81,9 @@ public class ReportecambiosPage extends BorderPage {
         }
         return false;
     }
+
+    @Override
+    public Integer getPermisoNumber() {
+        return 8;
+    }
 }

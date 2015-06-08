@@ -140,4 +140,9 @@ public class SimulaciondataPage extends SimulacionPage {
         return true;
     }
 
+    @Override
+    public Integer getPermisoNumber() {
+        return -1;
+    }
+
 }

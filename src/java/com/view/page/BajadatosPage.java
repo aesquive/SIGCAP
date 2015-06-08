@@ -52,4 +52,9 @@ public class BajadatosPage extends BorderPage {
         return true;
     }
 
+    @Override
+    public Integer getPermisoNumber() {
+        return 2;
+    }
+
 }

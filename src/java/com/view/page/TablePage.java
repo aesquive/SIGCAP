@@ -169,4 +169,9 @@ public class TablePage extends BorderPage {
         return true;
     }
 
+    @Override
+    public Integer getPermisoNumber() {
+        return 7;
+    }
+
 }

@@ -10,5 +10,10 @@ public class ContactoPage extends BorderPage{
     public void init() {
         title="Contacto";
     }
+
+    @Override
+    public Integer getPermisoNumber() {
+        return -1;
+    }
     
 }

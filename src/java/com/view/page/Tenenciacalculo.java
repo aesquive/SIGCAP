@@ -135,5 +135,10 @@ public class Tenenciacalculo extends BorderPage {
         setRedirect(TenenciaeditarcalculoPage.class);
         return true;
     }
+
+    @Override
+    public Integer getPermisoNumber() {
+        return -1;
+    }
     
 }

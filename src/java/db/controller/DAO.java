@@ -1,5 +1,6 @@
 package db.controller;
 
+import db.pojos.Regcuenta;
 import db.pojos.Tracking;
 import db.pojos.User;
 import java.util.Calendar;
@@ -53,8 +54,9 @@ public class DAO {
 
     /**
      * guarda un registro dentro del tracking log
+     *
      * @param user
-     * @param text 
+     * @param text
      */
     public static void saveRecordt(User user, String text) {
         Tracking tracking = new Tracking(user, text, Calendar.getInstance().getTime());
@@ -74,7 +76,8 @@ public class DAO {
 
     /**
      * guarda un solo elemento
-     * @param object 
+     *
+     * @param object
      */
     public static void save(Object object) {
         session.save(object);
@@ -84,7 +87,8 @@ public class DAO {
 
     /**
      * guarda o actualiza el elemento del parametro
-     * @param obj 
+     *
+     * @param obj
      */
     public static void saveOrUpdate(Object obj) {
         session.saveOrUpdate(obj);
@@ -93,8 +97,10 @@ public class DAO {
     }
 
     /**
-     * actualiza el elemento del parametro, debe existir previamente en la base de datos
-     * @param obj 
+     * actualiza el elemento del parametro, debe existir previamente en la base
+     * de datos
+     *
+     * @param obj
      */
     public static void update(Object obj) {
         session.update(obj);
@@ -104,7 +110,8 @@ public class DAO {
 
     /**
      * borra un elemento de la base de datos
-     * @param object 
+     *
+     * @param object
      */
     public static void delete(Object object) {
         session.delete(object);
@@ -114,18 +121,21 @@ public class DAO {
 
     /**
      * actualiza un registro para obtener sus nuevos valores
-     * @param obj 
+     *
+     * @param obj
      */
     public static void refresh(Object obj) {
         session.refresh(obj);
     }
 
     /**
-     * guarda multiples objetos dentro de la base, todos deben ser instancias de objetos mapeados
-     * @param objects 
+     * guarda multiples objetos dentro de la base, todos deben ser instancias de
+     * objetos mapeados
+     *
+     * @param objects
      */
     public static void saveMultiple(Collection objects) {
-        Transaction tr=session.beginTransaction();
+        Transaction tr = session.beginTransaction();
         tr.begin();
         for (Object o : objects) {
             session.save(o);
@@ -134,10 +144,12 @@ public class DAO {
         session.flush();
         session.clear();
     }
-    
+
     /**
-     * borra multiples objetos dentro de la base, todos deben estar almacenados en base previamente
-     * @param list 
+     * borra multiples objetos dentro de la base, todos deben estar almacenados
+     * en base previamente
+     *
+     * @param list
      */
     public static void deletemultiple(Collection list) {
         for (Object o : list) {
@@ -149,20 +161,21 @@ public class DAO {
 
     }
 
-    
     /**
      * ejecuta codigo sql dado por el usuario
-     * @param sql 
+     *
+     * @param sql
      */
     public static void executeSQL(String sql) {
-                checkSession();
+        checkSession();
 
         SQLQuery createSQLQuery = session.createSQLQuery(sql);
         createSQLQuery.executeUpdate();
     }
 
     public static void main(String[] args) {
-        DAO.executeSQL("delete from cuenta where idRegCuenta=23");
+        Object get = DAO.createQuery(User.class, null).get(0);
+        System.out.println(get);
     }
 
 }

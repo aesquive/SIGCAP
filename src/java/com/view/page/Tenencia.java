@@ -99,4 +99,9 @@ public class Tenencia extends BorderPage {
         return Util.sortValoresBy(linkedList, param, true);
     }
 
+    @Override
+    public Integer getPermisoNumber() {
+        return -1;
+    }
+
 }

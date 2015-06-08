@@ -2,10 +2,7 @@ package db.pojos;
 // Generated 26/06/2014 12:43:36 AM by Hibernate Tools 3.6.0
 
 
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import util.Util;
 
 /**

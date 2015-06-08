@@ -32,4 +32,9 @@ public class SalirPage extends BorderPage {
         setRedirect("redirect.html");
     }
 
+    @Override
+    public Integer getPermisoNumber() {
+        return -1;
+    }
+
 }

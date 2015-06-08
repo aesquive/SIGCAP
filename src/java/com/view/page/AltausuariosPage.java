@@ -60,7 +60,7 @@ public class AltausuariosPage extends BorderPage {
         }
         checkBox = new LinkedList<Checkbox>();
         for (int t = 0; t < permisos.size(); t++) {
-            Checkbox box = new Checkbox("c" + t, "Módulo " + permisos.get(t).getColumnDetail());
+            Checkbox box = new Checkbox("c" + t,  permisos.get(t).getColumnDetail());
             box.setChecked(false);
             checkBox.add(box);
         }
@@ -91,6 +91,7 @@ public class AltausuariosPage extends BorderPage {
                 User user = new User(nameUser.getValue());
                 user.setPassword(password.getValue());
                 user.setActivo(0);
+                user.setNumlogin(0);
                 DAO.save(user);
                 List<Permisos> todosPermisos = DAO.createQuery(Permisos.class, null);
                 for (int t = 0; t < todosPermisos.size(); t++) {
@@ -100,7 +101,7 @@ public class AltausuariosPage extends BorderPage {
                 }
                 User userSess = (User) getSessionVar("user");
                 DAO.saveRecordt(userSess,userSess.getUser()+" dio de alta a "+user.getUser());
-                setRedirect(ControlusuariosPage.class);
+                setRedirect(BienvenidaPage.class);
 
                 return true;
             }
@@ -110,8 +111,13 @@ public class AltausuariosPage extends BorderPage {
 
     public boolean cancelar() {
         form.setJavaScriptValidation(false);
-        setRedirect(ControlusuariosPage.class);
+        setRedirect(BienvenidaPage.class);
         return true;
+    }
+
+    @Override
+    public Integer getPermisoNumber() {
+        return 11;
     }
 
 }

@@ -160,4 +160,9 @@ public class TenenciaeditarcalculoPage extends BorderPage {
         gradoRiesgo.setValue(valor.getGradoRiesgo().toString());
     }
 
+    @Override
+    public Integer getPermisoNumber() {
+        return -1;
+    }
+
 }

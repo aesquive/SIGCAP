@@ -68,4 +68,9 @@ public class ReportecongruenciaPage extends BorderPage {
         return false;
     }
 
+    @Override
+    public Integer getPermisoNumber() {
+        return 6;
+    }
+
 }

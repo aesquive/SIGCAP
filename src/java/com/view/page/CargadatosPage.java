@@ -504,4 +504,9 @@ public class CargadatosPage extends BorderPage {
         }
     }
 
+    @Override
+    public Integer getPermisoNumber() {
+        return 1;
+    }
+
 }

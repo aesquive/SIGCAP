@@ -3,13 +3,13 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 26/06/2014 12:43:39 AM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
-    <class name="db.pojos.User" table="user" >
+    <class name="db.pojos.User" table="usuario" >
         <id name="iduser" type="java.lang.Integer">
             <column name="iduser" />
             <generator class="identity" />
         </id>
         <property name="user" type="string">
-            <column name="user" length="45" not-null="true" unique="true" />
+            <column name="usuario" length="45" not-null="true" unique="true" />
         </property>
         <property name="password" type="string">
             <column name="password" length="45" />
