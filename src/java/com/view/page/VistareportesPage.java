@@ -92,13 +92,13 @@ public class VistareportesPage extends Page {
             }
         }
 
-        String fileName = manager.configuration.Configuration.getValue("Ruta Reportes") + selected.getIdRegCuenta().toString() + "-" + selectedReport.getNombreCorto()+ ".xlsx";
+        String fileName = manager.configuration.Configuration.getValue("Ruta Reportes") + selected.getIdRegCuenta().toString() + "-" + selectedReport.getNombreCorto() + ".xlsx";
         Set<Cuenta> cuentas = selected.getCuentas();
         Map<String, Cuenta> map = new HashMap<String, Cuenta>();
         for (Cuenta c : cuentas) {
             map.put(c.getCatalogocuenta().getIdCatalogoCuenta().toString(), c);
         }
-        ExcelMaker excelmaker = new ExcelMaker(fileName, selectedReport.getRuta(),selected, map);
+        ExcelMaker excelmaker = new ExcelMaker(fileName, selectedReport.getRuta(), selected, map);
         File makeFile = null;
         try {
             makeFile = excelmaker.makeFile();
@@ -115,7 +115,8 @@ public class VistareportesPage extends Page {
         }
         User user = (User) getContext().getSessionAttribute("user");
         DAO.saveRecordt(user, user.getUser() + " generó reporte " + selectedReport.getDesReportes());
-        setRedirect("/reportes/" + selected.getIdRegCuenta().toString() + "-" + selectedReport.getNombreCorto()+ ".xlsx");
+        String urlBase = Configuration.getValue("baseApacheReportes");
+        setRedirect("downloadreport.html?url=" + urlBase + selected.getIdRegCuenta().toString() + "-" + selectedReport.getNombreCorto() + ".xlsx");
         return true;
     }
 
@@ -133,9 +134,10 @@ public class VistareportesPage extends Page {
                 }
             }
             String compareWriteFile = ModelComparator.compareWriteFile(manager.configuration.Configuration.getValue("baseAnalisisComparativo"), "comparativo", reg1, reg1.getCuentas(), reg2, reg2.getCuentas(), variance, numRegs);
-            setRedirect("/reportes/" + compareWriteFile);
+            String urlBase = Configuration.getValue("baseApacheReportes");
             User user = (User) getContext().getSessionAttribute("user");
             DAO.saveRecordt(user, user.getUser() + " generó reporte comparativo de " + reg1.getDesRegCuenta() + " y " + reg2.getDesRegCuenta());
+            setRedirect("downloadreport.html?url=" + urlBase + compareWriteFile);
         } catch (IOException ex) {
             Logger.getLogger(VistareportesPage.class.getName()).log(Level.INFO, null, ex);
         }
@@ -158,11 +160,13 @@ public class VistareportesPage extends Page {
             List<Cuenta> cuentasInicialesUno = obtenerCuentasIniciales(reg1);
             List<Cuenta> cuentasInicialesDos = obtenerCuentasIniciales(reg2);
             String compareWriteFile = ModelComparator.compareWriteFile(manager.configuration.Configuration.getValue("baseAnalisisCongruencia"), "congruencia", reg1, cuentasInicialesUno, reg2, cuentasInicialesDos, variance, numRegs);
-            setRedirect("/reportes/" + compareWriteFile);
             User user = (User) getContext().getSessionAttribute("user");
-            String reg1name=reg1==null? "":reg1.getDesRegCuenta();
-            String reg2name=reg2==null?"":reg2.getDesRegCuenta();
+            String reg1name = reg1 == null ? "" : reg1.getDesRegCuenta();
+            String reg2name = reg2 == null ? "" : reg2.getDesRegCuenta();
             DAO.saveRecordt(user, user.getUser() + " generó reporte comparativo de " + reg1name + " y " + reg2name);
+            String urlBase = Configuration.getValue("baseApacheReportes");
+            setRedirect("downloadreport.html?url=" + urlBase + compareWriteFile);
+
         } catch (IOException ex) {
             Logger.getLogger(VistareportesPage.class.getName()).log(Level.INFO, null, ex);
         }
@@ -183,7 +187,8 @@ public class VistareportesPage extends Page {
             User user = (User) getContext().getSessionAttribute("user");
             DAO.saveRecordt(user, user.getUser() + " generó reporte Tracking Log");
             String generateReport = reports.excelmaker.TrackingLogReporter.generateReport("tracking-" + user.getIduser() + ".xlsx", cin.getTime(), cen.getTime());
-            setRedirect("/reportes/" + generateReport);
+            String urlBase = Configuration.getValue("baseApacheReportes");
+            setRedirect("downloadreport.html?url=" + urlBase + generateReport);
         } catch (Exception ex) {
             Logger.getLogger(VistareportesPage.class.getName()).log(Level.INFO, null, ex);
         }
@@ -218,7 +223,8 @@ public class VistareportesPage extends Page {
             Set<Consistencia> consistencias = reg1.getConsistencias();
             Consistencia next = consistencias.iterator().next();
             String nameFile = reports.excelmaker.ConsistenciaReportMaker.makeReport(Configuration.getValue("baseAnalisisConsistencia"), next, reg1);
-            setRedirect("/reportes/" + nameFile);
+            String urlBase = Configuration.getValue("baseApacheReportes");
+            setRedirect("downloadreport.html?url=" + urlBase + nameFile);
         } catch (Exception ex) {
             System.out.println(ex);
         }
@@ -226,17 +232,18 @@ public class VistareportesPage extends Page {
     }
 
     private void tenenciaReport(int parseInt) {
-        System.out.println("llega aqui del reporte de tenencia "+parseInt);
+        System.out.println("llega aqui del reporte de tenencia " + parseInt);
         List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
-            Regcuenta reg1 = null;
-            for (Regcuenta r : createQuery) {
-                if (r.getIdRegCuenta() == parseInt) {
-                    reg1 = r;
-                }
+        Regcuenta reg1 = null;
+        for (Regcuenta r : createQuery) {
+            if (r.getIdRegCuenta() == parseInt) {
+                reg1 = r;
             }
-            System.out.println("el reg1 "+reg1);
-            String nameFile=reports.excelmaker.TenenciaReportMaker.makeReport(Configuration.getValue("baseAnalisisTenencia"),reg1);
-            setRedirect("/reportes/"+nameFile);
+        }
+        System.out.println("el reg1 " + reg1);
+        String nameFile = reports.excelmaker.TenenciaReportMaker.makeReport(Configuration.getValue("baseAnalisisTenencia"), reg1);
+        String urlBase = Configuration.getValue("baseApacheReportes");
+        setRedirect("downloadreport.html?url=" + urlBase + nameFile);
     }
 
 }

@@ -105,7 +105,9 @@ public class LoginPage extends Page {
         DAO.update(user);
         getContext().setSessionAttribute("user", user);
         DAO.saveRecordt(user,user.getUser()+" ingresó al sistema");
+        
         setRedirect(BienvenidaPage.class);
+        //setRedirect("downloadreport.html?url=http://localhost/SIGCAP/bases/baseIcap.xlsx");
         return true;
     }
 
