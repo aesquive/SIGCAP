@@ -22,6 +22,7 @@ public class BajadatosPage extends BorderPage {
     
     @Override
     public void init() {
+        message=null;
         title = "DataWarehouse - Baja de Ejercicio";
         form = new Form("form");
         FieldSet fsReporte = new FieldSet("fsr", "Reportes");

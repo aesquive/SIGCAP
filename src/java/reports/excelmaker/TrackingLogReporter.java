@@ -7,10 +7,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
@@ -51,38 +55,22 @@ public class TrackingLogReporter {
         XSSFWorkbook wb = new XSSFWorkbook(fis);
         Sheet sheet = wb.getSheetAt(0);
         CellReference cr = new CellReference("B8");
-        Row row = sheet.getRow(cr.getRow());
         System.out.println("la row es " + cr.getRow());
-        Cell cell = row.getCell(cr.getCol());
-        int indexTracking = 0;
-        boolean forceOut = false;
-        while (row != null && indexTracking < trackingList.size()) {
-            if (indexTracking < trackingList.size()) {
-                Tracking tracking = trackingList.get(indexTracking);
-                cell.setCellValue(tracking.getUser().getUser());
-                cell = row.getCell(cr.getCol() + 1);
-                cell.setCellValue(tracking.getFecha());
-                cell = row.getCell(cr.getCol() + 2);
-                cell.setCellValue(tracking.getFecha());
-                cell = row.getCell(cr.getCol() + 3);
-                cell.setCellValue(tracking.getDes());
-                indexTracking++;
-            }
-            row = sheet.getRow(cr.getRow() + indexTracking);
-            if(row==null){
-                row=sheet.createRow(cr.getRow()+indexTracking);
-            }
-            cell = row.getCell(cr.getCol());
-            if(cell==null){
-                cell=row.createCell(cr.getCol());
-            }
-        }
-        int deleteRow = cr.getRow() + indexTracking ;
-        while (deleteRow < 1000) {
-            if (sheet.getRow(deleteRow) != null) {
-                sheet.removeRow(sheet.getRow(deleteRow));
-            }
-            deleteRow++;
+        Cell cell = null;
+        int sumRow = 0;
+        CellStyle cellStyle = wb.createCellStyle();
+        CreationHelper createHelper = wb.getCreationHelper();
+        cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy  hh:mm"));
+        for (Tracking tr : trackingList) {
+            Row row = sheet.createRow(cr.getRow() + sumRow);
+            cell = row.createCell(cr.getCol());
+            cell.setCellValue(tr.getUser().getUser());
+            cell = row.createCell(cr.getCol() + 1);
+            cell.setCellValue(tr.getFecha());
+            cell.setCellStyle(cellStyle);
+            cell = row.createCell(cr.getCol() + 2);
+            cell.setCellValue(tr.getDes());
+            sumRow++;
         }
         FileOutputStream fileOut = new FileOutputStream(file);
         wb.write(fileOut);

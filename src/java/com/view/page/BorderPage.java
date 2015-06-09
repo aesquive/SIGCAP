@@ -25,7 +25,7 @@ public abstract class BorderPage extends Page {
     //almacena la direccion de reportes que tomaran los javascripts
     public static String direccionReportes=Configuration.getValue("direccionReportes");
     //es el mensaje que mostrara el sistema a traves de los javascripts
-    public String message;
+    public static String message;
     //menu principal dentro del sistema
     private Menu rootMenu;
     //flechas para ir atras o adelante
@@ -34,7 +34,7 @@ public abstract class BorderPage extends Page {
     public Form forwardForm;
     public Form backwardForm;
     //almacena la licencia de usuario
-    public static List<String> lic = Util.readFile(manager.configuration.Configuration.getValue("license"));
+    //public static List<String> lic = Util.readFile(manager.configuration.Configuration.getValue("license"));
     public String connecteduser;
     public User user;
     
@@ -83,11 +83,11 @@ public abstract class BorderPage extends Page {
         //indica los menus principales a mostrar
         String[] menuPrincipal = new String[]{"DataWarehouse","Generador de Reportes","Gestión de Capital","Auditor","Simulación de Capital", "Administrador de Usuarios"};
         //indica los submenus a mostrar, en caso de que no existan submenus debera ponerse ""
-        String[] subMenus=new String[]{"Alta Ejericio|Baja Ejercicio","Generador RC's|Reporte de Tenencia|Reporte de Consistencia|Reporte de Congruencia","","Análisis Comparativo|Tracking Log","","Alta Usuarios|Editar Usuario"};
+        String[] subMenus=new String[]{"Alta Ejericio|Baja Ejercicio|Mapeo de Datos","Generador RC's|Reporte de Tenencia|Reporte de Consistencia|Reporte de Congruencia","","Análisis Comparativo|Tracking Log","","Alta Usuarios|Editar Usuario"};
         //indica la ruta a la que apunta ya sea el menu principal o los submenus si es que los tiene
-        String[] path = new String[]{"cargadatos.htm|bajadatos.htm","reportes.htm|menutenencia.htm|reportecons.htm|reportecongruencia.htm", "icap.htm","reportecambios.htm|trackinglog.htm","whatif.htm","altausuarios.htm|editarusuarios.htm"};
+        String[] path = new String[]{"cargadatos.htm|bajadatos.htm|menumapeo.htm","reportes.htm|menutenencia.htm|reportecons.htm|reportecongruencia.htm", "icap.htm","reportecambios.htm|trackinglog.htm","whatif.htm","altausuarios.htm|editarusuarios.htm"};
         //identificador de los submenus dentro del sistema
-        String[] identSUbs=new String[]{"1|2","3|4|5|6","","7|8","","9|10"};
+        String[] identSUbs=new String[]{"1|2|3","4|5|6|7","","8|9","","10|11"};
       
         for (int t = 0; t < menuPrincipal.length; t++) {
                 Menu pestania=null;

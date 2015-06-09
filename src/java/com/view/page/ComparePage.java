@@ -33,7 +33,7 @@ public class ComparePage extends BorderPage {
     private Catalogocuenta catalogoCuenta;
     private ActionLink downloadReport;
     public String titlePage;
-    
+
     /**
      * constructor
      */
@@ -44,7 +44,7 @@ public class ComparePage extends BorderPage {
 
     @Override
     public void init() {
-        title="Análisis Comparativo";
+        title = "Análisis Comparativo";
         form = new Form("form");
         Submit sub = new Submit("descargar", "Descargar Reporte", this, "makeReport");
         sub.setAttribute("onclick", "createComparativo()");
@@ -57,7 +57,7 @@ public class ComparePage extends BorderPage {
         String[] compareCount = (String[]) getContext().getSessionAttribute("compareC-" + counter);
         regCuentaUno = (Regcuenta) getContext().getSessionAttribute("ex1-" + counter);
         regCuentaDos = (Regcuenta) getContext().getSessionAttribute("ex2-" + counter);
-        titlePage=regCuentaUno.getDesRegCuenta()+" vs "+regCuentaDos.getDesRegCuenta();
+        titlePage = regCuentaUno.getDesRegCuenta() + " vs " + regCuentaDos.getDesRegCuenta();
         obtenerWrappers(compareCount);
         checkBackForward(counter, (Integer) getContext().getSessionAttribute("maxCounterCompare"));
         for (int t = 0; t < cuentas.size(); t++) {
@@ -114,40 +114,42 @@ public class ComparePage extends BorderPage {
     }
 
     public boolean onLinkClick() {
-        System.out.println("entra al link click");
-        for (CuentaWrapper c : cuentas) {
-            if (c.getActionLinkUno().isClicked() || c.getActionLinkDos().isClicked()) {
-                String value = c.getActionLinkUno().getValue();
-                if (value == null) {
-                    message = "No existen mas registros";
-                } else {
-                    List<String> l = new LinkedList<String>();
-                    String[] split = value.split(",");
-                    for (String idCount : split) {
-                        if (!idCount.equals("")) {
-                            Cuenta cuentaById = regCuentaUno.getCuentaByCatalogoId(idCount, regCuentaUno.getCuentas());
-                            if (cuentaById != null) {
-                                l.add(cuentaById.getCatalogocuenta().getIdCatalogoCuenta().toString());
+    
+            for (CuentaWrapper c : cuentas) {
+                if (c.getActionLinkUno().isClicked() || c.getActionLinkDos().isClicked()) {
+                    String value = c.getActionLinkUno().getValue();
+                    if (value == null) {
+                        message = "No existen mas registros";
+                    } else {
+                        List<String> l = new LinkedList<String>();
+                        String[] split = value.split(",");
+                        for (String idCount : split) {
+                            if (!idCount.equals("")) {
+                                Cuenta cuentaById = regCuentaUno.getCuentaByCatalogoId(idCount, regCuentaUno.getCuentas());
+                                if (cuentaById != null) {
+                                    l.add(cuentaById.getCatalogocuenta().getIdCatalogoCuenta().toString());
+                                }
                             }
                         }
+                        String[] array = new String[l.size()];
+                        String[] toArray = l.toArray(array);
+                        System.out.println("llega aca");
+                        Integer counter = (Integer) getContext().getSessionAttribute("counterCompare");
+                        int newcounter = counter + 1;
+                        Integer maxCounter = (Integer) getContext().getSessionAttribute("maxCounterCompare");
+                        int newMaxCounter = newcounter > maxCounter ? newcounter : maxCounter;
+                        getContext().setSessionAttribute("maxCounterCompare", newMaxCounter);
+                        getContext().setSessionAttribute("counterCompare", newcounter);
+                        getContext().setSessionAttribute("compareC-" + newcounter, toArray);
+                        getContext().setSessionAttribute("ex1-" + newcounter, regCuentaUno);
+                        getContext().setSessionAttribute("ex2-" + newcounter, regCuentaDos);
+                        setRedirect(ComparePage.class);
+                        return true;
                     }
-                    String[] array = new String[l.size()];
-                    String[] toArray = l.toArray(array);
-                    System.out.println("llega aca");
-                    Integer counter = (Integer) getContext().getSessionAttribute("counterCompare");
-                    int newcounter = counter + 1;
-                    Integer maxCounter = (Integer) getContext().getSessionAttribute("maxCounterCompare");
-                    int newMaxCounter = newcounter > maxCounter ? newcounter : maxCounter;
-                    getContext().setSessionAttribute("maxCounterCompare", newMaxCounter);
-                    getContext().setSessionAttribute("counterCompare", newcounter);
-                    getContext().setSessionAttribute("compareC-" + newcounter, toArray);
-                    getContext().setSessionAttribute("ex1-" + newcounter, regCuentaUno);
-                    getContext().setSessionAttribute("ex2-" + newcounter, regCuentaDos);
-                    setRedirect(ComparePage.class);
-                    return true;
                 }
             }
-        }
+       
+
         return false;
     }
 

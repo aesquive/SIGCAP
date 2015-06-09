@@ -35,6 +35,7 @@ public class AltausuariosPage extends BorderPage {
     @Override
     public void init() {
         title="Alta de Usuario";
+        message=null;
         initComponents();
         createCheckBoxes();
         addControl(form);
@@ -101,8 +102,8 @@ public class AltausuariosPage extends BorderPage {
                 }
                 User userSess = (User) getSessionVar("user");
                 DAO.saveRecordt(userSess,userSess.getUser()+" dio de alta a "+user.getUser());
+                message="Usuario dado de alta correctamente";
                 setRedirect(BienvenidaPage.class);
-
                 return true;
             }
         }

@@ -54,15 +54,15 @@ public class WhatifPage extends BorderPage {
      */
     @Override
     public void init() {
+        message = null;
         title = "Simulador de Capital";
         form = new Form("form");
         formView = new Form("formView");
         onceClicked = true;
-        selectProject = new Select("Ejercicio Base");
-        selectView = new Select("Ejercicio");
-        nameSimulation = new TextField("Nombre de la Simulación");
+        selectProject = new Select("Ejercicio Base", true);
+        selectView = new Select("Ejercicio", true);
+        nameSimulation = new TextField("Nombre de la Simulación", true);
         selectProject.setId("selectwhatif");
-        nameSimulation.setRequired(true);
         user = (User) getSessionVar("user");
         List<Regcuentauser> createQuery = DAO.createQuery(Regcuentauser.class, null);
         for (Regcuentauser ru : createQuery) {
@@ -90,29 +90,34 @@ public class WhatifPage extends BorderPage {
      * @return
      */
     public boolean okWhatIfClicked() {
-        if (nameSimulation.getValue().equals("")) {
-            return false;
-        }
-        if (onceClicked) {
-            try {
-                Regcuenta nuevoEjercicio = copiarProyecto();
-                List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
-                for (Regcuenta r : createQuery) {
-                    if (r.getIdRegCuenta() == nuevoEjercicio.getIdRegCuenta()) {
-                        ModelExecutor executor = new ModelExecutor(r, true);
-                        Map<String, Cuenta> start = executor.start();
-                        addSessionVar("prySim", r);
-                        System.out.println("termina de calcular y el icap es " + start.get("1").getValor());
-                        setRedirect(SimulacioninicialPage.class);
-                    }
-                }
-            } catch (Exception ex) {
-                message = "Ocurrio algun error " + ex;
-                Logger.getLogger(WhatifPage.class.getName()).log(Level.INFO, null, ex);
+        if (form.isValid()) {
+
+            if (nameSimulation.getValue().equals("")) {
                 return false;
             }
+            if (onceClicked) {
+                try {
+                    Regcuenta nuevoEjercicio = copiarProyecto();
+                    List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
+                    for (Regcuenta r : createQuery) {
+                        if (r.getIdRegCuenta() == nuevoEjercicio.getIdRegCuenta()) {
+                            ModelExecutor executor = new ModelExecutor(r, true);
+                            Map<String, Cuenta> start = executor.start();
+                            addSessionVar("prySim", r);
+                            System.out.println("termina de calcular y el icap es " + start.get("1").getValor());
+                            setRedirect(SimulacioninicialPage.class);
+                        }
+                    }
+                } catch (Exception ex) {
+                    message = "Ocurrio algun error " + ex;
+                    Logger.getLogger(WhatifPage.class.getName()).log(Level.INFO, null, ex);
+                    return false;
+                }
+            }
+            return true;
         }
-        return true;
+        message = "Favor de completar los campos";
+        return false;
     }
 
     /**
@@ -121,16 +126,21 @@ public class WhatifPage extends BorderPage {
      * @return
      */
     public boolean okViewClicked() {
-        Regcuenta regCta = null;
-        List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
-        for (Regcuenta rc : createQuery) {
-            if (Integer.parseInt(selectView.getValue()) == rc.getIdRegCuenta()) {
-                regCta = rc;
+        if (formView.isValid()) {
+
+            Regcuenta regCta = null;
+            List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
+            for (Regcuenta rc : createQuery) {
+                if (Integer.parseInt(selectView.getValue()) == rc.getIdRegCuenta()) {
+                    regCta = rc;
+                }
             }
+            addSessionVar("prySim", regCta);
+            setRedirect(SimulacioninicialPage.class);
+            return true;
         }
-        addSessionVar("prySim", regCta);
-        setRedirect(SimulacioninicialPage.class);
-        return true;
+        message="Favor de completar los campos";
+        return false;
     }
 
     /**

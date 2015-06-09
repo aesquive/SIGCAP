@@ -1,12 +1,16 @@
 package db.controller;
 
+import db.pojos.Permisos;
+import db.pojos.Prestamo;
 import db.pojos.Regcuenta;
 import db.pojos.Tracking;
 import db.pojos.User;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import manager.configuration.Configuration;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
@@ -174,8 +178,9 @@ public class DAO {
     }
 
     public static void main(String[] args) {
-        Object get = DAO.createQuery(User.class, null).get(0);
-        System.out.println(get);
+        List<Prestamo> createQuery = DAO.createQuery(Prestamo.class, null);
+        Date fechaDeCorte = createQuery.get(0).getFechaDeCorte();
+        System.out.println(fechaDeCorte);
     }
 
 }

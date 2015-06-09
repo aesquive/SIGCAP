@@ -38,6 +38,7 @@ public class EditarvariablesimulacionPage extends BorderPage {
 
     @Override
     public void init() {
+        message=null;
         formEdit = new Form("formEdit");
         title = "Simulación de Capital - Editar Variable";
         screenName = (String) getSessionVar("simEditScreenName");
@@ -79,26 +80,30 @@ public class EditarvariablesimulacionPage extends BorderPage {
     }
 
     public boolean guardar() {
-        Set<String> nameVars = mapNamesFields.keySet();
-        boolean saveObject = true;
-        for (String nameVar : nameVars) {
-            Field fieldContainer = mapNamesFields.get(nameVar);
-            Class returnGetter = Util.getReturnType(Util.getMethod(target.getClass(), "get" + nameVar, null));
-            Method setter = Util.getMethod(target.getClass(), "set" + nameVar, returnGetter);
-            Object fieldValue = getFieldValue(returnGetter, fieldContainer);
-            boolean reflectionInvokeSet = Util.reflectionInvokeSet(target, setter, fieldValue);
-            System.out.println("el set de " + nameVar + "el valor es " + fieldValue + " fue " + reflectionInvokeSet);
-            if (!reflectionInvokeSet) {
-                saveObject = false;
+        if (formEdit.isValid()) {
+            Set<String> nameVars = mapNamesFields.keySet();
+            boolean saveObject = true;
+            for (String nameVar : nameVars) {
+                Field fieldContainer = mapNamesFields.get(nameVar);
+                Class returnGetter = Util.getReturnType(Util.getMethod(target.getClass(), "get" + nameVar, null));
+                Method setter = Util.getMethod(target.getClass(), "set" + nameVar, returnGetter);
+                Object fieldValue = getFieldValue(returnGetter, fieldContainer);
+                boolean reflectionInvokeSet = Util.reflectionInvokeSet(target, setter, fieldValue);
+                System.out.println("el set de " + nameVar + "el valor es " + fieldValue + " fue " + reflectionInvokeSet);
+                if (!reflectionInvokeSet) {
+                    saveObject = false;
+                }
+            }
+            if (saveObject) {
+                DAO.update(target);
+                System.out.println("guardo el dato sobre " + target);
+                setRedirect(SimulaciondataPage.class);
+                message="Edición de variable completa";
+                executeModel();
+                return true;
             }
         }
-        if (saveObject) {
-            DAO.update(target);
-            System.out.println("guardo el dato sobre " + target);
-            setRedirect(SimulaciondataPage.class);
-            executeModel();
-            return true;
-        }
+        message="Favor de completar los campos pendientes";
         return false;
     }
 
@@ -176,8 +181,8 @@ public class EditarvariablesimulacionPage extends BorderPage {
 
                 }
             }
-        }catch(Exception e){
-            System.out.println("Error EditarVariablesCalculo.executeModel() "+e.getStackTrace().toString());
+        } catch (Exception e) {
+            System.out.println("Error EditarVariablesCalculo.executeModel() " + e.getStackTrace().toString());
         }
     }
 

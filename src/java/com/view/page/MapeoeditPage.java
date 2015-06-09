@@ -48,6 +48,8 @@ public class MapeoeditPage extends BorderPage {
 
     @Override
     public void init() {
+        message=null;
+        title="Mapeo de datos - Editar";
         valor = (Valores) getSessionVar("editMapeo");
         vector = (Vector) getSessionVar("vectorEditMapeo");
         form = new Form("form");
@@ -65,7 +67,14 @@ public class MapeoeditPage extends BorderPage {
             }
         }
         form.add(new Submit("sub", "Guardar", this, "guardarTenencia"));
+        form.add(new Submit("subc", "Cancelar", this, "cancelar"));
         addControl(form);
+    }
+    
+    public boolean cancelar(){
+        message=null;
+        setRedirect(MapeoPage.class);
+        return true;
     }
 
     public boolean guardarTenencia() {
@@ -92,6 +101,7 @@ public class MapeoeditPage extends BorderPage {
             valor.setGradoRiesgo(Integer.parseInt(gradoRiesgo.getValue()));
             valor.setPonderador(ponderador.getDouble()/100);
             valor.setGrupoRc07(grupoRiesgosEmision.getValue());
+            valor.setMapeado(1);
             DAO.update(valor);
             List<Valores> createQuery = DAO.createQuery(Valores.class, null);
             Regcuenta regCta = (Regcuenta) getSessionVar("mapeoRegCuenta");
@@ -101,10 +111,12 @@ public class MapeoeditPage extends BorderPage {
                     valNvos.add(val);
                 }
             }
+            message="Registro guardado";
             addSessionVar("mapeoTenencia", valNvos);
             setRedirect(MapeoPage.class);
             return true;
         }
+        message="Favor de llenar los datos faltantes";
         return false;
     }
 

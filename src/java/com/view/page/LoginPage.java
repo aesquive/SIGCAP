@@ -41,6 +41,7 @@ public class LoginPage extends Page {
      *
      */
     public LoginPage() {
+        message=null;
         getContext().removeSessionAttribute("msg");
         getContext().removeSessionAttribute("user");
         init();

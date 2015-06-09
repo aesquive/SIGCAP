@@ -10,6 +10,7 @@ public class BienvenidaPage extends BorderPage{
     @Override
     public void init() {       
         title="SIGCAP";
+        System.out.println("el mensaje es "+message );
     }
 
     @Override

@@ -26,6 +26,7 @@ public class EditarusuariosPage extends BorderPage {
 
     @Override
     public void init() {
+        message=null;
         title=" Editar Usuario";
         form = new Form("form");
         addControl(form);
@@ -56,6 +57,7 @@ public class EditarusuariosPage extends BorderPage {
             setRedirect(EditarpermisosPage.class, map);
             return true;
         }
+        message="Seleccionar un usuario a editar";
         return false;
     }
 

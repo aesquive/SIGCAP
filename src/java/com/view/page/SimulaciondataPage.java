@@ -114,6 +114,7 @@ public class SimulaciondataPage extends SimulacionPage {
 
     //metodo que se ejecutara cuando se de click a algun action link
     public boolean afterClickEdit() {
+        message=null;
         //sacamos el objeto en el que se realizo el click
         ActionLink actionClicked = null;
         Object target=null;

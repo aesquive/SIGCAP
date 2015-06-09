@@ -9,6 +9,7 @@ public class SinpermisoPage extends BorderPage{
     
     @Override
     public void init() {
+        title="Usuario no autorizado";
     }
 
     @Override

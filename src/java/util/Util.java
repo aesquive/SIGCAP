@@ -272,4 +272,12 @@ public class Util {
     public static Class getReturnType( Method method) {
         return method.getReturnType();
     }
+
+    public static String parseDateString(String pattern, Date date) {
+        SimpleDateFormat df = new SimpleDateFormat(pattern);
+        return df.format(date);
+    }
+
+
+
 }

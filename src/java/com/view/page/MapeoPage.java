@@ -2,21 +2,29 @@ package com.view.page;
 
 import db.controller.DAO;
 import db.pojos.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import manager.configuration.Configuration;
+import model.executor.ModelExecutor;
 import org.apache.click.Context;
 import org.apache.click.control.ActionLink;
 import org.apache.click.control.Column;
 import org.apache.click.control.Decorator;
 import org.apache.click.control.FieldSet;
 import org.apache.click.control.Form;
-import org.apache.click.control.Label;
-import org.apache.click.control.Submit;
 import org.apache.click.control.Table;
 import org.apache.click.extras.control.FormTable;
+import util.Util;
 import util.Vector;
 
 /**
@@ -28,14 +36,6 @@ public class MapeoPage extends BorderPage {
     private Form form;
     private FormTable formTable;
     private Regcuenta regcuenta;
-    private Consistencia consistencia;
-    private List<Captacion> captacion;
-    private List<Catalogominimo> catalogominimo;
-    private List<Disponibilidad> disponibilidades;
-    private List<Ingresosnetos> ingresos;
-    private List<Prestamo> prestamos;
-    private List<Reservas> reservas;
-    private List<Tarjetacredito> tarjeta;
     private List<Valores> tenencia;
     private Map<String, Vector> vector;
     private Map<String, Valores> tenenciaMapeada;
@@ -43,24 +43,23 @@ public class MapeoPage extends BorderPage {
 
     @Override
     public void init() {
+        regcuenta = getRegCuenta();
+        if (regcuenta == null) {
+            message = "Error en la carga del ejercicio para el mapeo";
+            setRedirect(BienvenidaPage.class);
+            return;
+        }
+        checarCalculado();
         form = new Form("form");
         formTable = new FormTable("formTable");
-        consistencia = (Consistencia) getSessionVar("mapeoConsistencia");
-        regcuenta = (Regcuenta) getSessionVar("mapeoRegCuenta");
-        captacion = (List<Captacion>) getSessionVar("mapeoCaptación");
-        catalogominimo = (List<Catalogominimo>) getSessionVar("mapeoCatalogo");
-        disponibilidades = (List<Disponibilidad>) getSessionVar("mapeoDisponibilidades");
-        ingresos = (List<Ingresosnetos>) getSessionVar("mapeoIngresos");
-        prestamos = (List<Prestamo>) getSessionVar("mapeoPrestamos");
-        reservas = (List<Reservas>) getSessionVar("mapeoReservas");
-        tarjeta = (List<Tarjetacredito>) getSessionVar("mapeoTarjeta");
-        tenencia = (List<Valores>) getSessionVar("mapeoTenencia");
-        vector = (Map<String, Vector>) getSessionVar("mapeoVector");
+        
+        title = "Mapeo de Datos " + regcuenta.getDesRegCuenta();
+        tenencia = new LinkedList<Valores>(regcuenta.getValoreses());
+        //sacar los datos del vector
+        vector = generarMapeoVector();
         revisarTenenciaVector();
         if (tenenciaNoMapeada == null || tenenciaNoMapeada.isEmpty()) {
-            form.add(new Label("lab", "La tenencia esta mapeada correctamente"));
-            form.add(new Submit("sub", "Guardar Ejercicio", this, "generadorRc"));
-            addControl(form);
+            generadorRc();
             return;
         }
         formTable.setName("dataTable");
@@ -70,7 +69,6 @@ public class MapeoPage extends BorderPage {
         String[] columnsDescr = Valores.getColumnsDescriptions();
         for (int t = 0; t < columnsMethods.length; t++) {
             Column c = new Column(columnsMethods[t], columnsDescr[t]);
-            c.setWidth("900 px");
             formTable.addColumn(c);
         }
         for (int t = 0; t < tenenciaNoMapeada.size(); t++) {
@@ -93,12 +91,22 @@ public class MapeoPage extends BorderPage {
         form.add(fs);
         addControl(form);
         formTable.setRowList(tenenciaNoMapeada);
+
     }
 
     public boolean generadorRc() {
-        cruzarVector(vector, tenenciaMapeada);
-        setRedirect(ReportesPage.class);
-        return true;
+        try {
+            cruzarVector(vector, tenenciaMapeada);
+            ModelExecutor executor = new ModelExecutor(regcuenta, true);
+            executor.start();
+            message="Ejercicio calculado correctamente";
+            setRedirect(IcapPage.class);
+            return true;
+        } catch (Exception ex) {
+            message = "Sucedio un error al calcular el ejercicio";
+            Logger.getLogger(MapeoPage.class.getName()).log(Level.INFO, null, ex);
+            return false;
+        }
     }
 
     private void revisarTenenciaVector() {
@@ -108,7 +116,7 @@ public class MapeoPage extends BorderPage {
             String tv = val.getTipoValor() == null ? "" : val.getTipoValor();
             String emision = val.getEmision() == null ? "" : val.getEmision();
             String serie = val.getSerie() == null ? "" : val.getSerie();
-            Vector get = vector.get(tv + emision + serie);
+            Vector get = vector==null ? null :vector.get(tv + emision + serie);
             if (get != null && (!get.getSp().equals("-") || !get.getFitch().equals("-") || !get.getMoodys().equals("-") || !get.getHr().equals("-"))) {
                 tenenciaMapeada.put(tv + emision + serie, val);
             } else {
@@ -130,6 +138,7 @@ public class MapeoPage extends BorderPage {
         String serie = valorNoMapeado.getSerie() == null ? "" : valorNoMapeado.getSerie();
         Vector get = vector.get(tv + emision + serie);
         addSessionVar("vectorEditMapeo", get);
+        message=null;
         setRedirect(MapeoeditPage.class);
         return true;
     }
@@ -162,7 +171,7 @@ public class MapeoPage extends BorderPage {
         for (String papel : tiposValor) {
             Valores valor = tenenciaMapeada.get(papel);
             Vector get = vector.get(papel);
-            Integer value = get.getMapeada()==null ? 0 : get.getMapeada();
+            Integer value = get.getMapeada() == null ? 0 : get.getMapeada();
             valor.setMapeado(value);
             String moneda = get.getMoneda() == 1 ? "UDI" : "MXN";
             valor.setMoneda(moneda);
@@ -173,11 +182,11 @@ public class MapeoPage extends BorderPage {
                 if (ns.toUpperCase().trim().equals(valor.getTipoValor().toUpperCase().trim())) {
                     valor.setSobretasa("NO");
                     doneStasa = true;
-                }                
+                }
             }
-            if(valor.getTipoValor().toUpperCase().equals("LD")){
+            if (valor.getTipoValor().toUpperCase().equals("LD")) {
                 valor.setSobretasa("Si");
-                doneStasa=true;
+                doneStasa = true;
             }
             if (!doneStasa) {
                 valor.setSobretasa(get.getSobretasa());
@@ -217,4 +226,102 @@ public class MapeoPage extends BorderPage {
     public Integer getPermisoNumber() {
         return -1;
     }
+
+    private Regcuenta getRegCuenta() {
+        Regcuenta regSesion = (Regcuenta) getSessionVar("mapeoRegCuenta");
+        List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
+        for (Regcuenta r : createQuery) {
+            if (r.getIdRegCuenta() == regSesion.getIdRegCuenta()) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+    private Map<String, Vector> generarMapeoVector() {
+        try {
+            return mapVector();
+        } catch (Exception ex) {
+            
+            Logger.getLogger(MapeoPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    
+    /**
+     * mapea el vector de precios
+     * @return
+     * @throws Exception 
+     */
+    private Map<String, Vector> mapVector() throws Exception {
+        System.out.println("--MAPEANDO VECTOR--");
+        Map<String, Vector> mapping = new HashMap<String, Vector>();
+        String date = Util.parseDateString("ddMMyyyy",regcuenta.getFecha())+"-"+regcuenta.getIdRegCuenta();
+        List<String> fileData = getFileData(Configuration.getValue("RutaVectores")+date+".txt");
+        for (String row : fileData) {
+            String[] split = row.split(";");
+            String concat = split[1] + split[2] + split[3];
+            Double precio = Double.parseDouble(split[5]);
+            Date fecVenc = parseDate(split[15]);
+            int moneda = split[17].toUpperCase().contains("UDI") ? 1 : split[17].toUpperCase().contains("USD") ? 4 : 14;
+            String mdy = split[36];
+            String fitch = split[53];
+            String sp = split[37];
+            String hr = split[59];
+            String stasa = split[20] == null || split[20].equals("") || split[20].equals("0") || split[20].equals("-") ? "No" : "Si";
+            Vector vec = new Vector(concat, precio, fecVenc, moneda, mdy, fitch, sp, hr, stasa);
+            mapping.put(concat, vec);
+        }
+        System.out.println("--VECTOR MAPEADO--");
+        return mapping;
+    }
+    
+    
+     
+    private Date parseDate(String string)  {
+        try{
+        SimpleDateFormat sp = new SimpleDateFormat("dd/MM/yyyy");
+        return sp.parse(string);
+             
+        }catch(Exception ex){
+            return null;
+        }
+    }
+
+    
+    /**
+     * obtiene la informacion del archivo que se pasa en el campo fileField
+     * @param fileField
+     * @return
+     * @throws IOException 
+     */
+    public List<String> getFileData(String fileName) throws IOException {
+        List<String> lines = new LinkedList<String>();
+        BufferedReader reader = new BufferedReader(new FileReader(fileName));
+        reader.readLine();
+        String linea = reader.readLine();
+        while (linea != null) {
+            lines.add(linea);
+            linea = reader.readLine();
+        }
+        reader.close();
+        return lines;
+    }
+
+    /**
+     * checa si el ejercicio ya esta calculado, si ya entonces no es necesario hacer nada
+     */
+    private void checarCalculado() {
+        List<Cuenta> createQuery = DAO.createQuery(Cuenta.class, null);
+        for(Cuenta c:createQuery){
+            if(c.getCatalogocuenta().getIdCatalogoCuenta()==1 && c.getRegcuenta().getIdRegCuenta()==regcuenta.getIdRegCuenta()){
+                message="El ejercicio ya fue mapeado correctamente";
+                setRedirect(IcapPage.class);
+                return;
+            }
+        }
+    }
+
+    
 }

@@ -119,6 +119,7 @@ public class EditarpermisosPage extends BorderPage {
             }
             User userSess = (User) getSessionVar("user");
             DAO.saveRecordt(userSess, userSess.getUser() + " modificó permisos del usuario " + user.getUser());
+            message="Usuario editado correctamente";
             setRedirect(BienvenidaPage.class);
             return true;
         }
