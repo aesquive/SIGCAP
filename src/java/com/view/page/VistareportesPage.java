@@ -56,17 +56,20 @@ public class VistareportesPage extends Page {
                 String numF = (String) getContext().getRequestParameterValues("num")[0];
                 processComparator(Integer.parseInt(pr1), Integer.parseInt(pr2), Double.parseDouble(var), Integer.parseInt(numF));
                 break;
+              //reporte congruencia  
             case 3:
                 String pr13 = (String) getContext().getRequestParameterValues("pra")[0];
                 String pr23 = (String) getContext().getRequestParameterValues("prb")[0];
                 String var3 = (String) getContext().getRequestParameterValues("var")[0];
                 String numF3 = (String) getContext().getRequestParameterValues("num")[0];
-                initComparator(Integer.parseInt(pr13), Integer.parseInt(pr23), Double.parseDouble(var3), Integer.parseInt(numF3));
+                processCongruencia(Integer.parseInt(pr13), Integer.parseInt(pr23), Double.parseDouble(var3), Integer.parseInt(numF3));
                 break;
+                //reporte consistencia
             case 4:
                 String pra14 = (String) getContext().getRequestParameterValues("pra")[0];
                 initConsistencia(Integer.parseInt(pra14));
                 break;
+                //reporte tenencia
             case 5:
                 String pro = (String) getContext().getRequestParameterValues("pro")[0];
                 tenenciaReport(Integer.parseInt(pro));
@@ -133,7 +136,8 @@ public class VistareportesPage extends Page {
                     reg2 = r;
                 }
             }
-            String compareWriteFile = ModelComparator.compareWriteFile(manager.configuration.Configuration.getValue("baseAnalisisComparativo"), "comparativo", reg1, reg1.getCuentas(), reg2, reg2.getCuentas(), variance, numRegs);
+            ModelComparator comp=new ModelComparator();
+            String compareWriteFile = comp.compareWriteFile(manager.configuration.Configuration.getValue("baseAnalisisComparativo"), "comparativo", reg1, reg1.getCuentas(), reg2, reg2.getCuentas(), variance/100, numRegs);
             String urlBase = Configuration.getValue("baseApacheReportes");
             User user = (User) getContext().getSessionAttribute("user");
             DAO.saveRecordt(user, user.getUser() + " generó reporte comparativo de " + reg1.getDesRegCuenta() + " y " + reg2.getDesRegCuenta());
@@ -144,7 +148,7 @@ public class VistareportesPage extends Page {
 
     }
 
-    private void initComparator(int project1, int project2, double variance, int numRegs) {
+    private void processCongruencia(int project1, int project2, double variance, int numRegs) {
         try {
             List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
             Regcuenta reg1 = null;
@@ -159,7 +163,8 @@ public class VistareportesPage extends Page {
             }
             List<Cuenta> cuentasInicialesUno = obtenerCuentasIniciales(reg1);
             List<Cuenta> cuentasInicialesDos = obtenerCuentasIniciales(reg2);
-            String compareWriteFile = ModelComparator.compareWriteFile(manager.configuration.Configuration.getValue("baseAnalisisCongruencia"), "congruencia", reg1, cuentasInicialesUno, reg2, cuentasInicialesDos, variance, numRegs);
+            ModelComparator comp=new ModelComparator();
+            String compareWriteFile = comp.compareWriteFile(manager.configuration.Configuration.getValue("baseAnalisisCongruencia"), "congruencia", reg1, cuentasInicialesUno, reg2, cuentasInicialesDos, variance/100, numRegs);
             User user = (User) getContext().getSessionAttribute("user");
             String reg1name = reg1 == null ? "" : reg1.getDesRegCuenta();
             String reg2name = reg2 == null ? "" : reg2.getDesRegCuenta();

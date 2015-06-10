@@ -29,8 +29,7 @@
         <property name="hibernate.cache.use_query_cache">false</property>
         <property name="hibernate.cache.use_second_level_cache">false</property>
         <property name="javax.persistence.validation.mode">none</property>
-        <property name="hibernate.show_sql">true</property>
-       
+        
         <mapping resource="db/pojos/Cuenta.hbm.xml"/>
         <mapping resource="db/pojos/Moneda.hbm.xml"/>
         <mapping resource="db/pojos/Catalogocuenta.hbm.xml"/>
