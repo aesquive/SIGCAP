@@ -204,4 +204,14 @@ public class Captacion implements java.io.Serializable,Comparable {
     }
 
 
+    //es un metodo que  estandariza en todos los pojos para sacar el id de base d e datos del objeto
+    public Integer getIdHeatMap(){
+        return this.idCaptacion;
+    }
+    
+    
+        //es un metodo que se estandariza en todos los pojos para ponerle el valor al objeto en base de datos
+    public void setValorHeatMap(Double value){
+        setMonto(value);
+    }
 }

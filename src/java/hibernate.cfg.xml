@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
-    <session-factory>
-        
-        <!-- mysql        
+  <session-factory>
+    <!-- mysql        
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
         ! el rewrite batched statements funciona para hacer mas eficiente el select,update,insert creando el SQL y no en HQL
@@ -12,48 +11,46 @@
         <property name="hibernate.connection.password">root</property>
    
 -->
-        
-        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
-        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-        <property name="hibernate.connection.username">sigcapuser</property>
-        <property name="hibernate.connection.password">sigcapuser</property>
-        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/sigcap?autoReconnect=true&amp;rewriteBatchedStatements=true</property>
-        <property name="hibernate.connection.autocommit">true</property>
-        <property name="current_session_context_class">thread</property>
-        <property name="hibernate.c3p0.min_size">3</property>
-        <property name="hibernate.c3p0.max_size">20</property>
-        <property name="hibernate.c3p0.timeout">250</property>
-        <property name="hibernate.c3p0.max_statements">0</property>
-        <property name="hibernate.c3p0.idle_test_period">150</property>
-        <property name="hibernate.jdbc.batch_size">500</property>
-        <property name="hibernate.cache.use_query_cache">false</property>
-        <property name="hibernate.cache.use_second_level_cache">false</property>
-        <property name="javax.persistence.validation.mode">none</property>
-        
-        <mapping resource="db/pojos/Cuenta.hbm.xml"/>
-        <mapping resource="db/pojos/Moneda.hbm.xml"/>
-        <mapping resource="db/pojos/Catalogocuenta.hbm.xml"/>
-        <mapping resource="db/pojos/Regcuentauser.hbm.xml"/>
-        <mapping resource="db/pojos/Valores.hbm.xml"/>
-        <mapping resource="db/pojos/Consistencia.hbm.xml"/>
-        <mapping resource="db/pojos/Emisionriesgo.hbm.xml"/>
-        <mapping resource="db/pojos/Disponibilidad.hbm.xml"/>
-        <mapping resource="db/pojos/Ingresosnetos.hbm.xml"/>
-        <mapping resource="db/pojos/Prestamo.hbm.xml"/>
-        <mapping resource="db/pojos/Regcuenta.hbm.xml"/>
-        <mapping resource="db/pojos/Tracking.hbm.xml"/>
-        <mapping resource="db/pojos/Captacion.hbm.xml"/>
-        <mapping resource="db/pojos/Regvector.hbm.xml"/>
-        <mapping resource="db/pojos/Configuracion.hbm.xml"/>
-        <mapping resource="db/pojos/User.hbm.xml"/>
-        <mapping resource="db/pojos/Permisos.hbm.xml"/>
-        <mapping resource="db/pojos/Operacion.hbm.xml"/>
-        <mapping resource="db/pojos/Permisosuser.hbm.xml"/>
-        <mapping resource="db/pojos/Catalogominimo.hbm.xml"/>
-        <mapping resource="db/pojos/Tarjetacredito.hbm.xml"/>
-        <mapping resource="db/pojos/Calificacion.hbm.xml"/>
-        <mapping resource="db/pojos/Reservas.hbm.xml"/>
-        <mapping resource="db/pojos/Regreportes.hbm.xml"/>
-        <mapping resource="db/pojos/Emision.hbm.xml"/>
-    </session-factory>
+    <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+    <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+    <property name="hibernate.connection.username">sigcapuser</property>
+    <property name="hibernate.connection.password">sigcapuser</property>
+    <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/sigcap?autoReconnect=true&amp;rewriteBatchedStatements=true</property>
+    <property name="hibernate.connection.autocommit">true</property>
+    <property name="current_session_context_class">thread</property>
+    <property name="hibernate.c3p0.min_size">3</property>
+    <property name="hibernate.c3p0.max_size">20</property>
+    <property name="hibernate.c3p0.timeout">250</property>
+    <property name="hibernate.c3p0.max_statements">0</property>
+    <property name="hibernate.c3p0.idle_test_period">150</property>
+    <property name="hibernate.jdbc.batch_size">500</property>
+    <property name="hibernate.cache.use_query_cache">false</property>
+    <property name="hibernate.cache.use_second_level_cache">false</property>
+    <property name="javax.persistence.validation.mode">none</property>
+    <mapping resource="db/pojos/Cuenta.hbm.xml"/>
+    <mapping resource="db/pojos/Moneda.hbm.xml"/>
+    <mapping resource="db/pojos/Catalogocuenta.hbm.xml"/>
+    <mapping resource="db/pojos/Regcuentauser.hbm.xml"/>
+    <mapping resource="db/pojos/Valores.hbm.xml"/>
+    <mapping resource="db/pojos/Consistencia.hbm.xml"/>
+    <mapping resource="db/pojos/Emisionriesgo.hbm.xml"/>
+    <mapping resource="db/pojos/Disponibilidad.hbm.xml"/>
+    <mapping resource="db/pojos/Ingresosnetos.hbm.xml"/>
+    <mapping resource="db/pojos/Prestamo.hbm.xml"/>
+    <mapping resource="db/pojos/Regcuenta.hbm.xml"/>
+    <mapping resource="db/pojos/Tracking.hbm.xml"/>
+    <mapping resource="db/pojos/Captacion.hbm.xml"/>
+    <mapping resource="db/pojos/Regvector.hbm.xml"/>
+    <mapping resource="db/pojos/Configuracion.hbm.xml"/>
+    <mapping resource="db/pojos/User.hbm.xml"/>
+    <mapping resource="db/pojos/Permisos.hbm.xml"/>
+    <mapping resource="db/pojos/Operacion.hbm.xml"/>
+    <mapping resource="db/pojos/Permisosuser.hbm.xml"/>
+    <mapping resource="db/pojos/Catalogominimo.hbm.xml"/>
+    <mapping resource="db/pojos/Tarjetacredito.hbm.xml"/>
+    <mapping resource="db/pojos/Calificacion.hbm.xml"/>
+    <mapping resource="db/pojos/Reservas.hbm.xml"/>
+    <mapping resource="db/pojos/Regreportes.hbm.xml"/>
+    <mapping resource="db/pojos/Emision.hbm.xml"/>
+  </session-factory>
 </hibernate-configuration>

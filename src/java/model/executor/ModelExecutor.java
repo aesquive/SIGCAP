@@ -115,11 +115,11 @@ public class ModelExecutor {
      * empieza a realizar las operaciones
      */
     private void startOperations() throws MathInterpreterException {
-        System.out.println("empezando calculo");
+        
         for (String s : operaciones.keySet()) {
             makeOperacion(operaciones.get(s));
         }
-        System.out.println("finalizando el calculo");
+        
     }
 
 
@@ -182,7 +182,7 @@ public class ModelExecutor {
      * @throws MathInterpreterException
      */
     public static void main(String[] args) throws MathInterpreterException, IOException {
-        int regCuenta = 33;
+        int regCuenta = 20;
         List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
         Regcuenta c = new Regcuenta();
         for (Regcuenta r : createQuery) {

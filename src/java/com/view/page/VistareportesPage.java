@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import manager.configuration.Configuration;
-import model.comparator.ModelComparator;
+import model.utilities.ModelComparator;
 import org.apache.click.Page;
 import reports.excelmaker.ExcelMaker;
 

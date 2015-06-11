@@ -144,7 +144,16 @@ public class Disponibilidad  implements java.io.Serializable {
         this.fechaVencimiento = fechaVencimiento;
     }
 
-
+//es un metodo que  estandariza en todos los pojos para sacar el id de base d e datos del objeto
+    public Integer getIdHeatMap(){
+        return this.idDisponibilidad;
+    }
+    
+    
+        //es un metodo que se estandariza en todos los pojos para ponerle el valor al objeto en base de datos
+    public void setValorHeatMap(Double value){
+        setMonto(value);
+    }
 
 
 }

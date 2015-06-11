@@ -437,4 +437,24 @@ public class Valores implements java.io.Serializable {
     public void setMapeado(Integer mapeado) {
         this.mapeado = mapeado;
     }
+    
+    
+     
+    //es un metodo que  estandariza en todos los pojos para sacar el id de base d e datos del objeto
+    public Integer getIdHeatMap(){
+        return this.idTenencia;
+    }
+    
+    
+        //es un metodo que se estandariza en todos los pojos para ponerle el valor al objeto en base de datos
+    public void setValorHeatMap(Double value){
+        setMonto(value);
+    }
+    
+    public void setMonto(Double value){
+        if(numeroTitulos==0){
+            numeroTitulos=1;
+        }
+        setPrecio(value/numeroTitulos);
+    }
 }

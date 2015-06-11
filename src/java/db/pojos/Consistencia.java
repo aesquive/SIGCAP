@@ -111,5 +111,7 @@ public class Consistencia implements java.io.Serializable {
     public void setRegcuenta(Regcuenta regcuenta) {
         this.regcuenta = regcuenta;
     }
+    
+    
 
 }
