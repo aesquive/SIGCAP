@@ -29,7 +29,7 @@ public class ReportecongruenciaPage extends BorderPage {
         selectA.setDefaultOption(new Option("-1", "Seleccione"));
         selectB.setDefaultOption(new Option("-1", "Seleccione"));
         tolerancia = new DoubleField("tolerancia", "% de Tolerancia", 3, true);
-        List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
+        List<Regcuenta> createQuery = DAO.getEjerciciosCalculados();
         for (Regcuenta r : createQuery) {
             selectA.add(new Option(r.getIdRegCuenta(), r.getDesRegCuenta()));
             selectB.add(new Option(r.getIdRegCuenta(), r.getDesRegCuenta()));

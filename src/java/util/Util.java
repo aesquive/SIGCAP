@@ -33,8 +33,9 @@ public class Util {
 
     /**
      * ordena valores double
+     *
      * @param keySet
-     * @return 
+     * @return
      */
     public static List<Double> sortDoubleValues(Set<Double> keySet) {
         List<Double> list = new LinkedList<Double>();
@@ -47,8 +48,9 @@ public class Util {
 
     /**
      * lee un archivo y regresa su contenido en una lista de cadenas
+     *
      * @param fileName
-     * @return 
+     * @return
      */
     public static List<String> readFile(String fileName) {
         try {
@@ -68,10 +70,12 @@ public class Util {
     }
 
     /**
-     * genera el texto ascii, nos da los numeros que queramos por letra encriptada
+     * genera el texto ascii, nos da los numeros que queramos por letra
+     * encriptada
+     *
      * @param valor
      * @param numbersPerLetter
-     * @return 
+     * @return
      */
     public static String getAsciiText(String valor, int numbersPerLetter) {
         String cad = "";
@@ -103,9 +107,10 @@ public class Util {
 
     /**
      * Saca la diferencia en dias de dos fechas
+     *
      * @param init
      * @param last
-     * @return 
+     * @return
      */
     public static int daysBetweenDates(Date init, Date last) {
         Calendar calLast = Calendar.getInstance();
@@ -188,10 +193,12 @@ public class Util {
     }
 
     /**
-     * metodo con reflexion sobre el objeto para ejecutar un metodo y regresarlo como cadena de texto
+     * metodo con reflexion sobre el objeto para ejecutar un metodo y regresarlo
+     * como cadena de texto
+     *
      * @param object
      * @param idmethodName
-     * @return 
+     * @return
      */
     public static String reflectionString(Object object, String idmethodName) {
         try {
@@ -200,30 +207,31 @@ public class Util {
             Object invoke = method.invoke(object, null);
             return invoke.toString();
         } catch (Exception ex) {
-            System.out.println("Error "+ex);
+            System.out.println("Error " + ex);
         }
         return null;
     }
-    
+
     /**
      * metodo con reflexion sobre el objeto para ejecutar un metodo
+     *
      * @param object
      * @param nmethod
-     * @return 
+     * @return
      */
-    public static Object reflectionInvoke(Object object, String nmethod){
+    public static Object reflectionInvoke(Object object, String nmethod) {
         try {
             Class classObject = object.getClass();
             Method method = classObject.getMethod(nmethod, null);
             Object invoke = method.invoke(object, null);
             return invoke;
         } catch (Exception ex) {
-            System.out.println("Error reflection invoke"+ex);
+            System.out.println("Error reflection invoke" + ex);
         }
         return null;
     }
-    
-    public static boolean reflectionInvokeSet(Object target,Method method,Object ... args){
+
+    public static boolean reflectionInvokeSet(Object target, Method method, Object... args) {
         try {
             method.invoke(target, args);
             return true;
@@ -233,43 +241,44 @@ public class Util {
         }
     }
 
-    
-    public static String formatNumber(Number num){
+    public static String formatNumber(Number num) {
         Locale loc = new Locale("us");
         NumberFormat instance = NumberFormat.getInstance(loc);
         instance.setMaximumFractionDigits(2);
         return instance.format(num);
     }
-    
-    
-    public static String formatDate(Date date){
+
+    public static String formatDate(Date date) {
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         return df.format(date);
     }
 
     /**
-     * saca un metodo por reflexión dado su nombre y la clase en la cual se busca
+     * saca un metodo por reflexión dado su nombre y la clase en la cual se
+     * busca
+     *
      * @param target
      * @param name
      * @param params
-     * @return 
+     * @return
      */
-    public static Method getMethod(Class target,String name,Class... params){
+    public static Method getMethod(Class target, String name, Class... params) {
         try {
-            return target.getMethod(name,params);
+            return target.getMethod(name, params);
         } catch (Exception ex) {
-            System.out.println("Error Util.getMethod :"+target.toString()+" Method: "+name);
+            System.out.println("Error Util.getMethod :" + target.toString() + " Method: " + name);
             return null;
-        }  
+        }
     }
 
     /**
      * Saca el tipo de objeto que regresa un metodo
+     *
      * @param aClass
      * @param method
-     * @return 
+     * @return
      */
-    public static Class getReturnType( Method method) {
+    public static Class getReturnType(Method method) {
         return method.getReturnType();
     }
 
@@ -278,6 +287,25 @@ public class Util {
         return df.format(date);
     }
 
-
+    public static List<Object> orderValuesMethodCriteria(String metodoGetBaseOrdenamiento, List<Object> values) {
+        System.out.println("el metodo de ordenamiento es "+metodoGetBaseOrdenamiento);
+        List<ComparatorCapsule> compCapsules = new LinkedList<ComparatorCapsule>();
+        for (Object o : values) {
+            try{
+                Comparable reflectionInvoke = (Comparable) Util.reflectionInvoke(o, metodoGetBaseOrdenamiento);
+                compCapsules.add(new ComparatorCapsule(reflectionInvoke,o));
+            }catch(Exception e){
+                //si no pudimos generar los objetos comparables entonces regresamos los valores originales
+                System.out.println("Imposible ordenar por ese criterio");
+                return values;
+            }
+        }
+        Collections.sort(compCapsules);
+        List<Object> returnObjects=new LinkedList<Object>();
+        for(int t=0;t<compCapsules.size();t++){
+            returnObjects.add(compCapsules.get(t).getValue());
+        }
+        return returnObjects;
+    }
 
 }

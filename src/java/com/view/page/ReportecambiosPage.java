@@ -36,12 +36,12 @@ public class ReportecambiosPage extends BorderPage {
         //numberFields = new IntegerField("fie", "Número de Registros", 5, true);
         project1 = new Select("project1", "Primer Ejercicio", true);
         project2 = new Select("project2", "Segundo Ejercicio", true);
-        List<Regcuentauser> createQuery = DAO.createQuery(Regcuentauser.class, null);
+        List<Regcuenta> createQuery = DAO.getEjerciciosCalculados();
         project1.setDefaultOption(new Option("-1","Seleccione"));
         project2.setDefaultOption(new Option("-1","Seleccione"));
-        for (Regcuentauser ru : createQuery) {
-            project1.add(new Option(ru.getRegcuenta(), ru.getRegcuenta().getDesRegCuenta()));
-            project2.add(new Option(ru.getRegcuenta(), ru.getRegcuenta().getDesRegCuenta()));
+        for (Regcuenta ru : createQuery) {
+            project1.add(new Option(ru.getIdRegCuenta(), ru.getDesRegCuenta()));
+            project2.add(new Option(ru.getIdRegCuenta(), ru.getDesRegCuenta()));
         }
         form.add(project1);
         form.add(project2);

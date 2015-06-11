@@ -98,7 +98,7 @@ public class EditarvariablesimulacionPage extends BorderPage {
                 DAO.update(target);
                 System.out.println("guardo el dato sobre " + target);
                 setRedirect(SimulaciondataPage.class);
-                message="Edición de variable completa";
+                //message="Edición de variable completa";
                 executeModel();
                 return true;
             }

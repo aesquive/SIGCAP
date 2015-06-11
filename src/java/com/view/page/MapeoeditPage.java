@@ -135,6 +135,7 @@ public class MapeoeditPage extends BorderPage {
         vencimiento.add(new Option("SI", "Si"));
         vencimiento.add(new Option("NO", "No"));
         numeroTitulos = new IntegerField("tit", "Número de Títulos", true);
+        numeroTitulos.setPattern("###,###,###");
         sobretasa = new Select("stasa", "Tiene sobretasa ", true);
         sobretasa.setDefaultOption(new Option("-1", "Seleccionar"));
         sobretasa.add(new Option("SI", "SI"));

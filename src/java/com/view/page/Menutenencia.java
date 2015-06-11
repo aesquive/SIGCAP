@@ -29,7 +29,7 @@ public class Menutenencia extends BorderPage{
         title="Reporte de Tenencia";
         form=new Form("form");
         select=new Select("ten","Ejercicio", true);
-        List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
+        List<Regcuenta> createQuery = DAO.getEjerciciosCalculados();
         for(Regcuenta r:createQuery){
             select.add(new Option(r.getIdRegCuenta(),r.getDesRegCuenta()));
         }

@@ -25,7 +25,7 @@ public class ReporteconsPage extends BorderPage {
         form = new Form("form");
         selectA = new Select("pra", "Seleccionar Ejercicio", true);
         selectA.setDefaultOption(new Option("-1", "Seleccione"));
-        List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
+        List<Regcuenta> createQuery = DAO.getEjerciciosCalculados();
         for (Regcuenta r : createQuery) {
             selectA.add(new Option(r.getIdRegCuenta(), r.getDesRegCuenta()));
         }

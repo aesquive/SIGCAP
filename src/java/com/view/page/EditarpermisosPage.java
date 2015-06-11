@@ -36,6 +36,7 @@ public class EditarpermisosPage extends BorderPage {
 
     @Override
     public void init() {
+        title="Editar Usuario";
         userNameRequest = (String) getContext().getSessionAttribute("userEdit");
         List<User> createQuery = DAO.createQuery(User.class, null);
         System.out.println(userNameRequest);

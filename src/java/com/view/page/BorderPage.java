@@ -23,7 +23,7 @@ public abstract class BorderPage extends Page {
     //titulo mostrado en la aplicacion (muestra en que ventana estas parado actualmente)
     public String title;
     //almacena la direccion de reportes que tomaran los javascripts
-    public static String direccionReportes=Configuration.getValue("direccionReportes");
+    public static String direccionReportes = Configuration.getValue("direccionReportes");
     //es el mensaje que mostrara el sistema a traves de los javascripts
     public static String message;
     //menu principal dentro del sistema
@@ -37,17 +37,20 @@ public abstract class BorderPage extends Page {
     //public static List<String> lic = Util.readFile(manager.configuration.Configuration.getValue("license"));
     public String connecteduser;
     public User user;
-    
+
     public BorderPage() {
-        title="Título default";
-        
-        connectedUser();
-        addCommonControls();
-        checkPermiso();
-        init();
+        title = "Título default";
+        try {
+            connectedUser();
+            addCommonControls();
+            checkPermiso();
+            init();
+
+        }catch(Exception e){
+            setRedirect(LoginPage.class);
+        }
     }
 
-    
     /**
      * casa clase que herede debe implementar como iniciar la pantalla
      */
@@ -60,7 +63,6 @@ public abstract class BorderPage extends Page {
     public String getTemplate() {
         return "/border-template.htm";
     }
-
 
     private Menu createMenu(String label, String path) {
         Menu menu = new Menu();
@@ -78,45 +80,44 @@ public abstract class BorderPage extends Page {
         //cargamos el menu
         rootMenu = new Menu("rootMenu");
         User user = (User) getSessionVar("user");
-      
+
         //creamos el menu principal de toda la aplicacion
         //indica los menus principales a mostrar
-        String[] menuPrincipal = new String[]{"DataWarehouse","Generador de Reportes","Gestión de Capital","Auditor","Simulación de Capital", "Administrador de Usuarios"};
+        String[] menuPrincipal = new String[]{"DataWarehouse", "Generador de Reportes", "Gestión de Capital", "Auditor", "Simulación de Capital", "Administrador de Usuarios"};
         //indica los submenus a mostrar, en caso de que no existan submenus debera ponerse ""
-        String[] subMenus=new String[]{"Alta Ejericio|Baja Ejercicio|Mapeo de Datos","Generador RC's|Reporte de Tenencia|Reporte de Consistencia|Reporte de Congruencia","","Análisis Comparativo|Tracking Log","","Alta Usuarios|Editar Usuario"};
+        String[] subMenus = new String[]{"Alta Ejericio|Baja Ejercicio|Mapeo de Datos", "Generador RC's|Reporte de Tenencia|Reporte de Consistencia|Reporte de Congruencia", "", "Análisis Comparativo|Tracking Log", "", "Alta Usuarios|Editar Usuario"};
         //indica la ruta a la que apunta ya sea el menu principal o los submenus si es que los tiene
-        String[] path = new String[]{"cargadatos.htm|bajadatos.htm|menumapeo.htm","reportes.htm|menutenencia.htm|reportecons.htm|reportecongruencia.htm", "icap.htm","reportecambios.htm|trackinglog.htm","whatif.htm","altausuarios.htm|editarusuarios.htm"};
+        String[] path = new String[]{"cargadatos.htm|bajadatos.htm|menumapeo.htm", "reportes.htm|menutenencia.htm|reportecons.htm|reportecongruencia.htm", "icap.htm", "reportecambios.htm|trackinglog.htm", "whatif.htm", "altausuarios.htm|editarusuarios.htm"};
         //identificador de los submenus dentro del sistema
-        String[] identSUbs=new String[]{"1|2|3","4|5|6|7","","8|9","","10|11"};
-      
+        String[] identSUbs = new String[]{"1|2|3", "4|5|6|7", "", "8|9", "", "10|11"};
+
         for (int t = 0; t < menuPrincipal.length; t++) {
-                Menu pestania=null;
-                if(subMenus[t].equals("")){
-                    pestania=createMenu(menuPrincipal[t], path[t]);
-                }else{
-                   pestania=createMenu(menuPrincipal[t], "#");
-                    String[] splitSubmenus = subMenus[t].split("\\|");
-                    String[] splitSubsIds=identSUbs[t].split("\\|");
-                    String[] splitPaths=path[t].split("\\|");
-                    for(int x=0;x<splitSubmenus.length;x++){
-                       Menu createMenu = createMenu(splitSubmenus[x], splitPaths[x]);
-                       createMenu.setId("sub"+splitSubsIds[x]);
-                       pestania.add(createMenu);
-                    }
+            Menu pestania = null;
+            if (subMenus[t].equals("")) {
+                pestania = createMenu(menuPrincipal[t], path[t]);
+            } else {
+                pestania = createMenu(menuPrincipal[t], "#");
+                String[] splitSubmenus = subMenus[t].split("\\|");
+                String[] splitSubsIds = identSUbs[t].split("\\|");
+                String[] splitPaths = path[t].split("\\|");
+                for (int x = 0; x < splitSubmenus.length; x++) {
+                    Menu createMenu = createMenu(splitSubmenus[x], splitPaths[x]);
+                    createMenu.setId("sub" + splitSubsIds[x]);
+                    pestania.add(createMenu);
                 }
-                pestania.setAttribute("onmouseup", "mostrarSubmenu('"+identSUbs[t]+"')");
-                rootMenu.add(pestania);
+            }
+            pestania.setAttribute("onmouseup", "mostrarSubmenu('" + identSUbs[t] + "')");
+            rootMenu.add(pestania);
         }
-        
-        
+
         addControl(rootMenu);
 
     }
 
-    
     /**
      * agregar un evento de javascript al hacer submit sobre un boton
-     * @param submit 
+     *
+     * @param submit
      */
     public void javaScriptProcess(Submit submit) {
         submit.setAttribute("onclick", "waitPage();");
@@ -124,40 +125,43 @@ public abstract class BorderPage extends Page {
 
     /**
      * agrega una variable a la sesion de trabajo
+     *
      * @param nameVar
-     * @param value 
+     * @param value
      */
-    public void addSessionVar(String nameVar,Object value){
+    public void addSessionVar(String nameVar, Object value) {
         getContext().setSessionAttribute(nameVar, value);
     }
-    
+
     /**
      * obtiene una variable de la sesion de trabajo
+     *
      * @param name
-     * @return 
+     * @return
      */
-    public Object getSessionVar(String name){
+    public Object getSessionVar(String name) {
         return getContext().getSessionAttribute(name);
     }
-    
+
     /**
      * elimina una variable de la sesion de trabajo
-     * @param nameVar 
+     *
+     * @param nameVar
      */
-    public void removeSessionVar(String nameVar){
+    public void removeSessionVar(String nameVar) {
         getContext().removeSessionAttribute(nameVar);
     }
-    
+
     /**
      * limpia todas las variables de la sesion de trabajo
      */
-    public void cleanSession(){
+    public void cleanSession() {
         Enumeration<String> attributeNames = getContext().getSession().getAttributeNames();
-        List<String> elms=new LinkedList<String>();
-        while(attributeNames.hasMoreElements()){
+        List<String> elms = new LinkedList<String>();
+        while (attributeNames.hasMoreElements()) {
             elms.add(attributeNames.nextElement());
         }
-        for(String s:elms){
+        for (String s : elms) {
             removeSessionVar(s);
         }
     }
@@ -167,21 +171,21 @@ public abstract class BorderPage extends Page {
      */
     private void connectedUser() {
         Object sessionVar = getSessionVar("user");
-        if(sessionVar!=null){
-            user=(User)sessionVar;
-            connecteduser=user.getUser();
+        if (sessionVar != null) {
+            user = (User) sessionVar;
+            connecteduser = user.getUser();
         }
     }
 
     public abstract Integer getPermisoNumber();
-    
+
     private void checkPermiso() {
-        if(getPermisoNumber()==-1){
+        if (getPermisoNumber() == -1) {
             return;
         }
         List<Permisosuser> createQuery = DAO.createQuery(Permisosuser.class, null);
-        for(Permisosuser per:createQuery){
-            if(per.getUser().getIduser()==user.getIduser() && getPermisoNumber()==per.getPermisos().getIdPermiso() && per.getValor()==1){
+        for (Permisosuser per : createQuery) {
+            if (per.getUser().getIduser() == user.getIduser() && getPermisoNumber() == per.getPermisos().getIdPermiso() && per.getValor() == 1) {
                 return;
             }
         }

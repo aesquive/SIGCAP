@@ -7,8 +7,6 @@ package com.view.page;
 
 import db.controller.DAO;
 import db.pojos.Regcuenta;
-import db.pojos.Valores;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,6 +18,9 @@ import org.apache.click.control.Column;
 import org.apache.click.control.Decorator;
 import org.apache.click.control.FieldSet;
 import org.apache.click.control.Form;
+import org.apache.click.control.Option;
+import org.apache.click.control.Select;
+import org.apache.click.control.Submit;
 import org.apache.click.control.Table;
 import org.apache.click.extras.control.FormTable;
 import util.Util;
@@ -37,7 +38,9 @@ public class SimulaciondataPage extends SimulacionPage {
     private String idMethodName;
     private List<Object> values;
     private Map<String, Object> mapActionLinkValues;
-
+    private Select selectOrder;
+    
+    
     @Override
     public void initSimulacionComponents() {
         form = new Form("formSim");
@@ -64,6 +67,9 @@ public class SimulaciondataPage extends SimulacionPage {
         table.setPageNumber(0);
         table.setClass(Table.CLASS_ORANGE2);
 
+        //select para el orden de los datos
+        selectOrder=new Select("selectOrder","Ordenar por:");
+        
         //saca los valores de acuerdo al boton que se apreto en el simulation page
         //valores a mostrar en la tabla
         values = new LinkedList<Object>((Set<Object>) Util.reflectionInvoke(regCtaSimulada, (String) getSessionVar("simValues")));
@@ -76,12 +82,19 @@ public class SimulaciondataPage extends SimulacionPage {
         //nombre del fieldset
         String fsName = (String) getSessionVar("simFSName");
 
-        //creamos las columnas
+        //creamos las columnas y las opciones para el select del orden
         for (int t = 0; t < columnsMethods.length; t++) {
             Column c = new Column(columnsMethods[t], columnsNames[t]);
             table.addColumn(c);
+            selectOrder.add(new Option(columnsMethods[t], columnsNames[t]));
         }
-
+        //metemos en el selectorder como seleccionado al ultimo almacenado en la variable de sesion
+        Object sessionVar = getSessionVar("orderSim");
+        System.out.println("la session var de ordenamiento "+sessionVar);
+        selectOrder.setValue(sessionVar==null ? ((Option)selectOrder.getOptionList().get(0)).getValue() : sessionVar.toString());
+        System.out.println("el valor del select "+selectOrder.getValue());
+        
+        
         //generamos los links de edicion para cada uno de los valores en las tablas
         actionLinks = new HashMap<String, ActionLink>();
         mapActionLinkValues = new HashMap<String, Object>();
@@ -106,12 +119,31 @@ public class SimulaciondataPage extends SimulacionPage {
 
         table.addColumn(colEdit);
 
+        orderValues();
         FieldSet fs = new FieldSet(".", fsName);
         fs.add(table);
         table.setRowList(values);
+        
+        //creamos el fieldSet para el criterio de Ordenamiento
+        FieldSet fsOrdenar=new FieldSet("fsO", "Ordenar Datos");
+        fsOrdenar.add(selectOrder);
+        fsOrdenar.add(new Submit("subOrd","Ordenar", this, "ordenarClick"));
+        
+        form.add(fsOrdenar);
         form.add(fs);
     }
 
+    /**
+     * se encarga de meter el criterio de ordenamiento y reiniciar la pagina, para que se aplique ese criterio en orderValues()
+     * @return 
+     */
+    public boolean ordenarClick(){
+        String metodoGetOrdenamiento=selectOrder.getValue();
+        addSessionVar("orderSim", metodoGetOrdenamiento);
+        setRedirect(SimulaciondataPage.class);
+        return true;
+    }
+    
     //metodo que se ejecutara cuando se de click a algun action link
     public boolean afterClickEdit() {
         message=null;
@@ -144,6 +176,14 @@ public class SimulaciondataPage extends SimulacionPage {
     @Override
     public Integer getPermisoNumber() {
         return -1;
+    }
+
+    /**
+     * Ordena los valores que se encuentren en la variable values de acuerdo al value que tenga el selectorder
+     */
+    private void orderValues() {
+        String metodoOrdenamiento = "get"+selectOrder.getValue();
+        values=Util.orderValuesMethodCriteria(metodoOrdenamiento,values);
     }
 
 }

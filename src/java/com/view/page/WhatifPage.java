@@ -64,12 +64,12 @@ public class WhatifPage extends BorderPage {
         nameSimulation = new TextField("Nombre de la Simulación", true);
         selectProject.setId("selectwhatif");
         user = (User) getSessionVar("user");
-        List<Regcuentauser> createQuery = DAO.createQuery(Regcuentauser.class, null);
-        for (Regcuentauser ru : createQuery) {
-            if (ru.getUser().getIduser() == user.getIduser()) {
-                selectProject.add(new Option(ru.getRegcuenta(), ru.getRegcuenta().getDesRegCuenta()));
-                selectView.add(new Option(ru.getRegcuenta(), ru.getRegcuenta().getDesRegCuenta()));
-            }
+        List<Regcuenta> createQuery = DAO.getEjerciciosCalculados();
+        for (Regcuenta ru : createQuery) {
+            
+                selectProject.add(new Option(ru.getIdRegCuenta(), ru.getDesRegCuenta()));
+                selectView.add(new Option(ru.getIdRegCuenta(), ru.getDesRegCuenta()));
+            
         }
         form.add(selectProject);
         form.add(nameSimulation);
@@ -98,7 +98,7 @@ public class WhatifPage extends BorderPage {
             if (onceClicked) {
                 try {
                     Regcuenta nuevoEjercicio = copiarProyecto();
-                    List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
+                    List<Regcuenta> createQuery = DAO.getEjerciciosCalculados();
                     for (Regcuenta r : createQuery) {
                         if (r.getIdRegCuenta() == nuevoEjercicio.getIdRegCuenta()) {
                             ModelExecutor executor = new ModelExecutor(r, true);
@@ -129,7 +129,7 @@ public class WhatifPage extends BorderPage {
         if (formView.isValid()) {
 
             Regcuenta regCta = null;
-            List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
+            List<Regcuenta> createQuery = DAO.getEjerciciosCalculados();
             for (Regcuenta rc : createQuery) {
                 if (Integer.parseInt(selectView.getValue()) == rc.getIdRegCuenta()) {
                     regCta = rc;
@@ -152,7 +152,7 @@ public class WhatifPage extends BorderPage {
             Regcuenta regCuenta = new Regcuenta();
             regCuenta.setDesRegCuenta(nameSimulation.getValue());
             Regcuenta base = null;
-            List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
+            List<Regcuenta> createQuery = DAO.getEjerciciosCalculados();
             for (Regcuenta rc : createQuery) {
                 if (Integer.parseInt(selectProject.getValue()) == rc.getIdRegCuenta()) {
                     base = (Regcuenta) rc.clone();
@@ -185,7 +185,7 @@ public class WhatifPage extends BorderPage {
      */
     private void copiarCuentas(Regcuenta regNuevo) throws CloneNotSupportedException {
         Regcuenta regCta = null;
-        List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
+        List<Regcuenta> createQuery = DAO.getEjerciciosCalculados();
         for (Regcuenta rc : createQuery) {
             if (Integer.parseInt(selectProject.getValue()) == rc.getIdRegCuenta()) {
                 regCta = (Regcuenta) rc.clone();

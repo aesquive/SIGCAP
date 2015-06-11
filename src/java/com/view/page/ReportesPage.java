@@ -39,7 +39,7 @@ public class ReportesPage extends BorderPage {
             selectReport.add(new Option(r.getIdRegReportes(), r.getDesReportes()));
         }
         selectReport.setDefaultOption(new Option("-1", "Seleccionar"));
-        regCuentas = DAO.createQuery(Regcuenta.class, null);
+        regCuentas = DAO.getEjerciciosCalculados();
         
         for(Regcuenta r:regCuentas){
             selectProject.add(new Option(r.getIdRegCuenta(), r.getDesRegCuenta()));
@@ -56,7 +56,7 @@ public class ReportesPage extends BorderPage {
     
     public boolean okReport(){
         setRedirect(BienvenidaPage.class);
-        message="Generando reporte en pestaña nueva ... favor de esperar";
+        //message="Generando reporte en pestaña nueva ... favor de esperar";
         return true;
     }
 

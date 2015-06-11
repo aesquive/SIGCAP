@@ -1,6 +1,6 @@
 package db.controller;
 
-import db.pojos.Permisos;
+import db.pojos.Cuenta;
 import db.pojos.Prestamo;
 import db.pojos.Regcuenta;
 import db.pojos.Tracking;
@@ -8,9 +8,10 @@ import db.pojos.User;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import manager.configuration.Configuration;
+import java.util.Set;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
@@ -183,4 +184,22 @@ public class DAO {
         System.out.println(fechaDeCorte);
     }
 
+    public static List<Regcuenta> getEjerciciosCalculados(){
+        List<Cuenta> createQuery = DAO.createQuery(Cuenta.class, null);
+        Set<Integer> ejerciciosIds=new HashSet<Integer>();
+        for(Cuenta r:createQuery){
+            if(r.getCatalogocuenta().getIdCatalogoCuenta()==1){
+                ejerciciosIds.add(r.getRegcuenta().getIdRegCuenta());
+            }
+        }
+        List<Regcuenta> resp=new LinkedList<Regcuenta>();
+        List<Regcuenta> createQuery1 = DAO.createQuery(Regcuenta.class, null);
+        for(Regcuenta r:createQuery1){
+            if(ejerciciosIds.contains(r.getIdRegCuenta())){
+                resp.add(r);
+            }
+        }
+        return resp;
+    }
+    
 }

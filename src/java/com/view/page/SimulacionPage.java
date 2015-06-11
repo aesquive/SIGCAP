@@ -77,6 +77,7 @@ public abstract class SimulacionPage extends BorderPage {
         addSessionVar("title", "Simulación Capital - Tenencia");
         addSessionVar("simMethodName","getIdTenencia");
         addSessionVar("simFSName", "Tenencia");
+        removeSessionVar("orderSim");
         setRedirect(SimulaciondataPage.class);
         return true;
     }
@@ -94,6 +95,7 @@ public abstract class SimulacionPage extends BorderPage {
         addSessionVar("title", "Simulación Capital - Disponibilidades");
         addSessionVar("simMethodName","getIdDisponibilidad");
         addSessionVar("simFSName", "Disponibilidades");
+        removeSessionVar("orderSim");
         setRedirect(SimulaciondataPage.class);
         return true;
     }
@@ -111,6 +113,7 @@ public abstract class SimulacionPage extends BorderPage {
         addSessionVar("title", "Simulación Capital - Captación");
         addSessionVar("simMethodName","getIdCaptacion");
         addSessionVar("simFSName", "Captación");
+        removeSessionVar("orderSim");
         setRedirect(SimulaciondataPage.class);
         return true;
     }
@@ -128,6 +131,7 @@ public abstract class SimulacionPage extends BorderPage {
         addSessionVar("title", "Simulación Capital - Prestamos");
         addSessionVar("simMethodName","getIdPrestamo");
         addSessionVar("simFSName", "Prestamo");
+        removeSessionVar("orderSim");
         setRedirect(SimulaciondataPage.class);
         return true;
     }
@@ -146,7 +150,9 @@ public abstract class SimulacionPage extends BorderPage {
         addSessionVar("title", "Simulación Capital - Tarjeta de Crédito");
         addSessionVar("simMethodName","getIdTarjetaCredito");
         addSessionVar("simFSName", "Tarjeta de Crédito");
+        removeSessionVar("orderSim");
         setRedirect(SimulaciondataPage.class);
+
         return true;
     }
     
