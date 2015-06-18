@@ -25,9 +25,10 @@ public class EditartipousuarioselectPage extends BorderPage {
 
     @Override
     public void init() {
+        title="Editar Rol";
         form = new Form("form");
         query_tipousuario = DAO.createQuery(Tipousuario.class, null);
-        select_tipousuario = new Select("sel", "Seleccionar tipo de Usuario", true);
+        select_tipousuario = new Select("sel", "Seleccionar un Rol", true);
         select_tipousuario.setDefaultOption(new Option("-1", "--Seleccione--"));
         for (Tipousuario t : query_tipousuario) {
             if (t.getIdtipousuario() != 1) {

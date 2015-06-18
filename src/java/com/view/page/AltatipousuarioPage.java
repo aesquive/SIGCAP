@@ -35,14 +35,14 @@ public class AltatipousuarioPage extends BorderPage {
 
     @Override
     public void init() {
-        title="Alta Tipo de Usuario";
+        title="Alta de Rol";
         form = new Form("form");
 
-        FieldSet fs = new FieldSet("atu", "Alta Tipo de Usuario");
+        FieldSet fs = new FieldSet("atu", "Alta de Rol");
 
         permisos = DAO.createQuery(Permisos.class, null);
-        nombre = new TextField("nombre", "Nombre del Tipo de Usuario", true);
-        selectPadres = new Select("sele", "Usuario Superior", true);
+        nombre = new TextField("nombre", "Nombre del Rol", true);
+        selectPadres = new Select("sele", "Usuario Superior ", true);
         permisos_checkBox = new HashMap<Integer, Checkbox>();
 
         selectPadres.setDefaultOption(new Option("-1", "--Seleccione--"));

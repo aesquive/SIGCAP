@@ -38,13 +38,13 @@ public class EditartipousuarioPage extends BorderPage {
 
     @Override
     public void init() {
-        title="Editar Tipo de Usuario";
+        title="Editar Rol";
         form = new Form("form");
         tipoUsuarioEdit=(Tipousuario) getSessionVar("tipoUsuarioEdit");
-        FieldSet fs = new FieldSet("atu", "Alta Tipo de Usuario");
+        FieldSet fs = new FieldSet("atu", "Editar Rol");
 
         permisos = DAO.createQuery(Permisos.class, null);
-        nombre = new TextField("nombre", "Nombre del Tipo de Usuario", true);
+        nombre = new TextField("nombre", "Nombre del Rol", true);
         nombre.setValue(tipoUsuarioEdit.getNombre());
         selectPadres = new Select("sele", "Usuario Superior", true);
         permisos_checkBox = new HashMap<Integer, Checkbox>();

@@ -65,11 +65,11 @@ public class EditarpermisosPage extends BorderPage {
         password.setValue(usuarioEdit.getPassword());
         checkPassword = new PasswordField("checkPassword", "Verificar Password", true);
         checkPassword.setValue(usuarioEdit.getPassword());
-        select_tipousuario=new Select("tipUsu", "Tipo de Usuario", true);
+        select_tipousuario=new Select("tipUsu", "Rol de Usuario", true);
         select_tipousuario.setDefaultOption(new Option(-1,"--Seleccione--"));
         List<Tipousuario> query_tipousuario = DAO.createQuery(Tipousuario.class,null);
         for(Tipousuario t:query_tipousuario){
-            if(t.getIdtipousuario()!=1){
+            if(t.getIdtipousuario()!=1 && usuarioEdit.getTipousuario().getIdtipousuario()!=t.getIdtipousuario()){
                 select_tipousuario.add(new Option(t.getIdtipousuario(),t.getNombre()));
                 map_tipousuario.put(t.getIdtipousuario(), t);
             }

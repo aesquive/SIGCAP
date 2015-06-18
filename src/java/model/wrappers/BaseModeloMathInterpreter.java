@@ -106,7 +106,7 @@ public class BaseModeloMathInterpreter {
                         if (operacion.equals("==")) {
                             Integer valorObj = (Integer) valor;
                             Integer ref = Integer.parseInt(splitOperandos[2]);
-                            if (valorObj- ref!=0) {
+                            if (valorObj==null || valorObj- ref!=0) {
                                 cumple = false;
                             }
                         } else if (operacion.equals(">=")) {
@@ -125,7 +125,7 @@ public class BaseModeloMathInterpreter {
                             String valorObj = (String) valor;
                             String reg = splitOperandos[2];
                          //   System.out.println("comparando "+valorObj+" vs "+reg);
-                            if (!valorObj.toUpperCase().trim().equalsIgnoreCase(reg.toUpperCase().trim())) {
+                            if (valorObj==null || !valorObj.toUpperCase().trim().equalsIgnoreCase(reg.toUpperCase().trim())) {
                        //         System.out.println("cae dentro");
                                 cumple = false;
                             }
@@ -154,16 +154,12 @@ public class BaseModeloMathInterpreter {
 
     public void calculate() {
         mapValues = new HashMap<String, Double>();
-        mapValues.put("93916", 208881802.0);
-        mapValues.put("95560", 3284206650.0);
-        mapValues.put("95645", 2562507.0);
-        mapValues.put("95560", 3284206650.00);
-        mapValues.put("95666", 2562507.00);
-        mapValues.put("94020", 2848918269.00);
-        mapValues.put("94030", 3177338934.00);
-        mapValues.put("94050", 2968457132.00);
-        mapValues.put("94100", 2562507.00);
-
+        mapValues.put("93916", interpSumIf(tarjetaWrapper, "getSaldo", "getCreditoRelevante/eq/SI")+
+                interpSumIf(prestamoWrapper,"getSaldo", "getPrestamoRelevante/eq/SI"));
+        
+        mapValues.put("95666", 2562507.00); //Cartera comercial total de reservas
+        
+        
         mapValues.put("10050", interpSumIf(disponibilidadWrapper, "getMonto", "getPlazo/>=/1,getPlazo/<=/7,getCuenta/eq/110100000000")
                 + interpSumIf(disponibilidadWrapper, "getMonto", "getPlazo/>=/1,getPlazo/<=/7,getCuenta/eq/110200000000")
                 - interpSumIf(disponibilidadWrapper, "getMonto", "getPlazo/>=/1,getPlazo/<=/7,getCuenta/eq/110202000000"));
@@ -419,20 +415,12 @@ public class BaseModeloMathInterpreter {
         mapValues.put("95390", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/280000000000"));
         mapValues.put("95385", mapValues.get("95390"));
         mapValues.put("90075", mapValues.get("95005") + mapValues.get("95045") + mapValues.get("95050") + mapValues.get("95055"));
-        mapValues.put("90080", mapValues.get("95075"));
+        mapValues.put("90080", mapValues.get("90075"));
         mapValues.put("93500", mapValues.get("95380"));
-        mapValues.put("93520", mapValues.get("95500"));
-        mapValues.put("93500", mapValues.get("95380"));
+        mapValues.put("93520", mapValues.get("93500"));
         mapValues.put("93700", mapValues.get("95340"));
         mapValues.put("93750", mapValues.get("95340"));
         mapValues.put("93755", mapValues.get("95340"));
-        mapValues.put("95610", mapValues.get("95560"));
-        mapValues.put("95615", mapValues.get("95560"));
-        mapValues.put("95635", mapValues.get("95645"));
-        mapValues.put("95640", mapValues.get("95645"));
-        mapValues.put("95650", mapValues.get("95645") + mapValues.get("95615"));
-        mapValues.put("95655", mapValues.get("95650"));
-        mapValues.put("95660", mapValues.get("95650"));
 
         mapValues.put("103110", interpSumIf(tenenciaWrapper, "getMonto", "getGrupoRC10/eq/SI,getPonderador/ed/0.2"));
         mapValues.put("103125", interpSumIf(tenenciaWrapper, "getMonto", "getGrupoRC10/eq/SI,getPonderador/ed/0.5"));

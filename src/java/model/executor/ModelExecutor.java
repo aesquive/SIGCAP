@@ -194,6 +194,7 @@ public class ModelExecutor {
         Map<String, Cuenta> start = m.start();
         System.out.println("acabo y el valor de 1 es :");
         System.out.println(start.get("1").getValor());
+        System.out.println(start.get("93916").getValor());
     }
 
 }

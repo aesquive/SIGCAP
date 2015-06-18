@@ -86,7 +86,7 @@ public abstract class BorderPage extends Page {
         //indica los menus principales a mostrar
         String[] menuPrincipal = new String[]{"DataWarehouse", "Generador de Reportes", "Gestión de Capital", "Auditor", "Simulación de Capital", "Administrador de SIGCAP"};
         //indica los submenus a mostrar, en caso de que no existan submenus debera ponerse ""
-        String[] subMenus = new String[]{"Alta Ejericio|Baja Ejercicio|Mapeo de Datos", "Generador RC's|Reporte de Tenencia|Reporte de Consistencia|Reporte de Congruencia|Reporte de Integridad", "", "Análisis Comparativo|Tracking Log", "", "Alta Usuarios|Editar Usuario|Alta de Tipo Usuario|Editar Tipo Usuario"};
+        String[] subMenus = new String[]{"Alta Ejericio|Baja Ejercicio|Mapeo de Datos", "Generador RC's|Reporte de Tenencia|Reporte de Consistencia|Reporte de Congruencia|Reporte de Integridad", "", "Análisis Comparativo|Tracking Log", "", "Alta Usuarios|Editar Usuario|Alta de Rol|Editar Rol"};
         //indica la ruta a la que apunta ya sea el menu principal o los submenus si es que los tiene
         String[] path = new String[]{"cargadatos.htm|bajadatos.htm|menumapeo.htm", "reportes.htm|menutenencia.htm|reportecons.htm|reportecongruencia.htm|reporteintegridad.htm", "icap.htm", "reportecambios.htm|trackinglog.htm", "whatif.htm", "altausuarios.htm|editarusuarios.htm|altatipousuario.htm|editartipousuarioselectPage.htm",};
         //identificador de los submenus dentro del sistema

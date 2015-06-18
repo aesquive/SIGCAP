@@ -55,7 +55,7 @@ public class AltausuariosPage extends BorderPage {
         nameUser = new TextField("nameUser", "Nombre de Usuario", 15,true);
         password = new PasswordField("password", "Password", true);
         checkPassword = new PasswordField("checkPassword", "Verificar Password", true);
-        select_tipousuario=new Select("tipUsu", "Tipo de Usuario", true);
+        select_tipousuario=new Select("tipUsu", "Rol de Usuario", true);
         select_tipousuario.setDefaultOption(new Option(-1,"--Seleccione--"));
         List<Tipousuario> query_tipousuario = DAO.createQuery(Tipousuario.class,null);
         for(Tipousuario t:query_tipousuario){
