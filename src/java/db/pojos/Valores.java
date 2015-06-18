@@ -120,6 +120,25 @@ public class Valores implements java.io.Serializable {
     public static String[] getTenenciaReport() {
         return new String[]{"TipoValor", "Emision", "Serie", "Precio", "NumeroTitulos", "Sobretasa", "Calificacion", "GrupoRc07", "FechaVencimientoFormato", "Moneda", "Ponderador", "GradoRiesgo"};
     }
+    
+    
+    
+        /**
+     * saca el catalogo cuenta al que pertenece, funciona para el reporte de integridad
+     * @return 
+     */
+    public String getCatalogoCuentaEstandar(){
+        return this.idCuentaContable;
+    }
+    
+    
+    /**
+     * saca el valor de la cuenta, funciona para el reporte de integridad
+     * @return 
+     */
+    public Double getValorEstandar(){
+        return getMonto();
+    }
 
     public String getSobretasaLleno() {
         if (this.sobretasa == null || sobretasa.equals("")) {

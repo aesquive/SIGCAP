@@ -8,13 +8,18 @@ package com.view.page;
 import db.controller.DAO;
 import db.pojos.Permisos;
 import db.pojos.Permisosuser;
+import db.pojos.Tipousuario;
 import db.pojos.User;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.apache.click.control.Checkbox;
 import org.apache.click.control.FieldSet;
 import org.apache.click.control.Form;
+import org.apache.click.control.Option;
 import org.apache.click.control.PasswordField;
+import org.apache.click.control.Select;
 import org.apache.click.control.Submit;
 import org.apache.click.control.TextField;
 import util.PermisosCheck;
@@ -25,111 +30,76 @@ import util.PermisosCheck;
  */
 public class EditarpermisosPage extends BorderPage {
 
-    private Form form;
-    private List<Checkbox> checkBox;
-    private List<PermisosCheck> permisos;
+     private Form form;
     private TextField nameUser;
     private PasswordField password;
     private PasswordField checkPassword;
-    private User user;
-    private String userNameRequest;
-
+    private Select select_tipousuario;
+    private Map<Integer,Tipousuario> map_tipousuario;
+    private User usuarioEdit;
+    
     @Override
     public void init() {
-        title="Editar Usuario";
-        userNameRequest = (String) getContext().getSessionAttribute("userEdit");
-        List<User> createQuery = DAO.createQuery(User.class, null);
-        System.out.println(userNameRequest);
-        for (User u : createQuery) {
-            if (userNameRequest != null && u.getUser().toUpperCase().equals(userNameRequest.toUpperCase())) {
-                user = u;
-            }
-        }
+        usuarioEdit=(User) getSessionVar("userEdit");
+        title="Alta de Usuario";
+        message=null;
+        map_tipousuario=new HashMap<Integer, Tipousuario>();
         initComponents();
-        createCheckBoxes();
         addControl(form);
         FieldSet fs = new FieldSet("fs", "Datos de Usuario");
         fs.add(nameUser);
         fs.add(password);
         fs.add(checkPassword);
+        fs.add(select_tipousuario);
         form.add(fs);
-
-        FieldSet fsp = new FieldSet("fsp", "Permisos");
-        for (Checkbox c : checkBox) {
-            fsp.add(c);
-        }
-        form.add(fsp);
-        Submit sub = new Submit("guardar", "Guardar", this, "guardar");
-        form.add(sub);
+        form.add(new Submit("guardar", "Guardar", this, "guardarAltaUsuario"));
     }
 
-    private void createCheckBoxes() {
-        permisos = new LinkedList<PermisosCheck>();
-        List<Permisosuser> createQuery = DAO.createQuery(Permisosuser.class, null);
-        for (Permisosuser p : createQuery) {
-            if (p.getUser().getIduser() == user.getIduser()) {
-                boolean value = p.getValor() > 0 ? true : false;
-                permisos.add(new PermisosCheck(p.getPermisos().getDesPermiso(), value));
-            }
-        }
-        checkBox = new LinkedList<Checkbox>();
-        for (int t = 0; t < permisos.size(); t++) {
-            Checkbox box = new Checkbox("c" + t, permisos.get(t).getColumnDetail());
-            box.setChecked(permisos.get(t).isActive());
-            checkBox.add(box);
-        }
-
-    }
+  
 
     private void initComponents() {
         form = new Form("form");
-        nameUser = new TextField("nameUser", "Nombre de Usuario", true);
-        nameUser.setDisabled(true);
+        nameUser = new TextField("nameUser", "Nombre de Usuario", 15,true);
+        nameUser.setValue(usuarioEdit.getUser());
         password = new PasswordField("password", "Password", true);
+        password.setValue(usuarioEdit.getPassword());
         checkPassword = new PasswordField("checkPassword", "Verificar Password", true);
-        password.setDisabled(true);
-        checkPassword.setDisabled(true);
-        if (user != null) {
-            nameUser.setValue(user.getUser());
-            password.setValue(user.getPassword());
-            checkPassword.setValue(user.getPassword());
+        checkPassword.setValue(usuarioEdit.getPassword());
+        select_tipousuario=new Select("tipUsu", "Tipo de Usuario", true);
+        select_tipousuario.setDefaultOption(new Option(-1,"--Seleccione--"));
+        List<Tipousuario> query_tipousuario = DAO.createQuery(Tipousuario.class,null);
+        for(Tipousuario t:query_tipousuario){
+            if(t.getIdtipousuario()!=1){
+                select_tipousuario.add(new Option(t.getIdtipousuario(),t.getNombre()));
+                map_tipousuario.put(t.getIdtipousuario(), t);
+            }
         }
-
+        select_tipousuario.setValue(String.valueOf(usuarioEdit.getTipousuario().getIdtipousuario()));
     }
 
-    public boolean guardar() {
+    public boolean guardarAltaUsuario() {
         if (form.isValid()) {
-            List<User> createQuery = DAO.createQuery(User.class, null);
-            for (User u : createQuery) {
-                if (user != null && u.getUser().toUpperCase().equals(user.getUser().toUpperCase())) {
-                    user = u;
-                }
+            if (!password.getValue().equals(checkPassword.getValue())) {
+                message="Los password no coinciden";
+                return false;
+            } else {
+                usuarioEdit.setPassword(password.getValue());
+                usuarioEdit.setTipousuario(map_tipousuario.get(Integer.parseInt(select_tipousuario.getValue())));
+                DAO.update(usuarioEdit);
+                
+                DAO.saveRecordt(user,user.getUser()+" edito de alta a "+usuarioEdit.getUser()+" con tipo usuario "+usuarioEdit.getTipousuario().getNombre());
+                message="Usuario modificado correctamente";
+                setRedirect(BienvenidaPage.class);
+                return true;
             }
-            List<Permisos> todosPermisos = DAO.createQuery(Permisos.class, null);
-            List<Permisosuser> createQuery1 = DAO.createQuery(Permisosuser.class, null);
-            for (int t = 0; t < todosPermisos.size(); t++) {
-                int value = checkBox.get(t).isChecked() ? 1 : 0;
-                Permisosuser pud = null;
-                for (Permisosuser pu : createQuery1) {
-                    if (pu.getUser().getIduser() == user.getIduser() && pu.getPermisos().getDesPermiso().toUpperCase().equals(checkBox.get(t).getLabel().toUpperCase())) {
-                        pud = pu;
-                    }
-                }
-                pud.setValor(value);
-                DAO.update(pud);
-            }
-            User userSess = (User) getSessionVar("user");
-            DAO.saveRecordt(userSess, userSess.getUser() + " modificó permisos del usuario " + user.getUser());
-            message="Usuario editado correctamente";
-            setRedirect(BienvenidaPage.class);
-            return true;
         }
         return false;
     }
 
+
     @Override
     public Integer getPermisoNumber() {
-        return -1;
+        return 12;
     }
 
 }

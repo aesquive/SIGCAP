@@ -164,6 +164,10 @@ public class Prestamo  implements java.io.Serializable {
     }
     
     
+    
+    
+    
+    
     public String getIdCuentaContable(){
         return catalogocuenta.getIdCatalogoCuenta().toString();
     }
@@ -192,6 +196,25 @@ public class Prestamo  implements java.io.Serializable {
         //es un metodo que se estandariza en todos los pojos para ponerle el valor al objeto en base de datos
     public void setValorHeatMap(Double value){
         setSaldo(value);
+    }
+    
+    /**
+     * saca el catalogo cuenta al que pertenece, funciona para el reporte de integridad
+     * @return 
+     */
+    public String getCatalogoCuentaEstandar(){
+        if(this.catalogocuenta==null){
+            return null;
+        }
+        return this.catalogocuenta.getIdCatalogoCuenta().toString();
+    }
+    
+    /**
+     * saca el valor de la cuenta, funciona para el reporte de integridad
+     * @return 
+     */
+    public Double getValorEstandar(){
+        return this.saldo;
     }
 
 }

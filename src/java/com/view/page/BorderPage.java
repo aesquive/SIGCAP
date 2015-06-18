@@ -47,6 +47,7 @@ public abstract class BorderPage extends Page {
             init();
 
         }catch(Exception e){
+            e.printStackTrace();
             setRedirect(LoginPage.class);
         }
     }
@@ -83,13 +84,13 @@ public abstract class BorderPage extends Page {
 
         //creamos el menu principal de toda la aplicacion
         //indica los menus principales a mostrar
-        String[] menuPrincipal = new String[]{"DataWarehouse", "Generador de Reportes", "Gestión de Capital", "Auditor", "Simulación de Capital", "Administrador de Usuarios"};
+        String[] menuPrincipal = new String[]{"DataWarehouse", "Generador de Reportes", "Gestión de Capital", "Auditor", "Simulación de Capital", "Administrador de SIGCAP"};
         //indica los submenus a mostrar, en caso de que no existan submenus debera ponerse ""
-        String[] subMenus = new String[]{"Alta Ejericio|Baja Ejercicio|Mapeo de Datos", "Generador RC's|Reporte de Tenencia|Reporte de Consistencia|Reporte de Congruencia", "", "Análisis Comparativo|Tracking Log", "", "Alta Usuarios|Editar Usuario"};
+        String[] subMenus = new String[]{"Alta Ejericio|Baja Ejercicio|Mapeo de Datos", "Generador RC's|Reporte de Tenencia|Reporte de Consistencia|Reporte de Congruencia|Reporte de Integridad", "", "Análisis Comparativo|Tracking Log", "", "Alta Usuarios|Editar Usuario|Alta de Tipo Usuario|Editar Tipo Usuario"};
         //indica la ruta a la que apunta ya sea el menu principal o los submenus si es que los tiene
-        String[] path = new String[]{"cargadatos.htm|bajadatos.htm|menumapeo.htm", "reportes.htm|menutenencia.htm|reportecons.htm|reportecongruencia.htm", "icap.htm", "reportecambios.htm|trackinglog.htm", "whatif.htm", "altausuarios.htm|editarusuarios.htm"};
+        String[] path = new String[]{"cargadatos.htm|bajadatos.htm|menumapeo.htm", "reportes.htm|menutenencia.htm|reportecons.htm|reportecongruencia.htm|reporteintegridad.htm", "icap.htm", "reportecambios.htm|trackinglog.htm", "whatif.htm", "altausuarios.htm|editarusuarios.htm|altatipousuario.htm|editartipousuarioselectPage.htm",};
         //identificador de los submenus dentro del sistema
-        String[] identSUbs = new String[]{"1|2|3", "4|5|6|7", "", "8|9", "", "10|11"};
+        String[] identSUbs = new String[]{"1|2|3", "4|5|6|7|8", "", "9|10", "", "11|12|13|14"};
 
         for (int t = 0; t < menuPrincipal.length; t++) {
             Menu pestania = null;
@@ -180,14 +181,18 @@ public abstract class BorderPage extends Page {
     public abstract Integer getPermisoNumber();
 
     private void checkPermiso() {
+        DAO.refresh(user);
         if (getPermisoNumber() == -1) {
             return;
         }
-        List<Permisosuser> createQuery = DAO.createQuery(Permisosuser.class, null);
-        for (Permisosuser per : createQuery) {
-            if (per.getUser().getIduser() == user.getIduser() && getPermisoNumber() == per.getPermisos().getIdPermiso() && per.getValor() == 1) {
-                return;
-            }
+        String permisos = user.getTipousuario().getPermisos();
+        String[] perm_spli=permisos==null?new String[]{}:permisos.split(",");
+        Set<Integer> permsTodos=new HashSet<Integer>();
+        for(String s:perm_spli){
+            permsTodos.add(Integer.parseInt(s));
+        }
+        if(permsTodos.contains(getPermisoNumber())){
+            return;
         }
         setRedirect(SinpermisoPage.class);
     }

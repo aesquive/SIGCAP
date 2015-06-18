@@ -1,8 +1,11 @@
 package com.view.page;
 
 import db.pojos.Cuenta;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.Resource;
 import org.apache.click.Context;
@@ -107,8 +110,9 @@ public class TablePage extends BorderPage {
             if (data.get(t).getActionLink().isClicked()) {
                 Cuenta ref = data.get(t);
                 Set<Cuenta> cuentas = ref.getRegcuenta().getCuentas();
-                
+                System.out.println("la cuenta a la que se dio click "+ref.getIdCuenta() );
                 List<Cuenta> newData = new LinkedList<Cuenta>();
+                Set<Long> noRepeat=new HashSet<Long>();
                 if (ref.getRef() == null || ref.getRef().equals("")) {
                     newData.add(ref);
                 } 
@@ -116,7 +120,9 @@ public class TablePage extends BorderPage {
                     String[] split = ref.getRef().split(",");
                     for (String sp : split) {
                         for (Cuenta c : cuentas) {
-                            if (c.getCatalogocuenta().getIdCatalogoCuenta().toString().equals(sp)) {
+                            if (c.getCatalogocuenta().getIdCatalogoCuenta().toString().equals(sp) && !noRepeat.contains(c.getIdCuenta())) {
+                                System.out.println("agregado a la data "+c.getIdCuenta());
+                                noRepeat.add(c.getIdCuenta());
                                 newData.add(c);
                             }
                         }

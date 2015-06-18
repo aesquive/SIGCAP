@@ -1,6 +1,7 @@
 package com.view.page;
 
 import db.controller.DAO;
+import db.export.DBExporter;
 import db.pojos.Consistencia;
 import db.pojos.Cuenta;
 import db.pojos.Regcuenta;
@@ -56,7 +57,7 @@ public class VistareportesPage extends Page {
                 String numF = (String) getContext().getRequestParameterValues("num")[0];
                 processComparator(Integer.parseInt(pr1), Integer.parseInt(pr2), Double.parseDouble(var), Integer.parseInt(numF));
                 break;
-              //reporte congruencia  
+            //reporte congruencia  
             case 3:
                 String pr13 = (String) getContext().getRequestParameterValues("pra")[0];
                 String pr23 = (String) getContext().getRequestParameterValues("prb")[0];
@@ -64,17 +65,25 @@ public class VistareportesPage extends Page {
                 String numF3 = (String) getContext().getRequestParameterValues("num")[0];
                 processCongruencia(Integer.parseInt(pr13), Integer.parseInt(pr23), Double.parseDouble(var3), Integer.parseInt(numF3));
                 break;
-                //reporte consistencia
+            //reporte consistencia
             case 4:
                 String pra14 = (String) getContext().getRequestParameterValues("pra")[0];
                 initConsistencia(Integer.parseInt(pra14));
                 break;
-                //reporte tenencia
+            //reporte tenencia
             case 5:
                 String pro = (String) getContext().getRequestParameterValues("pro")[0];
                 tenenciaReport(Integer.parseInt(pro));
                 break;
-
+            //reporte de la base de datos
+            case 6:
+                reportDataBase();
+                break;
+                //reporte de integridad
+            case 7:
+                String pra = (String) getContext().getRequestParameterValues("pra")[0];
+                initIntegridad(Integer.parseInt(pra));
+                break;
         }
 
     }
@@ -136,8 +145,8 @@ public class VistareportesPage extends Page {
                     reg2 = r;
                 }
             }
-            ModelComparator comp=new ModelComparator();
-            String compareWriteFile = comp.compareWriteFile(manager.configuration.Configuration.getValue("baseAnalisisComparativo"), "comparativo", reg1, reg1.getCuentas(), reg2, reg2.getCuentas(), variance/100, numRegs);
+            ModelComparator comp = new ModelComparator();
+            String compareWriteFile = comp.compareWriteFile(manager.configuration.Configuration.getValue("baseAnalisisComparativo"), "comparativo", reg1, reg1.getCuentas(), reg2, reg2.getCuentas(), variance / 100, numRegs);
             String urlBase = Configuration.getValue("baseApacheReportes");
             User user = (User) getContext().getSessionAttribute("user");
             DAO.saveRecordt(user, user.getUser() + " generó reporte comparativo de " + reg1.getDesRegCuenta() + " y " + reg2.getDesRegCuenta());
@@ -163,8 +172,8 @@ public class VistareportesPage extends Page {
             }
             List<Cuenta> cuentasInicialesUno = obtenerCuentasIniciales(reg1);
             List<Cuenta> cuentasInicialesDos = obtenerCuentasIniciales(reg2);
-            ModelComparator comp=new ModelComparator();
-            String compareWriteFile = comp.compareWriteFile(manager.configuration.Configuration.getValue("baseAnalisisCongruencia"), "congruencia", reg1, cuentasInicialesUno, reg2, cuentasInicialesDos, variance/100, numRegs);
+            ModelComparator comp = new ModelComparator();
+            String compareWriteFile = comp.compareWriteFile(manager.configuration.Configuration.getValue("baseAnalisisCongruencia"), "congruencia", reg1, cuentasInicialesUno, reg2, cuentasInicialesDos, variance / 100, numRegs);
             User user = (User) getContext().getSessionAttribute("user");
             String reg1name = reg1 == null ? "" : reg1.getDesRegCuenta();
             String reg2name = reg2 == null ? "" : reg2.getDesRegCuenta();
@@ -251,4 +260,33 @@ public class VistareportesPage extends Page {
         setRedirect("downloadreport.html?url=" + urlBase + nameFile);
     }
 
+    private void reportDataBase() {
+        Calendar instance = Calendar.getInstance();
+        String nombre = "sigcap" + instance.get(Calendar.DAY_OF_MONTH) + instance.get(Calendar.MONTH) + instance.get(Calendar.YEAR) + "-" + instance.get(Calendar.HOUR_OF_DAY) + instance.get(Calendar.MINUTE) + ".sql";
+        User user = (User) getContext().getSessionAttribute("user");
+        DAO.saveRecordt(user, "Genero la exportación de la base de datos llamada " + nombre);
+        DBExporter.export(Configuration.getValue("RutaRespaldos") + nombre);
+        setRedirect("downloadreport.html?url=" + Configuration.getValue("basePostgresReportes") + nombre);
+        
+    }
+
+    private void initIntegridad(int parseInt) {
+      try {
+
+            List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
+            Regcuenta reg1 = null;
+            for (Regcuenta r : createQuery) {
+                if (r.getIdRegCuenta() == parseInt) {
+                    reg1 = r;
+                }
+            }
+            String nameFile = reports.excelmaker.IntegridadReportMaker.makeReport(Configuration.getValue("baseAnalisisIntegridad"),reg1);
+            String urlBase = Configuration.getValue("baseApacheReportes");
+            setRedirect("downloadreport.html?url=" + urlBase + nameFile);
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+    }
+
+    
 }

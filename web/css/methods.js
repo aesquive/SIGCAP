@@ -24,9 +24,10 @@ function reportes() {
     var direccionReportes=document.getElementById("direccionReportes").textContent;
     var project = document.getElementsByName("selectProject")[0].value;
     var report = document.getElementsByName("selectReport")[0].value;
-    window.open(direccionReportes + "?typ=0&pro=" + project + "&rep=" + report, "Reporte");
+    window.open(direccionReportes + "?typ=0&pro=" + project + "&rep=" + report, "Reporte"+report);
     return true;
 }
+
 
 function trackingLog() {
     var direccionReportes=document.getElementById("direccionReportes").textContent;
@@ -64,12 +65,29 @@ function comparativoCons() {
 }
 
 
+
+
+
 function createTenencia() {
     var direccionReportes=document.getElementById("direccionReportes").textContent;
     var idRegCta = document.getElementsByName("pryName")[0].value;
     window.open(direccionReportes + "?typ=5&pro=" + idRegCta, "Reporte");
     return true;
 }
+
+function reporteBase(){
+    var direccionReportes=document.getElementById("direccionReportes").textContent;
+    window.open(direccionReportes+"?typ=6");
+    return true;
+}
+
+function reporteIntegridad() {
+    var direccionReportes=document.getElementById("direccionReportes").textContent;
+    var pra = document.getElementsByName("pra")[0].value;
+    window.open(direccionReportes + "?typ=7&pra=" + pra + "&num=-1", "Comparativo");
+    return true;
+}
+
 
 function mostrarSubmenu(numSubmenu) {
     var idsSubsShow = numSubmenu;

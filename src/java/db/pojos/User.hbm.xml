@@ -39,5 +39,8 @@
             </key>
             <one-to-many class="db.pojos.Permisosuser" />
         </set>
+        <many-to-one name="tipousuario" class="db.pojos.Tipousuario" fetch="select">
+            <column name="idtipousuario" not-null="true" />
+        </many-to-one>
     </class>
 </hibernate-mapping>

@@ -35,25 +35,26 @@ public class EditarusuariosPage extends BorderPage {
         List<User> createQuery = DAO.createQuery(User.class, null);
         User userSess = (User) getSessionVar("user");
         for (User u : createQuery) {
-            if (!u.getUser().toUpperCase().equals(userSess.getUser().toUpperCase())) {
+            if (u.getTipousuario().getIdtipousuario()!=1) {
                 select.add(new Option(u.getIduser(), u.getUser()));
             }
         }
         form.add(select);
-        form.add(new Submit("sub", "Editar Permisos", this, "editar"));
+        form.add(new Submit("sub", "Editar Permisos", this, "editarUsuario"));
     }
 
-    public boolean editar() {
+    public boolean editarUsuario() {
         if (form.isValid()) {
             Map<String, String> map = new HashMap<String, String>();
             List<User> createQuery = DAO.createQuery(User.class, null);
-            String user = "";
-            for (User u : createQuery) {
+            User selectedUSer = null;
+            for (User u : createQuery) {                
                 if (u.getIduser() == Integer.parseInt(select.getValue())) {
-                    user = u.getUser();
+                    selectedUSer = u;
                 }
             }
-            getContext().setSessionAttribute("userEdit", user);
+            
+            addSessionVar("userEdit", selectedUSer);
             setRedirect(EditarpermisosPage.class, map);
             return true;
         }

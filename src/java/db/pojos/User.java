@@ -16,10 +16,12 @@ public class User  implements java.io.Serializable {
      private String password;
      private Integer activo;
      private Integer numlogin;
+     
+     private Tipousuario tipousuario;
      private Set regcuentausers = new HashSet(0);
      private Set trackings = new HashSet(0);
      private Set permisosusers = new HashSet(0);
-
+     
     public User() {
     }
 
@@ -27,14 +29,16 @@ public class User  implements java.io.Serializable {
     public User(String user) {
         this.user = user;
     }
-    public User(String user, String password, Integer activo, Set regcuentausers, Set trackings, Set permisosusers) {
+    public User(String user, String password, Integer activo,Tipousuario tipousuario, Set regcuentausers, Set trackings, Set permisosusers) {
        this.user = user;
        this.password = password;
        this.activo = activo;
        this.numlogin=0;
+       this.tipousuario=tipousuario;
        this.regcuentausers = regcuentausers;
        this.trackings = trackings;
        this.permisosusers = permisosusers;
+       
     }
    
     public Integer getIduser() {
@@ -99,6 +103,21 @@ public class User  implements java.io.Serializable {
      */
     public void setNumlogin(Integer numlogin) {
         this.numlogin = numlogin;
+    }
+
+    
+    /**
+     * @return the tipousuario
+     */
+    public Tipousuario getTipousuario() {
+        return tipousuario;
+    }
+
+    /**
+     * @param tipousuario the tipousuario to set
+     */
+    public void setTipousuario(Tipousuario tipousuario) {
+        this.tipousuario = tipousuario;
     }
 
 

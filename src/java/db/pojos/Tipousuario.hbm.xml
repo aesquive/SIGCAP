@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 15/06/2015 04:43:53 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="db.pojos.Tipousuario" table="tipousuario" >
+        <id name="idtipousuario" type="int">
+            <column name="idtipousuario" />
+            <generator class="identity"/>
+        </id>
+        <property name="nombre" type="string">
+            <column name="nombre" length="250" />
+        </property>
+        
+        <many-to-one name="padre" class="db.pojos.Tipousuario" fetch="select">
+            <column name="padre" not-null="true" />
+        </many-to-one>
+        <property name="permisos" type="string">
+            <column name="permisos" length="250" />
+        </property>
+        <set name="usuarios" table="usuario" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="idtipousuario" />
+            </key>
+            <one-to-many class="db.pojos.User" />
+        </set>
+    </class>
+</hibernate-mapping>

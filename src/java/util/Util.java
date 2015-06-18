@@ -226,7 +226,8 @@ public class Util {
             Object invoke = method.invoke(object, null);
             return invoke;
         } catch (Exception ex) {
-            System.out.println("Error reflection invoke" + ex);
+            ex.printStackTrace();
+            System.out.println("Error reflection invoke" + ex+" con objeto "+object+" metodo "+nmethod);
         }
         return null;
     }

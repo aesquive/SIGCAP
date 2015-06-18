@@ -113,6 +113,28 @@ public class Disponibilidad  implements java.io.Serializable {
         return new String[]{"Monto","Fecha de Vencimiento"};
     }
     
+    
+    
+        /**
+     * saca el catalogo cuenta al que pertenece, funciona para el reporte de integridad
+     * @return 
+     */
+    public String getCatalogoCuentaEstandar(){
+        if(this.catalogocuenta==null){
+            return null;
+        }
+        return this.catalogocuenta.getIdCatalogoCuenta().toString();
+    }
+    
+    
+    /**
+     * saca el valor de la cuenta, funciona para el reporte de integridad
+     * @return 
+     */
+    public Double getValorEstandar(){
+        return this.monto;
+    }
+    
     public String getIdCuentaContable(){
         return catalogocuenta.getIdCatalogoCuenta().toString();
     }

@@ -60,7 +60,10 @@ public class WhatifPage extends BorderPage {
         formView = new Form("formView");
         onceClicked = true;
         selectProject = new Select("Ejercicio Base", true);
+        selectProject.setDefaultOption(new Option("-1", "--Seleccione--"));
         selectView = new Select("Ejercicio", true);
+        
+        selectView.setDefaultOption(new Option("-1", "--Seleccione--"));
         nameSimulation = new TextField("Nombre de la Simulación", true);
         selectProject.setId("selectwhatif");
         user = (User) getSessionVar("user");

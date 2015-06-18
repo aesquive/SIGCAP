@@ -3,6 +3,7 @@ package db.controller;
 import db.pojos.Cuenta;
 import db.pojos.Prestamo;
 import db.pojos.Regcuenta;
+import db.pojos.Tipousuario;
 import db.pojos.Tracking;
 import db.pojos.User;
 import java.util.Calendar;
@@ -179,9 +180,9 @@ public class DAO {
     }
 
     public static void main(String[] args) {
-        List<Prestamo> createQuery = DAO.createQuery(Prestamo.class, null);
-        Date fechaDeCorte = createQuery.get(0).getFechaDeCorte();
-        System.out.println(fechaDeCorte);
+        //List<Tipousuario> createQuery = DAO.createQuery(Tipousuario.class,null);
+        //System.out.println(createQuery.get(0).getUsuarios().iterator().next());
+     
     }
 
     public static List<Regcuenta> getEjerciciosCalculados(){

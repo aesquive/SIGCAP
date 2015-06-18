@@ -1,10 +1,7 @@
 package db.pojos;
 // Generated 26/06/2014 12:43:36 AM by Hibernate Tools 3.6.0
 
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import org.apache.click.control.ActionLink;
 import util.Util;
 
@@ -18,6 +15,26 @@ public class Captacion implements java.io.Serializable,Comparable {
     public int compareTo(Object t) {
         Captacion comp=(Captacion)t;
         return this.idCaptacion.compareTo(comp.getIdCaptacion());
+    }
+    
+        /**
+     * saca el catalogo cuenta al que pertenece, funciona para el reporte de integridad
+     * @return 
+     */
+    public String getCatalogoCuentaEstandar(){
+        if(this.catalogocuenta==null){
+            return null;
+        }
+        return this.catalogocuenta.getIdCatalogoCuenta().toString();
+    }
+    
+    
+    /**
+     * saca el valor de la cuenta, funciona para el reporte de integridad
+     * @return 
+     */
+    public Double getValorEstandar(){
+        return this.monto;
     }
     
     /**

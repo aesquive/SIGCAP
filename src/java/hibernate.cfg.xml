@@ -52,5 +52,6 @@
     <mapping resource="db/pojos/Reservas.hbm.xml"/>
     <mapping resource="db/pojos/Regreportes.hbm.xml"/>
     <mapping resource="db/pojos/Emision.hbm.xml"/>
+    <mapping resource="db/pojos/Tipousuario.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

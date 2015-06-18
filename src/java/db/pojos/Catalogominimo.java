@@ -23,6 +23,27 @@ public class Catalogominimo  implements java.io.Serializable {
      
     public Catalogominimo() {
     }
+    
+    
+        /**
+     * saca el catalogo cuenta al que pertenece, funciona para el reporte de integridad
+     * @return 
+     */
+    public String getCatalogoCuentaEstandar(){
+        if(this.catalogocuenta==null){
+            return null;
+        }
+        return this.catalogocuenta.getIdCatalogoCuenta().toString();
+    }
+    
+    
+    /**
+     * saca el valor de la cuenta, funciona para el reporte de integridad
+     * @return 
+     */
+    public Double getValorEstandar(){
+        return this.valor;
+    }
 
     public Catalogominimo(Regcuenta regcuenta, Catalogocuenta catalogocuenta, Date fecha, Double valor,Integer moneda) {
        this.regcuenta = regcuenta;

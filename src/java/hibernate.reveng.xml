@@ -27,4 +27,5 @@
   <table-filter match-name="regreportes"/>
   <table-filter match-name="regcuenta"/>
   <table-filter match-name="emisionriesgo"/>
+  <table-filter match-name="tipousuario"/>
 </hibernate-reverse-engineering>

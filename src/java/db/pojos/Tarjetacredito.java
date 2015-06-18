@@ -179,6 +179,27 @@ public class Tarjetacredito implements java.io.Serializable {
     public static String[] getSimEditColumnsDes() {
         return new String[]{"Saldo Insoluto","Fecha de Corte"};
     }
+    
+    
+    
+        /**
+     * saca el catalogo cuenta al que pertenece, funciona para el reporte de integridad
+     * @return 
+     */
+    public String getCatalogoCuentaEstandar(){
+        if(this.catalogocuenta==null){
+            return null;
+        }
+        return this.catalogocuenta.getIdCatalogoCuenta().toString();
+    }
+    
+    /**
+     * saca el valor de la cuenta, funciona para el reporte de integridad
+     * @return 
+     */
+    public Double getValorEstandar(){
+        return this.saldoInsoluto;
+    }
 
     public String getIdCuentaContable() {
         return catalogocuenta.getIdCatalogoCuenta().toString();
