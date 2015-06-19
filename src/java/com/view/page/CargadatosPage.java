@@ -67,12 +67,12 @@ public class CargadatosPage extends BorderPage {
         dateField.setFormatPattern("dd/MM/yyyy");
         fileTenencia = new FileField("fileTenencia", "Tenencia (csv|txt)", true);
         fileCaptacion = new FileField("fileCaptacion", "Captación (csv|txt)", true);
-        filePrestamosPersonales = new FileField("filePrestamos", "Prestamos Personales (csv|txt)", true);
+        filePrestamosPersonales = new FileField("filePrestamos", "Cartera de Consumo (csv|txt)", true);
         fileDisponibilidades = new FileField("fileDisponibilidades", "Disponibilidades (csv|txt)", true);
         fileTarjetaCredito = new FileField("fileTarjeta", "Tarjeta de Crédito  (csv|txt)", true);
         fileReservas = new FileField("fileConsumo", "Reservas(csv|txt)", true);
         fileIngresos = new FileField("fileIngreso", "Ingresos Netos (csv|txt)", true);
-        vector = new FileField("vector", "Vector Analitico (csv|txt)", true);
+        vector = new FileField("vector", "Vector Analítico (csv|txt)", true);
         form.add(name);
         form.add(dateField);
         form.add(fileTenencia);
@@ -110,7 +110,7 @@ public class CargadatosPage extends BorderPage {
             FileField[] camposArchivos = new FileField[]{fileCaptacion, fileCatalogoMinimo, fileDisponibilidades, fileIngresos, filePrestamosPersonales, fileReservas, fileTarjetaCredito, fileTenencia};
             String[] nombres = new String[]{"Captación", "Catálogo Mínimo", "Disponibilidades", "Ingresos Netos", "Prestamos Personales", "Reservas", "Tarjeta de Crédito", "Tenencia"};
             //vALIDA EL NUMERO DE CAMPOS QUE TRAE EL ARCHIVO ... SI ESTE NO ES CORRECTO SACA AL USUARIO DE LA CARGA
-            Integer[] numCampos = new Integer[]{6, 4, 5, 3, 8, 3, 8, 9};
+            Integer[] numCampos = new Integer[]{6, 4, 5, 4, 8, 3, 8, 9};
             boolean pass = true;
             for (int t = 0; t < nombres.length; t++) {
                 List<String> dataCatalogoMinimo;
@@ -420,7 +420,8 @@ public class CargadatosPage extends BorderPage {
             Date date = parseDate(split[0]);
             int cuenta = Integer.parseInt(split[1]);
             Double value = parseDouble(split[2]);
-            Ingresosnetos cap = new Ingresosnetos(regCuenta, date, cuenta, value);
+            Double reqMerc=parseDouble(split[3]);
+            Ingresosnetos cap = new Ingresosnetos(regCuenta, date, cuenta, value,reqMerc);
             items.add(cap);
         }
         cons.setIngresosLeidos(new Double(String.valueOf(captaciones.size())));

@@ -20,5 +20,8 @@
         <property name="ingresoNeto" type="java.lang.Double">
             <column name="IngresoNeto" precision="15" scale="5" />
         </property>
+        <property name="reqMerCred" type="java.lang.Double">
+            <column name="reqmercred" precision="15" scale="5" />
+        </property>
     </class>
 </hibernate-mapping>

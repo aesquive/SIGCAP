@@ -182,7 +182,7 @@ public class ModelExecutor {
      * @throws MathInterpreterException
      */
     public static void main(String[] args) throws MathInterpreterException, IOException {
-        int regCuenta = 20;
+        int regCuenta = 23;
         List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
         Regcuenta c = new Regcuenta();
         for (Regcuenta r : createQuery) {

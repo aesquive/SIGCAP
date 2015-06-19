@@ -21,10 +21,17 @@ function stopWaitingLogin() {
 }
 
 function reportes() {
+    var acumulado="";
+    for(var t=0;t<20;t++){
+        var element=document.getElementById("check_box_"+t);
+        if(element!=null && element.checked==true){
+            acumulado=acumulado+t+",";
+        }
+    }
+    alert(acumulado);
     var direccionReportes=document.getElementById("direccionReportes").textContent;
     var project = document.getElementsByName("selectProject")[0].value;
-    var report = document.getElementsByName("selectReport")[0].value;
-    window.open(direccionReportes + "?typ=0&pro=" + project + "&rep=" + report, "Reporte"+report);
+    window.open(direccionReportes + "?typ=0&pro=" + project + "&rep=" + acumulado, "Reporte"+acumulado);
     return true;
 }
 

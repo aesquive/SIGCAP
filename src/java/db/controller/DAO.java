@@ -1,5 +1,6 @@
 package db.controller;
 
+import db.pojos.Catalogocuenta;
 import db.pojos.Cuenta;
 import db.pojos.Prestamo;
 import db.pojos.Regcuenta;
@@ -182,7 +183,14 @@ public class DAO {
     public static void main(String[] args) {
         //List<Tipousuario> createQuery = DAO.createQuery(Tipousuario.class,null);
         //System.out.println(createQuery.get(0).getUsuarios().iterator().next());
-     
+        long inicial=913501;
+        for(int t=0;t<36;t++){
+            Catalogocuenta c=new Catalogocuenta();
+            long nuevaInicial=inicial+t;
+            c.setIdCatalogoCuenta(nuevaInicial);
+            c.setDesCatalogoCuenta("Requerimiento crédito y mercado Mes "+(36-t));
+            DAO.save(c);
+        }
     }
 
     public static List<Regcuenta> getEjerciciosCalculados(){

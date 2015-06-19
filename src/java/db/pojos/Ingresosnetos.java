@@ -73,15 +73,17 @@ public class Ingresosnetos  implements java.io.Serializable {
      private Date fecha;
      private Integer numeroMes;
      private Double ingresoNeto;
+     private Double reqMerCred;
 
     public Ingresosnetos() {
     }
 
-    public Ingresosnetos(Regcuenta regcuenta, Date fecha, Integer numeroMes, Double ingresoNeto) {
+    public Ingresosnetos(Regcuenta regcuenta, Date fecha, Integer numeroMes, Double ingresoNeto,Double reqMerCred) {
        this.regcuenta = regcuenta;
        this.fecha = fecha;
        this.numeroMes = numeroMes;
        this.ingresoNeto = ingresoNeto;
+       this.reqMerCred=reqMerCred;
     }
    
     public Integer getIdIngresosNetos() {
@@ -118,6 +120,20 @@ public class Ingresosnetos  implements java.io.Serializable {
     
     public void setIngresoNeto(Double ingresoNeto) {
         this.ingresoNeto = ingresoNeto;
+    }
+
+    /**
+     * @return the reqMerCred
+     */
+    public Double getReqMerCred() {
+        return reqMerCred;
+    }
+
+    /**
+     * @param reqMerCred the reqMerCred to set
+     */
+    public void setReqMerCred(Double reqMerCred) {
+        this.reqMerCred = reqMerCred;
     }
 
 

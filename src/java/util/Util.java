@@ -2,6 +2,10 @@ package util;
 
 import db.pojos.Valores;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import static java.lang.Double.parseDouble;
@@ -21,6 +25,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import org.apache.click.Control;
 import org.apache.click.control.Form;
 import org.apache.click.control.Label;
@@ -227,7 +233,7 @@ public class Util {
             return invoke;
         } catch (Exception ex) {
             ex.printStackTrace();
-            System.out.println("Error reflection invoke" + ex+" con objeto "+object+" metodo "+nmethod);
+            System.out.println("Error reflection invoke" + ex + " con objeto " + object + " metodo " + nmethod);
         }
         return null;
     }
@@ -289,24 +295,54 @@ public class Util {
     }
 
     public static List<Object> orderValuesMethodCriteria(String metodoGetBaseOrdenamiento, List<Object> values) {
-        System.out.println("el metodo de ordenamiento es "+metodoGetBaseOrdenamiento);
+        System.out.println("el metodo de ordenamiento es " + metodoGetBaseOrdenamiento);
         List<ComparatorCapsule> compCapsules = new LinkedList<ComparatorCapsule>();
         for (Object o : values) {
-            try{
+            try {
                 Comparable reflectionInvoke = (Comparable) Util.reflectionInvoke(o, metodoGetBaseOrdenamiento);
-                compCapsules.add(new ComparatorCapsule(reflectionInvoke,o));
-            }catch(Exception e){
+                compCapsules.add(new ComparatorCapsule(reflectionInvoke, o));
+            } catch (Exception e) {
                 //si no pudimos generar los objetos comparables entonces regresamos los valores originales
                 System.out.println("Imposible ordenar por ese criterio");
                 return values;
             }
         }
         Collections.sort(compCapsules);
-        List<Object> returnObjects=new LinkedList<Object>();
-        for(int t=0;t<compCapsules.size();t++){
+        List<Object> returnObjects = new LinkedList<Object>();
+        for (int t = 0; t < compCapsules.size(); t++) {
             returnObjects.add(compCapsules.get(t).getValue());
         }
         return returnObjects;
     }
+
+    public static void zipFiles(String fileName, List<String> files) throws IOException {
+        FileOutputStream fos = new FileOutputStream(fileName);
+        ZipOutputStream zos = new ZipOutputStream(fos);
+        
+        for(String s:files){
+            addToZipFile(s,zos);
+        }
+        zos.close();
+        fos.close();
+    }
+
+    public static void addToZipFile(String fileName, ZipOutputStream zos) throws  IOException {
+
+		System.out.println("Writing '" + fileName + "' to zip file");
+
+		File file = new File(fileName);
+		FileInputStream fis = new FileInputStream(file);
+		ZipEntry zipEntry = new ZipEntry(fileName);
+		zos.putNextEntry(zipEntry);
+
+		byte[] bytes = new byte[1024];
+		int length;
+		while ((length = fis.read(bytes)) >= 0) {
+			zos.write(bytes, 0, length);
+		}
+
+		zos.closeEntry();
+		fis.close();
+	}
 
 }

@@ -7,17 +7,17 @@ import db.pojos.Cuenta;
 import db.pojos.Regcuenta;
 import db.pojos.Regreportes;
 import db.pojos.User;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -26,6 +26,7 @@ import manager.configuration.Configuration;
 import model.utilities.ModelComparator;
 import org.apache.click.Page;
 import reports.excelmaker.ExcelMaker;
+import util.Util;
 
 /**
  *
@@ -41,7 +42,7 @@ public class VistareportesPage extends Page {
             case 0:
                 String project = (String) getContext().getRequestParameterValues("pro")[0];
                 String report = (String) getContext().getRequestParameterValues("rep")[0];
-                processReport(Integer.parseInt(project), Integer.parseInt(report));
+                processReport(Integer.parseInt(project), report);
                 break;
             //reportes de tracking log
             case 1:
@@ -79,7 +80,7 @@ public class VistareportesPage extends Page {
             case 6:
                 reportDataBase();
                 break;
-                //reporte de integridad
+            //reporte de integridad
             case 7:
                 String pra = (String) getContext().getRequestParameterValues("pra")[0];
                 initIntegridad(Integer.parseInt(pra));
@@ -88,49 +89,70 @@ public class VistareportesPage extends Page {
 
     }
 
-    public boolean processReport(int numberProject, int numberReport) {
+    public boolean processReport(int numberProject, String numberReport) {
+        Set<Integer> reportsNumbers = new HashSet<Integer>();
+        String[] split = numberReport.split(",");
+        for (String s : split) {
+            if (s != null && !s.equals("")) {
+                reportsNumbers.add(Integer.parseInt(s));
+            }
+        }
         List<Regcuenta> regCuentas = DAO.createQuery(Regcuenta.class, null);
         List<Regreportes> reportes = DAO.createQuery(Regreportes.class, null);
+        List<String> files = new LinkedList<String>();
         Regcuenta selected = null;
         for (Regcuenta r : regCuentas) {
             if (r.getIdRegCuenta() == numberProject) {
                 selected = r;
             }
         }
-        Regreportes selectedReport = null;
-        for (Regreportes r : reportes) {
-            if (r.getIdRegReportes() == numberReport) {
-                selectedReport = r;
-            }
-        }
-
-        String fileName = manager.configuration.Configuration.getValue("Ruta Reportes") + selected.getIdRegCuenta().toString() + "-" + selectedReport.getNombreCorto() + ".xlsx";
         Set<Cuenta> cuentas = selected.getCuentas();
         Map<String, Cuenta> map = new HashMap<String, Cuenta>();
         for (Cuenta c : cuentas) {
             map.put(c.getCatalogocuenta().getIdCatalogoCuenta().toString(), c);
         }
-        ExcelMaker excelmaker = new ExcelMaker(fileName, selectedReport.getRuta(), selected, map);
-        File makeFile = null;
-        try {
-            makeFile = excelmaker.makeFile();
-        } catch (Exception e) {
-            System.out.println(e);
-            return false;
+
+        List<ExcelMaker> runnables=new LinkedList<ExcelMaker>();
+        
+        for (Regreportes r : reportes) {
+            if (reportsNumbers.contains(r.getIdRegReportes())) {
+                String fileName = manager.configuration.Configuration.getValue("Ruta Reportes") + selected.getIdRegCuenta().toString() + "-" + r.getNombreCorto() + ".xlsx";
+                ExcelMaker excelmaker = new ExcelMaker("thread "+r.getIdRegReportes().toString(),fileName, r.getRuta(), selected, map);
+                runnables.add(excelmaker);
+            }
         }
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(makeFile));
-            reader.read();
-            reader.close();
-        } catch (Exception e) {
-            System.out.println("waisting time");
+        
+        for(int t=0;t<runnables.size();t++){
+            System.out.println("antes de empezar el thread "+runnables.get(t).getThreadName());
+            runnables.get(t).start();
+            System.out.println("inicio el thread de "+runnables.get(t).getThreadName());
         }
-        User user = (User) getContext().getSessionAttribute("user");
-        DAO.saveRecordt(user, user.getUser() + " generó reporte " + selectedReport.getDesReportes());
-        String urlBase = Configuration.getValue("baseApacheReportes");
-        setRedirect("downloadreport.html?url=" + urlBase + selected.getIdRegCuenta().toString() + "-" + selectedReport.getNombreCorto() + ".xlsx");
-        return true;
+        for(Thread t:runnables){
+            try {
+                t.join();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(VistareportesPage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        for(ExcelMaker t:runnables){
+            files.add(t.getFileName());
+        }
+        
+        System.out.println("esta linea no se imprime");
+
+        String fileName;
+        try {
+            fileName = createZip(Configuration.getValue("baseReportesZip"), selected, files);
+            String urlBase = Configuration.getValue("baseApacheReportesZip");
+            setRedirect("downloadreport.html?url=" + urlBase + fileName);
+            return true;
+
+        } catch (IOException ex) {
+            Logger.getLogger(VistareportesPage.class.getName()).log(Level.INFO, null, ex);
+        }
+        return false;
     }
+
 
     private void processComparator(int project1, int project2, double variance, int numRegs) {
         try {
@@ -267,11 +289,11 @@ public class VistareportesPage extends Page {
         DAO.saveRecordt(user, "Genero la exportación de la base de datos llamada " + nombre);
         DBExporter.export(Configuration.getValue("RutaRespaldos") + nombre);
         setRedirect("downloadreport.html?url=" + Configuration.getValue("basePostgresReportes") + nombre);
-        
+
     }
 
     private void initIntegridad(int parseInt) {
-      try {
+        try {
 
             List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
             Regcuenta reg1 = null;
@@ -280,7 +302,7 @@ public class VistareportesPage extends Page {
                     reg1 = r;
                 }
             }
-            String nameFile = reports.excelmaker.IntegridadReportMaker.makeReport(Configuration.getValue("baseAnalisisIntegridad"),reg1);
+            String nameFile = reports.excelmaker.IntegridadReportMaker.makeReport(Configuration.getValue("baseAnalisisIntegridad"), reg1);
             String urlBase = Configuration.getValue("baseApacheReportes");
             setRedirect("downloadreport.html?url=" + urlBase + nameFile);
         } catch (Exception ex) {
@@ -288,5 +310,11 @@ public class VistareportesPage extends Page {
         }
     }
 
-    
+    private String createZip(String directorio, Regcuenta reg, List<String> files) throws IOException {
+        Calendar instance = Calendar.getInstance();
+        String name = reg.getDesRegCuenta() + "RC" + instance.get(Calendar.DATE) + instance.get(Calendar.MONTH) + instance.get(Calendar.YEAR) + "-" + instance.get(Calendar.HOUR_OF_DAY) + instance.get(Calendar.MINUTE)+".zip";
+        Util.zipFiles(directorio + name, files);
+        return name;
+    }
+
 }

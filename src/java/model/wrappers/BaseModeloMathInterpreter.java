@@ -4,6 +4,7 @@ import db.controller.DAO;
 import db.pojos.Captacion;
 import db.pojos.Catalogominimo;
 import db.pojos.Disponibilidad;
+import db.pojos.Ingresosnetos;
 import db.pojos.Prestamo;
 import db.pojos.Regcuenta;
 import db.pojos.Reservas;
@@ -27,6 +28,7 @@ public class BaseModeloMathInterpreter {
     private List<DisponibilidadWrapper> disponibilidadWrapper;
     private List<PrestamoWrapper> prestamoWrapper;
     private List<TarjetaCreditoWrapper> tarjetaWrapper;
+    private List<IngresosNetosWrapper> ingresosWrapper;
     private List<Valores> tenenciaWrapper;
     private List<Reservas> reservas;
     private Map<String, Double> mapValues;
@@ -37,6 +39,7 @@ public class BaseModeloMathInterpreter {
         mapCatalogoMinimo(regCuenta.getCatalogominimos());
         mapDisponibilidad(regCuenta.getDisponibilidads());
         mapPrestamos(regCuenta.getPrestamos());
+        mapIngresos(regCuenta.getIngresosnetoses());
         mapTarjetaCredito(regCuenta.getTarjetacreditos());
         mapTenencia(regCuenta.getValoreses());
         reservas = new LinkedList<Reservas>(regCuenta.getReservases());
@@ -76,6 +79,13 @@ public class BaseModeloMathInterpreter {
         for (Tarjetacredito tar : tarjetacreditos) {
             tarjetaWrapper.add(new TarjetaCreditoWrapper(tar.getFecha(), tar.getCatalogocuenta() != null ? tar.getCatalogocuenta().getIdCatalogoCuenta().toString() : "", tar.getIdCredito(),
                     tar.getDescripcion(), tar.getSaldoInsoluto(), tar.getFechaCorte(), tar.getTipoTarjeta(), tar.getRelevante() == 1 ? "SI" : "NO"));
+        }
+    }
+    
+    private void mapIngresos(Set<Ingresosnetos> ingresosNetos) {
+        ingresosWrapper = new LinkedList<IngresosNetosWrapper>();
+        for (Ingresosnetos tar : ingresosNetos) {
+            ingresosWrapper.add(new IngresosNetosWrapper(tar.getFecha(),tar.getNumeroMes(), tar.getIngresoNeto(),tar.getReqMerCred()));
         }
     }
 
@@ -421,13 +431,42 @@ public class BaseModeloMathInterpreter {
         mapValues.put("93700", mapValues.get("95340"));
         mapValues.put("93750", mapValues.get("95340"));
         mapValues.put("93755", mapValues.get("95340"));
-
+        
+        
         mapValues.put("103110", interpSumIf(tenenciaWrapper, "getMonto", "getGrupoRC10/eq/SI,getPonderador/ed/0.2"));
         mapValues.put("103125", interpSumIf(tenenciaWrapper, "getMonto", "getGrupoRC10/eq/SI,getPonderador/ed/0.5"));
         mapValues.put("103130", interpSumIf(tenenciaWrapper, "getMonto", "getGrupoRC10/eq/SI,getPonderador/ed/1.0"));
         mapValues.put("103140", interpSumIf(tenenciaWrapper, "getMonto", "getGrupoRC10/eq/SI,getPonderador/ed/3.5"));
         mapValues.put("104070", interpSumIf(tenenciaWrapper, "getMonto", "getGrupoRC10/eq/SI,getPonderador/ed/0.4"));
 
+        
+        //mapeo de la parte de ingresos netos anio 1 913150-913161
+        int inicial=913150;
+        for(int t=0;t<12;t++){
+            mapValues.put(String.valueOf(inicial+t),interpSumIf(ingresosWrapper, "getIngresoNeto", "getNumeroMes/==/"+(t+1)));
+        }
+        
+        //mapeo de la parte de ingresos netos anio 1 913164-913175
+        inicial=913164;
+        for(int t=0;t<12;t++){
+            mapValues.put(String.valueOf(inicial+t),interpSumIf(ingresosWrapper, "getIngresoNeto", "getNumeroMes/==/"+(12+(t+1))));
+        }
+        
+        //mapeo de la parte de ingresos netos anio 1 913178-913189
+        inicial=913178;
+        for(int t=0;t<12;t++){
+            mapValues.put(String.valueOf(inicial+t),interpSumIf(ingresosWrapper, "getIngresoNeto", "getNumeroMes/==/"+(24+(t+1))));
+        }
+        
+        
+        //mapeo de la parte de requerimientos de mercado y credito   913501-913536
+        inicial=913501;
+        double suma=0;
+        for(int t=0;t<36;t++){
+            double valor=interpSumIf(ingresosWrapper, "getReqMerCred", "getNumeroMes/==/"+(t+1));
+            mapValues.put(String.valueOf(inicial+t),valor);
+            suma+=valor;
+        }
     }
 
     public static void main(String[] args) {

@@ -133,7 +133,7 @@ public class ModelHeatMap {
             }
         }
         for (Ingresosnetos c : ingresos) {
-            Ingresosnetos nueva = new Ingresosnetos(regNuevo, c.getFecha(), c.getNumeroMes(), c.getIngresoNeto());
+            Ingresosnetos nueva = new Ingresosnetos(regNuevo, c.getFecha(), c.getNumeroMes(), c.getIngresoNeto(),c.getReqMerCred());
             items.add(nueva);
         }
         for (Reservas c : reservas) {
