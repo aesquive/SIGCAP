@@ -82,7 +82,7 @@ public class CargadatosPage extends BorderPage {
         form.add(fileReservas);
         form.add(fileTarjetaCredito);
         form.add(fileIngresos);
-        fileCatalogoMinimo = new FileField("fileCatalogo", "Catálogo Mínimo", true);
+        fileCatalogoMinimo = new FileField("fileCatalogo", "Balanza", true);
         form.add(fileCatalogoMinimo);
         form.add(vector);
         Submit sub = new Submit("sub", "Procesar", this, "procesarClicked");
@@ -108,7 +108,7 @@ public class CargadatosPage extends BorderPage {
             }
             message = "Reportes Invalidos (El número de campos no corresponde) : ";
             FileField[] camposArchivos = new FileField[]{fileCaptacion, fileCatalogoMinimo, fileDisponibilidades, fileIngresos, filePrestamosPersonales, fileReservas, fileTarjetaCredito, fileTenencia};
-            String[] nombres = new String[]{"Captación", "Catálogo Mínimo", "Disponibilidades", "Ingresos Netos", "Prestamos Personales", "Reservas", "Tarjeta de Crédito", "Tenencia"};
+            String[] nombres = new String[]{"Captación", "Balanza", "Disponibilidades", "Ingresos Netos", "Prestamos Personales", "Reservas", "Tarjeta de Crédito", "Tenencia"};
             //vALIDA EL NUMERO DE CAMPOS QUE TRAE EL ARCHIVO ... SI ESTE NO ES CORRECTO SACA AL USUARIO DE LA CARGA
             Integer[] numCampos = new Integer[]{6, 4, 5, 4, 8, 3, 8, 9};
             boolean pass = true;
@@ -165,7 +165,7 @@ public class CargadatosPage extends BorderPage {
             try {
                 saveCatalogoMinimo = saveCatalogoMinimo(cons, regCuenta);
             } catch (Exception ex) {
-                message="Error en el registro "+registroLeido+" de Catalogo Minimo";
+                message="Error en el registro "+registroLeido+" de Balanza";
                 borrarRegistroEjercicio(regCuenta);
                 Logger.getLogger(CargadatosPage.class.getName()).log(Level.INFO, null, ex);
                 return false;
@@ -421,7 +421,7 @@ public class CargadatosPage extends BorderPage {
             int cuenta = Integer.parseInt(split[1]);
             Double value = parseDouble(split[2]);
             Double reqMerc=parseDouble(split[3]);
-            Ingresosnetos cap = new Ingresosnetos(regCuenta, date, cuenta, value,reqMerc);
+            Ingresosnetos cap = new Ingresosnetos(regCuenta, date, cuenta, value/1000000,reqMerc/1000000);
             items.add(cap);
         }
         cons.setIngresosLeidos(new Double(String.valueOf(captaciones.size())));
@@ -543,7 +543,6 @@ public class CargadatosPage extends BorderPage {
             String rc10 = split[8];
 
             Valores valores = new Valores(regCuenta, date, cta, des, tits, tipoValor, emision, serie, fecCpn, rc10);
-            valores.setMapeado(2);
             items.add(valores);
         }
         cons.setTenenciaLeidos(new Double(String.valueOf(captaciones.size())));

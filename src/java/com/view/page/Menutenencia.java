@@ -57,6 +57,6 @@ public class Menutenencia extends BorderPage{
 
     @Override
     public Integer getPermisoNumber() {
-        return 4;
+        return 5;
     }
 }

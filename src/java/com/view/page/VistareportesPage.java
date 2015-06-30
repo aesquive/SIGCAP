@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import manager.configuration.Configuration;
 import model.utilities.ModelComparator;
 import org.apache.click.Page;
+import reports.excelmaker.BanxicoMaker;
 import reports.excelmaker.ExcelMaker;
 import util.Util;
 
@@ -85,6 +86,11 @@ public class VistareportesPage extends Page {
                 String pra = (String) getContext().getRequestParameterValues("pra")[0];
                 initIntegridad(Integer.parseInt(pra));
                 break;
+
+            case 8:
+                String pra20 = (String) getContext().getRequestParameterValues("pra")[0];
+                reporteBanxico(Integer.parseInt(pra20));
+                break;
         }
 
     }
@@ -112,32 +118,32 @@ public class VistareportesPage extends Page {
             map.put(c.getCatalogocuenta().getIdCatalogoCuenta().toString(), c);
         }
 
-        List<ExcelMaker> runnables=new LinkedList<ExcelMaker>();
-        
+        List<ExcelMaker> runnables = new LinkedList<ExcelMaker>();
+
         for (Regreportes r : reportes) {
             if (reportsNumbers.contains(r.getIdRegReportes())) {
                 String fileName = manager.configuration.Configuration.getValue("Ruta Reportes") + selected.getIdRegCuenta().toString() + "-" + r.getNombreCorto() + ".xlsx";
-                ExcelMaker excelmaker = new ExcelMaker("thread "+r.getIdRegReportes().toString(),fileName, r.getRuta(), selected, map);
+                ExcelMaker excelmaker = new ExcelMaker("thread " + r.getIdRegReportes().toString(), fileName, r.getRuta(), selected, map);
                 runnables.add(excelmaker);
             }
         }
-        
-        for(int t=0;t<runnables.size();t++){
-            System.out.println("antes de empezar el thread "+runnables.get(t).getThreadName());
+
+        for (int t = 0; t < runnables.size(); t++) {
+            System.out.println("antes de empezar el thread " + runnables.get(t).getThreadName());
             runnables.get(t).start();
-            System.out.println("inicio el thread de "+runnables.get(t).getThreadName());
+            System.out.println("inicio el thread de " + runnables.get(t).getThreadName());
         }
-        for(Thread t:runnables){
+        for (Thread t : runnables) {
             try {
                 t.join();
             } catch (InterruptedException ex) {
                 Logger.getLogger(VistareportesPage.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        for(ExcelMaker t:runnables){
+        for (ExcelMaker t : runnables) {
             files.add(t.getFileName());
         }
-        
+
         System.out.println("esta linea no se imprime");
 
         String fileName;
@@ -152,7 +158,6 @@ public class VistareportesPage extends Page {
         }
         return false;
     }
-
 
     private void processComparator(int project1, int project2, double variance, int numRegs) {
         try {
@@ -199,7 +204,7 @@ public class VistareportesPage extends Page {
             User user = (User) getContext().getSessionAttribute("user");
             String reg1name = reg1 == null ? "" : reg1.getDesRegCuenta();
             String reg2name = reg2 == null ? "" : reg2.getDesRegCuenta();
-            DAO.saveRecordt(user, user.getUser() + " generó reporte comparativo de " + reg1name + " y " + reg2name);
+            DAO.saveRecordt(user, user.getUser() + " generó reporte congruencia de " + reg1name + " y " + reg2name);
             String urlBase = Configuration.getValue("baseApacheReportes");
             setRedirect("downloadreport.html?url=" + urlBase + compareWriteFile);
 
@@ -221,7 +226,7 @@ public class VistareportesPage extends Page {
             cin.set(Calendar.HOUR, 0);
             cen.set(Calendar.HOUR, 0);
             User user = (User) getContext().getSessionAttribute("user");
-            DAO.saveRecordt(user, user.getUser() + " generó reporte Tracking Log");
+            DAO.saveRecordt(user, user.getUser() + " generó reporte Tracking Log de la fecha " + Util.formatDate(dateIn) + " a " + Util.formatDate(dateEn));
             String generateReport = reports.excelmaker.TrackingLogReporter.generateReport("tracking-" + user.getIduser() + ".xlsx", cin.getTime(), cen.getTime());
             String urlBase = Configuration.getValue("baseApacheReportes");
             setRedirect("downloadreport.html?url=" + urlBase + generateReport);
@@ -312,9 +317,29 @@ public class VistareportesPage extends Page {
 
     private String createZip(String directorio, Regcuenta reg, List<String> files) throws IOException {
         Calendar instance = Calendar.getInstance();
-        String name = reg.getDesRegCuenta() + "RC" + instance.get(Calendar.DATE) + instance.get(Calendar.MONTH) + instance.get(Calendar.YEAR) + "-" + instance.get(Calendar.HOUR_OF_DAY) + instance.get(Calendar.MINUTE)+".zip";
+        String name = reg.getDesRegCuenta() + "RC" + instance.get(Calendar.DATE) + instance.get(Calendar.MONTH) + instance.get(Calendar.YEAR) + "-" + instance.get(Calendar.HOUR_OF_DAY) + instance.get(Calendar.MINUTE) + ".zip";
         Util.zipFiles(directorio + name, files);
         return name;
+    }
+
+    private void reporteBanxico(int parseInt) {
+        try {
+            List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
+            Regcuenta reg1 = null;
+            for (Regcuenta r : createQuery) {
+                if (r.getIdRegCuenta() == parseInt) {
+                    reg1 = r;
+                }
+            }
+            String nameFile = BanxicoMaker.report(reg1);
+            String urlBase = Configuration.getValue("baseApacheReportes");
+            setRedirect("downloadreport.html?url=" + urlBase + nameFile);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            Logger.getLogger(VistareportesPage.class.getName()).log(Level.INFO, null, ex);
+            
+        }
+                
     }
 
 }

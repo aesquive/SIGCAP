@@ -13,9 +13,16 @@
 -->
     <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
     <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+
     <property name="hibernate.connection.username">sigcapuser</property>
     <property name="hibernate.connection.password">sigcapuser</property>
-    <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/sigcap?autoReconnect=true&amp;rewriteBatchedStatements=true</property>
+
+<!--  
+
+    <property name="hibernate.connection.username">syssigcapbcp</property>
+    <property name="hibernate.connection.password">A*Gh*FtG5FtG65-FG9*x3l.7vBtYh*R</property>
+-->    
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/sigcap?autoReconnect=true&amp;rewriteBatchedStatements=true</property>
     <property name="hibernate.connection.autocommit">true</property>
     <property name="current_session_context_class">thread</property>
     <property name="hibernate.c3p0.min_size">3</property>

@@ -37,7 +37,7 @@ public class ExportadorbasePage extends BorderPage{
 
     @Override
     public Integer getPermisoNumber() {
-        return 15;
+        return 18;
     }
     
 }

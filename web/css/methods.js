@@ -1,4 +1,13 @@
 
+function alertIntel(mensaje){
+    var anterior=sessionStorage.getItem("message");
+    if(anterior==mensaje){
+        return;
+    }
+    sessionStorage.setItem("message",mensaje);
+    alert(mensaje);
+}
+
 function waitPage() {
     document.getElementById("divProcess").style.display = "block";
     document.getElementById("divDerecha").style.display = "none";
@@ -28,10 +37,9 @@ function reportes() {
             acumulado=acumulado+t+",";
         }
     }
-    alert(acumulado);
     var direccionReportes=document.getElementById("direccionReportes").textContent;
     var project = document.getElementsByName("selectProject")[0].value;
-    window.open(direccionReportes + "?typ=0&pro=" + project + "&rep=" + acumulado, "Reporte"+acumulado);
+    window.open(direccionReportes + "?typ=0&pro=" + project + "&rep=" + acumulado, "Reporte"+acumulado,"resizable=1,width=150,height=150");
     return true;
 }
 
@@ -40,7 +48,7 @@ function trackingLog() {
     var direccionReportes=document.getElementById("direccionReportes").textContent;
     var fecIni = document.getElementsByName("init")[0].value;
     var fecFin = document.getElementsByName("end")[0].value;
-    window.open(direccionReportes + "?typ=1&ini=" + fecIni + "&end=" + fecFin, "Tracking Log");
+    window.open(direccionReportes + "?typ=1&ini=" + fecIni + "&end=" + fecFin, "Tracking Log","resizable=1,width=150,height=150");
     return true;
 }
 
@@ -50,7 +58,7 @@ function createComparativo() {
     var pra = document.getElementsByName("hiddenPrimer")[0].value;
     var prb = document.getElementsByName("hiddenSegundo")[0].value;
     var cambio = document.getElementsByName("hiddenVar")[0].value;
-    window.open(direccionReportes + "?typ=2&pra=" + pra + "&prb=" + prb + "&var=" + cambio + "&num=-1", "Comparativo");
+    window.open(direccionReportes + "?typ=2&pra=" + pra + "&prb=" + prb + "&var=" + cambio + "&num=-1", "Comparativo","resizable=1,width=150,height=150");
     return true;
 }
 
@@ -59,7 +67,7 @@ function comparativoCongruencia() {
     var pra = document.getElementsByName("pra")[0].value;
     var prb = document.getElementsByName("prb")[0].value;
     var cambio = document.getElementsByName("tolerancia")[0].value / 100;
-    window.open(direccionReportes + "?typ=3&pra=" + pra + "&prb=" + prb + "&var=" + cambio + "&num=-1", "Comparativo");
+    window.open(direccionReportes + "?typ=3&pra=" + pra + "&prb=" + prb + "&var=" + cambio + "&num=-1", "Congruencia","resizable=1,width=150,height=150");
     return true;
 }
 
@@ -67,7 +75,7 @@ function comparativoCongruencia() {
 function comparativoCons() {
     var direccionReportes=document.getElementById("direccionReportes").textContent;
     var pra = document.getElementsByName("pra")[0].value;
-    window.open(direccionReportes + "?typ=4&pra=" + pra + "&num=-1", "Comparativo");
+    window.open(direccionReportes + "?typ=4&pra=" + pra + "&num=-1", "Consistencia","resizable=1,width=150,height=150");
     return true;
 }
 
@@ -78,20 +86,27 @@ function comparativoCons() {
 function createTenencia() {
     var direccionReportes=document.getElementById("direccionReportes").textContent;
     var idRegCta = document.getElementsByName("pryName")[0].value;
-    window.open(direccionReportes + "?typ=5&pro=" + idRegCta, "Reporte");
+    window.open(direccionReportes + "?typ=5&pro=" + idRegCta, "Reporte","resizable=1,width=150,height=150");
     return true;
 }
 
 function reporteBase(){
     var direccionReportes=document.getElementById("direccionReportes").textContent;
-    window.open(direccionReportes+"?typ=6");
+    window.open(direccionReportes+"?typ=6","Base","resizable=1,width=150,height=150");
     return true;
 }
 
 function reporteIntegridad() {
     var direccionReportes=document.getElementById("direccionReportes").textContent;
     var pra = document.getElementsByName("pra")[0].value;
-    window.open(direccionReportes + "?typ=7&pra=" + pra + "&num=-1", "Comparativo");
+    window.open(direccionReportes + "?typ=7&pra=" + pra + "&num=-1", "Integridad","resizable=1,width=150,height=150");
+    return true;
+}
+
+function reporteBanxico(){
+    var direccionReportes=document.getElementById("direccionReportes").textContent;
+    var pra = document.getElementsByName("pra")[0].value;
+    window.open(direccionReportes + "?typ=8&pra=" + pra + "&num=-1", "Integridad","resizable=1,width=150,height=150");
     return true;
 }
 
@@ -123,7 +138,7 @@ function quitarSubMenus() {
 function checkMessages() {
     var valor = document.getElementById("message").textContent;
     if(valor!="" && valor!=null && valor!="$message"){
-        alert("MENSAJE SIGCAP "+valor);
+        alertIntel("MENSAJE SIGCAP "+valor);
         
     }
 }

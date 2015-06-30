@@ -7,15 +7,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import util.Util;
 
 /**
  *
@@ -26,22 +25,13 @@ public class TrackingLogReporter {
     public static String generateReport(String fileName, Date initDate, Date lastDate) throws IOException {
         List<Tracking> createQuery = DAO.createQuery(Tracking.class, null);
         List<Tracking> trackingList = new LinkedList<Tracking>();
-        setField(Calendar.HOUR, initDate, 0);
-        setField(Calendar.MINUTE, initDate, 0);
-        setField(Calendar.SECOND, initDate, 0);
-        setField(Calendar.MILLISECOND, initDate, 0);
-        setField(Calendar.HOUR, lastDate, 0);
-        setField(Calendar.MINUTE, lastDate, 0);
-        setField(Calendar.SECOND, lastDate, 0);
-        setField(Calendar.MILLISECOND, lastDate, 0);
         for (Tracking t : createQuery) {
             Date fecha = t.getFecha();
-            setField(Calendar.HOUR, fecha, 0);
-            setField(Calendar.MINUTE, fecha, 0);
-            setField(Calendar.SECOND, fecha, 0);
-            setField(Calendar.MILLISECOND, fecha, 0);
-            if (fecha.compareTo(initDate) >= 0 && fecha.compareTo(lastDate) <= 0) {
-                System.out.println("entra con id " + t.getIdTracking());
+            int diasVsInicial = Util.daysBetweenDates(initDate,fecha);
+            int diasVsFinal=Util.daysBetweenDates(lastDate,fecha);
+            //System.out.println(fecha+" vsINi "+diasVsInicial +" vsfin "+diasVsFinal);
+            if (diasVsInicial >= 0 && diasVsFinal <= 0) {
+                System.out.println("entra con fecha " + t.getFecha());
                 trackingList.add(t);
             }
         }
@@ -81,8 +71,7 @@ public class TrackingLogReporter {
 
     public static void main(String[] args) throws IOException {
         Calendar instance = Calendar.getInstance();
-        instance.set(Calendar.HOUR, 0);
-        instance.set(Calendar.DAY_OF_MONTH, 4);
+        //instance.set(Calendar.DATE,instance.get(Calendar.DATE)-10);
         TrackingLogReporter.generateReport("tracking.xlsx", instance.getTime(), Calendar.getInstance().getTime());
     }
 

@@ -55,6 +55,8 @@ public class ReporteintegridadPage extends BorderPage{
                 message = "Favor de seleccionar un ejercicio válido";
                 return false;
             }
+            
+            DAO.saveRecordt(user, "Genera el reporte de Integridad sobre "+regCuentaUno.getDesRegCuenta());
             return true;
 
         }
@@ -64,7 +66,7 @@ public class ReporteintegridadPage extends BorderPage{
 
     @Override
     public Integer getPermisoNumber() {
-        return 16;
+        return 8;
     }
     
 }

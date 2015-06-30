@@ -55,7 +55,7 @@ public class BaseModeloMathInterpreter {
     private void mapCatalogoMinimo(Set<Catalogominimo> catalogominimos) {
         catalogoMinimoWrapper = new LinkedList<CatalogoMinimoWrapper>();
         for (Catalogominimo cat : catalogominimos) {
-            catalogoMinimoWrapper.add(new CatalogoMinimoWrapper(cat.getCatalogocuenta() != null ? cat.getCatalogocuenta().getIdCatalogoCuenta().toString() : "", cat.getValor()));
+            catalogoMinimoWrapper.add(new CatalogoMinimoWrapper(cat.getCatalogocuenta() != null ? cat.getCatalogocuenta().getIdCatalogoCuenta().toString() : "", cat.getValor(),cat.getMoneda()==null ?"MXN": cat.getMoneda()==14?"MXN":"USD"));
         }
     }
 
@@ -145,8 +145,7 @@ public class BaseModeloMathInterpreter {
                             if (0.0 != (valorD - reg)) {
                                 cumple = false;
                             }
-                        }
-                    }
+                        }}
                 }
             }
             if (cumple) {
@@ -155,6 +154,7 @@ public class BaseModeloMathInterpreter {
                 sum += sumParam;
             }
         }
+        
         return sum;
     }
 
@@ -164,6 +164,7 @@ public class BaseModeloMathInterpreter {
 
     public void calculate() {
         mapValues = new HashMap<String, Double>();
+        
         mapValues.put("93916", interpSumIf(tarjetaWrapper, "getSaldo", "getCreditoRelevante/eq/SI")+
                 interpSumIf(prestamoWrapper,"getSaldo", "getPrestamoRelevante/eq/SI"));
         
@@ -188,27 +189,27 @@ public class BaseModeloMathInterpreter {
         mapValues.put("10124", interpSumIf(disponibilidadWrapper, "getMonto", "getPlazo/>=/5480,getPlazo/<=/7305,getCuenta/eq/110403000000"));
         mapValues.put("10126", interpSumIf(disponibilidadWrapper, "getMonto", "getPlazo/>=/7306,getPlazo/<=/100000,getCuenta/eq/110403000000"));
 
-        mapValues.put("10150", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131101020000") * .006
-                + (interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102010000")
-                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102020000")) * .0524);
+        mapValues.put("10150", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131101020000,getMoneda/eq/MXN") * .006
+                + (interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102010000,getMoneda/eq/MXN")
+                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102020000,getMoneda/eq/MXN")) * .0524);
         mapValues.put("10152", (interpSumIf(tarjetaWrapper, "getSaldo", "getCreditoRelevante/eq/NO")-interpSumIf(tarjetaWrapper, "getSaldo", "getCreditoRelevante/eq/SI"))*.8);
-        mapValues.put("10154", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131101020000") * .1418
-                + (interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102010000")
-                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102020000")) * .2853
-                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102030000") * .1655);
-        mapValues.put("10156", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131101020000") * .2757
-                + (interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102010000")
-                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102020000")) * .5804
-                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102030000") * .6244);
-        mapValues.put("10158", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131101020000") * .4171
-                + (interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102010000")
-                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102020000")) * .0004
-                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102030000") * .2101);
-        mapValues.put("10160", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131101020000") * .1291
-                + (interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102010000")
-                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102020000")) * .00
-                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102030000") * 0);
-        mapValues.put("10162", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131101020000") * .0001);
+        mapValues.put("10154", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131101020000,getMoneda/eq/MXN") * .1418
+                + (interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102010000,getMoneda/eq/MXN")
+                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102020000,getMoneda/eq/MXN")) * .2853
+                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102030000,getMoneda/eq/MXN") * .1655);
+        mapValues.put("10156", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131101020000,getMoneda/eq/MXN") * .2757
+                + (interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102010000,getMoneda/eq/MXN")
+                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102020000,getMoneda/eq/MXN")) * .5804
+                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102030000,getMoneda/eq/MXN") * .6244);
+        mapValues.put("10158", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131101020000,getMoneda/eq/MXN") * .4171
+                + (interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102010000,getMoneda/eq/MXN")
+                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102020000,getMoneda/eq/MXN")) * .0004
+                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102030000,getMoneda/eq/MXN") * .2101);
+        mapValues.put("10160", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131101020000,getMoneda/eq/MXN") * .1291
+                + (interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102010000,getMoneda/eq/MXN")
+                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102020000,getMoneda/eq/MXN")) * .00
+                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131102030000,getMoneda/eq/MXN") * 0);
+        mapValues.put("10162", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/131101020000,getMoneda/eq/MXN") * .0001);
 
         
         mapValues.put("10450", interpSumIf(tenenciaWrapper, "getMonto", "getPlazoRC01/>=/1,getPlazoRC01/<=/7,getMoneda/eq/MXN"));
@@ -287,11 +288,10 @@ public class BaseModeloMathInterpreter {
         mapValues.put("30474", interpSumIf(tenenciaWrapper, "getMonto", "getPlazoRC02/>=/5480,getPlazoRC02/<=/7305,getMoneda/eq/UDI"));
         mapValues.put("30476", interpSumIf(tenenciaWrapper, "getMonto", "getPlazoRC02/>=/7306,getPlazoRC02/<=/100000,getMoneda/eq/UDI"));
 
-        mapValues.put("40050", interpSumIf(disponibilidadWrapper, "getMonto", "getPlazo/>=/1,getPlazo/<=/7,getCuenta/eq/110202000000"));
+        mapValues.put("40050", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/110202000000,getMoneda/eq/USD"));
 
         mapValues.put("77000", interpSumIf(tenenciaWrapper, "getMonto", "getMoneda/eq/MXN,getGrupoRc07/eq/I"));
-        mapValues.put("77002", mapValues.get("13700"));
-        mapValues.put("77004", mapValues.get("77000"));
+        
         mapValues.put("77012", interpSumIf(tenenciaWrapper, "getMonto", "getMoneda/eq/MXN,getGrupoRc07/eq/II,getPlazo/eq/Largo,getPonderador/ed/0.0"));
         mapValues.put("77014", interpSumIf(tenenciaWrapper, "getMonto", "getMoneda/eq/MXN,getGrupoRc07/eq/II,getPlazo/eq/Largo,getPonderador/ed/0.2"));
         mapValues.put("77016", interpSumIf(tenenciaWrapper, "getMonto", "getMoneda/eq/MXN,getGrupoRc07/eq/II,getPlazo/eq/Largo,getPonderador/ed/0.5"));
@@ -404,25 +404,25 @@ public class BaseModeloMathInterpreter {
         mapValues.put("86017", 0.0);
 
         mapValues.put("89900", 2000000.0);
-        mapValues.put("89503", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/179002010000"));
-        mapValues.put("95005", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/410100000000")
-                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/410300000000"));
+        mapValues.put("89503", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/179002010000,getMoneda/eq/MXN"));
+        mapValues.put("95005", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/410100000000,getMoneda/eq/MXN")
+                + interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/410300000000,getMoneda/eq/MXN"));
 
-        mapValues.put("95045", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/420100000000"));
-        mapValues.put("95050", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/420300000000"));
-        mapValues.put("95055", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/500000000000")
-                - interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/600000000000"));
-        mapValues.put("95055", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/500000000000")
-                - interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/600000000000"));
-        mapValues.put("95283", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/139100000000")
+        mapValues.put("95045", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/420100000000,getMoneda/eq/MXN"));
+        mapValues.put("95050", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/420300000000,getMoneda/eq/MXN"));
+        mapValues.put("95055", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/500000000000,getMoneda/eq/MXN")
+                - interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/600000000000,getMoneda/eq/MXN"));
+        mapValues.put("95055", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/500000000000,getMoneda/eq/MXN")
+                - interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/600000000000,getMoneda/eq/MXN"));
+        mapValues.put("95283", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/139100000000,getMoneda/eq/MXN")
                 - mapValues.get("95666"));
         mapValues.put("95282", mapValues.get("95283"));
         mapValues.put("95310", mapValues.get("84903"));
         mapValues.put("95335", mapValues.get("84903"));
         mapValues.put("95340", mapValues.get("84903"));
-        mapValues.put("95380", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/180000000000"));
+        mapValues.put("95380", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/180000000000,getMoneda/eq/MXN"));
         mapValues.put("95355", mapValues.get("95380"));
-        mapValues.put("95390", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/280000000000"));
+        mapValues.put("95390", interpSumIf(catalogoMinimoWrapper, "getValor", "getCuenta/eq/280000000000,getMoneda/eq/MXN"));
         mapValues.put("95385", mapValues.get("95390"));
         mapValues.put("90075", mapValues.get("95005") + mapValues.get("95045") + mapValues.get("95050") + mapValues.get("95055"));
         mapValues.put("90080", mapValues.get("90075"));
@@ -432,6 +432,12 @@ public class BaseModeloMathInterpreter {
         mapValues.put("93750", mapValues.get("95340"));
         mapValues.put("93755", mapValues.get("95340"));
         
+        mapValues.put("77002", mapValues.get("13700"));
+        mapValues.put("77004", mapValues.get("77000"));
+        
+        
+        mapValues.put("63000", mapValues.get("10550"));
+        mapValues.put("63001", mapValues.get("13700"));
         
         mapValues.put("103110", interpSumIf(tenenciaWrapper, "getMonto", "getGrupoRC10/eq/SI,getPonderador/ed/0.2"));
         mapValues.put("103125", interpSumIf(tenenciaWrapper, "getMonto", "getGrupoRC10/eq/SI,getPonderador/ed/0.5"));

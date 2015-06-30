@@ -90,10 +90,12 @@ public class EditartipousuarioPage extends BorderPage {
                     tipoUsuarioEdit.setPadre(t);
                 }
             }
+            String nombresPermisos="";
             List<Integer> permisosAut = new LinkedList<Integer>();
             for (Integer key : permisos_checkBox.keySet()) {
                 if (permisos_checkBox.get(key).isChecked()) {
                     permisosAut.add(key);
+                    nombresPermisos+=permisos_checkBox.get(key).getLabel();
                 }
             }
             Collections.sort(permisosAut);
@@ -103,7 +105,7 @@ public class EditartipousuarioPage extends BorderPage {
             }
             tipoUsuarioEdit.setPermisos(permisosSTR.substring(0, permisosSTR.length() - 1));
             DAO.update(tipoUsuarioEdit);
-            DAO.saveRecordt(user, "Dio de modifico el tipo de usuario " + tipoUsuarioEdit.getNombre() + " con permisos " + tipoUsuarioEdit.getPermisos());
+            DAO.saveRecordt(user, "Modifico el rol de usuario " + tipoUsuarioEdit.getNombre() + " con permisos " + nombresPermisos);
             setRedirect(BienvenidaPage.class);
             return true;
         }

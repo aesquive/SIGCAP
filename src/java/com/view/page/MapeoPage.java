@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -22,6 +23,7 @@ import org.apache.click.control.Column;
 import org.apache.click.control.Decorator;
 import org.apache.click.control.FieldSet;
 import org.apache.click.control.Form;
+import org.apache.click.control.Submit;
 import org.apache.click.control.Table;
 import org.apache.click.extras.control.FormTable;
 import util.Util;
@@ -52,16 +54,12 @@ public class MapeoPage extends BorderPage {
         checarCalculado();
         form = new Form("form");
         formTable = new FormTable("formTable");
-        
+
         title = "Mapeo de Datos " + regcuenta.getDesRegCuenta();
         tenencia = new LinkedList<Valores>(regcuenta.getValoreses());
         //sacar los datos del vector
         vector = generarMapeoVector();
         revisarTenenciaVector();
-        if (tenenciaNoMapeada == null || tenenciaNoMapeada.isEmpty()) {
-            generadorRc();
-            return;
-        }
         formTable.setName("dataTable");
         formTable.setPageNumber(0);
         formTable.setClass(Table.CLASS_ORANGE2);
@@ -86,20 +84,36 @@ public class MapeoPage extends BorderPage {
             }
         });
         formTable.addColumn(edit);
-        FieldSet fs = new FieldSet("fs", "Tenencia no mapeada");
+        FieldSet fs = new FieldSet("fs", "Tenencia no encontrada en vector");
         fs.add(formTable);
         form.add(fs);
         addControl(form);
+        Collections.sort(tenenciaNoMapeada);
         formTable.setRowList(tenenciaNoMapeada);
-
+        fs.add(new Submit("sub", "Calcular", this, "calcularModelo"));
     }
 
-    public boolean generadorRc() {
+    public boolean calcularModelo() {
+        boolean go = true;
+        for (Valores v : tenenciaNoMapeada) {
+            if (go == true) {
+                go = v.getStatus().equals("OK");
+            }
+        }
+        if (go) {
+            return empezarCalculo();
+        }
+        message="Falta mapear alguno de los elementos";
+        return false;
+    }
+
+    public boolean empezarCalculo() {
         try {
+            DAO.refresh(regcuenta);
             cruzarVector(vector, tenenciaMapeada);
             ModelExecutor executor = new ModelExecutor(regcuenta, true);
             executor.start();
-            message="Ejercicio calculado correctamente";
+            DAO.saveRecordt(user, "Realizo un mapeo sobre la tenencia de " + regcuenta.getDesRegCuenta());
             setRedirect(IcapPage.class);
             return true;
         } catch (Exception ex) {
@@ -116,8 +130,8 @@ public class MapeoPage extends BorderPage {
             String tv = val.getTipoValor() == null ? "" : val.getTipoValor();
             String emision = val.getEmision() == null ? "" : val.getEmision();
             String serie = val.getSerie() == null ? "" : val.getSerie();
-            Vector get = vector==null ? null :vector.get(tv + emision + serie);
-            if (get != null && (!get.getSp().equals("-") || !get.getFitch().equals("-") || !get.getMoodys().equals("-") || !get.getHr().equals("-"))) {
+            Vector get = vector == null ? null : vector.get(tv + emision + serie);
+            if ((get != null && (!get.getSp().equals("-") || !get.getFitch().equals("-") || !get.getMoodys().equals("-") || !get.getHr().equals("-")))) {
                 tenenciaMapeada.put(tv + emision + serie, val);
             } else {
                 tenenciaNoMapeada.add(val);
@@ -138,7 +152,8 @@ public class MapeoPage extends BorderPage {
         String serie = valorNoMapeado.getSerie() == null ? "" : valorNoMapeado.getSerie();
         Vector get = vector.get(tv + emision + serie);
         addSessionVar("vectorEditMapeo", get);
-        message=null;
+
+        message = null;
         setRedirect(MapeoeditPage.class);
         return true;
     }
@@ -170,45 +185,47 @@ public class MapeoPage extends BorderPage {
 
         for (String papel : tiposValor) {
             Valores valor = tenenciaMapeada.get(papel);
-            Vector get = vector.get(papel);
-            Integer value = get.getMapeada() == null ? 0 : get.getMapeada();
-            valor.setMapeado(value);
-            String moneda = get.getMoneda() == 1 ? "UDI" : "MXN";
-            valor.setMoneda(moneda);
-            valor.setPrecio(get.getPrecioSucio());
-            String[] noStasa = new String[]{"BI", "I", "G", "MC", "SC", "MP", "SP", "3P", "4P", "3U", "4U", "6U", "CC", "IL", "M", "S", "PI", "97", "2P", "2U", "FA", "FB", "FC", "FD", "FI", "FM", "FS", "OA", "OD", "OI"};
-            boolean doneStasa = false;
-            for (String ns : noStasa) {
-                if (ns.toUpperCase().trim().equals(valor.getTipoValor().toUpperCase().trim())) {
-                    valor.setSobretasa("NO");
+            if (valor.getMapeado() == null || valor.getMapeado() != 1) {
+                Vector get = vector.get(papel);
+                Integer value = get.getMapeada() == null ? 0 : get.getMapeada();
+                valor.setMapeado(value);
+                String moneda = get.getMoneda() == 1 ? "UDI" : "MXN";
+                valor.setMoneda(moneda);
+                valor.setPrecio(get.getPrecioSucio());
+                String[] noStasa = new String[]{"BI", "I", "G", "MC", "SC", "MP", "SP", "3P", "4P", "3U", "4U", "6U", "CC", "IL", "M", "S", "PI", "97", "2P", "2U", "FA", "FB", "FC", "FD", "FI", "FM", "FS", "OA", "OD", "OI"};
+                boolean doneStasa = false;
+                for (String ns : noStasa) {
+                    if (ns.toUpperCase().trim().equals(valor.getTipoValor().toUpperCase().trim())) {
+                        valor.setSobretasa("No");
+                        doneStasa = true;
+                    }
+                }
+                if (valor.getTipoValor().toUpperCase().equals("LD")) {
+                    valor.setSobretasa("Si");
                     doneStasa = true;
                 }
+                if (!doneStasa) {
+                    valor.setSobretasa(get.getSobretasa());
+                }
+                valor.setFechaVencimiento(get.getFechaVencimiento());
+                String calstr = get.getCalificacion(califsMap, valor);
+                calstr = calstr == null ? "MXC" : calstr;
+                Calificacion get1 = cals.get(calstr.toUpperCase());
+                get1 = get1 == null ? defaultCalif : get1;
+                valor.setCalificacion(get1.getCalificadoraReferencia());
+                String grupoRiesgo = get.getGrupoRiesgo() == null ? emisionesRiesgo.get(valor.getTipoValor().toUpperCase() + valor.getEmision().toUpperCase()) == null
+                        ? emisionesRiesgo.get(valor.getTipoValor()) == null ? "I" : emisionesRiesgo.get(valor.getTipoValor()).getGrupoRiesgo()
+                        : emisionesRiesgo.get(valor.getTipoValor().toUpperCase() + valor.getEmision().toUpperCase()).getGrupoRiesgo() : get.getGrupoRiesgo();
+                valor.setGrupoRc07(grupoRiesgo);
+                valor.setPlazo(get1.getPlazo());
+                if (get.getGradoRiesgo() != null) {
+                    valor.setGradoRiesgo(Integer.parseInt(get.getGradoRiesgo()));
+                    valor.setPonderador(get.getPonderador());
+                } else {
+                    valor.setGradoRiesgoPonderador(emiRiesgoPonderador, grupoRiesgo, get.getSp(), get.getMoodys(), get.getFitch(), get.getHr());
+                }
+                DAO.update(valor);
             }
-            if (valor.getTipoValor().toUpperCase().equals("LD")) {
-                valor.setSobretasa("Si");
-                doneStasa = true;
-            }
-            if (!doneStasa) {
-                valor.setSobretasa(get.getSobretasa());
-            }
-            valor.setFechaVencimiento(get.getFechaVencimiento());
-            String calstr = get.getCalificacion(califsMap, valor);
-            calstr = calstr == null ? "MXC" : calstr;
-            Calificacion get1 = cals.get(calstr.toUpperCase());
-            get1 = get1 == null ? defaultCalif : get1;
-            valor.setCalificacion(get1.getCalificadoraReferencia());
-            String grupoRiesgo = get.getGrupoRiesgo() == null ? emisionesRiesgo.get(valor.getTipoValor().toUpperCase() + valor.getEmision().toUpperCase()) == null
-                    ? emisionesRiesgo.get(valor.getTipoValor()) == null ? "I" : emisionesRiesgo.get(valor.getTipoValor()).getGrupoRiesgo()
-                    : emisionesRiesgo.get(valor.getTipoValor().toUpperCase() + valor.getEmision().toUpperCase()).getGrupoRiesgo() : get.getGrupoRiesgo();
-            valor.setGrupoRc07(grupoRiesgo);
-            valor.setPlazo(get1.getPlazo());
-            if (get.getGradoRiesgo() != null) {
-                valor.setGradoRiesgo(Integer.parseInt(get.getGradoRiesgo()));
-                valor.setPonderador(get.getPonderador());
-            } else {
-                valor.setGradoRiesgoPonderador(emiRiesgoPonderador, grupoRiesgo, get.getSp(), get.getMoodys(), get.getFitch(), get.getHr());
-            }
-            DAO.update(valor);
         }
     }
 
@@ -242,23 +259,23 @@ public class MapeoPage extends BorderPage {
         try {
             return mapVector();
         } catch (Exception ex) {
-            
+
             Logger.getLogger(MapeoPage.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
-    
-    
+
     /**
      * mapea el vector de precios
+     *
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     private Map<String, Vector> mapVector() throws Exception {
         System.out.println("--MAPEANDO VECTOR--");
         Map<String, Vector> mapping = new HashMap<String, Vector>();
-        String date = Util.parseDateString("ddMMyyyy",regcuenta.getFecha())+"-"+regcuenta.getIdRegCuenta();
-        List<String> fileData = getFileData(Configuration.getValue("RutaVectores")+date+".txt");
+        String date = Util.parseDateString("ddMMyyyy", regcuenta.getFecha()) + "-" + regcuenta.getIdRegCuenta();
+        List<String> fileData = getFileData(Configuration.getValue("RutaVectores") + date + ".txt");
         for (String row : fileData) {
             String[] split = row.split(";");
             String concat = split[1] + split[2] + split[3];
@@ -276,25 +293,23 @@ public class MapeoPage extends BorderPage {
         System.out.println("--VECTOR MAPEADO--");
         return mapping;
     }
-    
-    
-     
-    private Date parseDate(String string)  {
-        try{
-        SimpleDateFormat sp = new SimpleDateFormat("dd/MM/yyyy");
-        return sp.parse(string);
-             
-        }catch(Exception ex){
+
+    private Date parseDate(String string) {
+        try {
+            SimpleDateFormat sp = new SimpleDateFormat("dd/MM/yyyy");
+            return sp.parse(string);
+
+        } catch (Exception ex) {
             return null;
         }
     }
 
-    
     /**
      * obtiene la informacion del archivo que se pasa en el campo fileField
+     *
      * @param fileField
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     public List<String> getFileData(String fileName) throws IOException {
         List<String> lines = new LinkedList<String>();
@@ -310,18 +325,18 @@ public class MapeoPage extends BorderPage {
     }
 
     /**
-     * checa si el ejercicio ya esta calculado, si ya entonces no es necesario hacer nada
+     * checa si el ejercicio ya esta calculado, si ya entonces no es necesario
+     * hacer nada
      */
     private void checarCalculado() {
         List<Cuenta> createQuery = DAO.createQuery(Cuenta.class, null);
-        for(Cuenta c:createQuery){
-            if(c.getCatalogocuenta().getIdCatalogoCuenta()==1 && c.getRegcuenta().getIdRegCuenta()==regcuenta.getIdRegCuenta()){
-                message="El ejercicio ya fue mapeado correctamente";
+        for (Cuenta c : createQuery) {
+            if (c.getCatalogocuenta().getIdCatalogoCuenta() == 1 && c.getRegcuenta().getIdRegCuenta() == regcuenta.getIdRegCuenta()) {
+                message = "El ejercicio ya fue mapeado correctamente";
                 setRedirect(IcapPage.class);
                 return;
             }
         }
     }
 
-    
 }

@@ -9,11 +9,14 @@ public class CatalogoMinimoWrapper {
 
     private String cuenta;
     private Double valor;
+    private String moneda;
     
-    public CatalogoMinimoWrapper(String cuenta, Double valor) {
+    public CatalogoMinimoWrapper(String cuenta, Double valor,String moneda) {
         this.cuenta = cuenta;
         this.valor = valor;
+        this.moneda=moneda;
     }
+    
 
     /**
      * @return the cuenta
@@ -41,6 +44,20 @@ public class CatalogoMinimoWrapper {
      */
     public void setValor(Double valor) {
         this.valor = valor;
+    }
+
+    /**
+     * @return the moneda
+     */
+    public String getMoneda() {
+        return moneda;
+    }
+
+    /**
+     * @param moneda the moneda to set
+     */
+    public void setMoneda(String moneda) {
+        this.moneda = moneda;
     }
     
     

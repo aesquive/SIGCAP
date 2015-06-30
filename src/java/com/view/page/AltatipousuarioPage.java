@@ -76,10 +76,12 @@ public class AltatipousuarioPage extends BorderPage {
                     tu.setPadre(t);
                 }
             }
+            String nombrePermisos="";
             List<Integer> permisosAut = new LinkedList<Integer>();
             for (Integer key : permisos_checkBox.keySet()) {
                 if (permisos_checkBox.get(key).isChecked()) {
                     permisosAut.add(key);
+                    nombrePermisos+=permisos_checkBox.get(key).getLabel()+",";
                 }
             }
             Collections.sort(permisosAut);
@@ -89,7 +91,7 @@ public class AltatipousuarioPage extends BorderPage {
             }
             tu.setPermisos(permisosSTR.substring(0, permisosSTR.length() - 1));
             DAO.save(tu);
-            DAO.saveRecordt(user, "Dio de alta el tipo de usuario " + tu.getNombre() + " con usuario " + tu.getPermisos());
+            DAO.saveRecordt(user, "Dio de alta el rol de usuario " + tu.getNombre() + " con permisos " + nombrePermisos);
             setRedirect(BienvenidaPage.class);
             return true;
         }
@@ -98,7 +100,7 @@ public class AltatipousuarioPage extends BorderPage {
 
     @Override
     public Integer getPermisoNumber() {
-        return 13;
+        return 16;
     }
 
 }

@@ -58,7 +58,7 @@ public class MenumapeoPage extends BorderPage {
 
     @Override
     public Integer getPermisoNumber() {
-        return 1;
+        return 2;
     }
 
     private List<Regcuenta> getNotMappedRegCuentas() {

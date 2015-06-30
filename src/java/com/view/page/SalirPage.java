@@ -26,6 +26,7 @@ public class SalirPage extends BorderPage {
             }
         }
         userQ.setActivo(0);
+        DAO.saveRecordt(user, "Salio del Sistema");
         DAO.update(userQ);
 //        DAO.saveRecordt(userQ, userQ.getUser()+" salió del sistema");
         cleanSession();

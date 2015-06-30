@@ -66,8 +66,13 @@ public class DAO {
      * @param text
      */
     public static void saveRecordt(User user, String text) {
-        Tracking tracking = new Tracking(user, text, Calendar.getInstance().getTime());
-        save(tracking);
+        try {
+
+            Tracking tracking = new Tracking(user, text, Calendar.getInstance().getTime());
+            save(tracking);
+        }catch(Exception e){
+            return;
+        }
     }
 
     /**
@@ -183,32 +188,32 @@ public class DAO {
     public static void main(String[] args) {
         //List<Tipousuario> createQuery = DAO.createQuery(Tipousuario.class,null);
         //System.out.println(createQuery.get(0).getUsuarios().iterator().next());
-        long inicial=913501;
-        for(int t=0;t<36;t++){
-            Catalogocuenta c=new Catalogocuenta();
-            long nuevaInicial=inicial+t;
+        long inicial = 913501;
+        for (int t = 0; t < 36; t++) {
+            Catalogocuenta c = new Catalogocuenta();
+            long nuevaInicial = inicial + t;
             c.setIdCatalogoCuenta(nuevaInicial);
-            c.setDesCatalogoCuenta("Requerimiento crédito y mercado Mes "+(36-t));
+            c.setDesCatalogoCuenta("Requerimiento crédito y mercado Mes " + (36 - t));
             DAO.save(c);
         }
     }
 
-    public static List<Regcuenta> getEjerciciosCalculados(){
+    public static List<Regcuenta> getEjerciciosCalculados() {
         List<Cuenta> createQuery = DAO.createQuery(Cuenta.class, null);
-        Set<Integer> ejerciciosIds=new HashSet<Integer>();
-        for(Cuenta r:createQuery){
-            if(r.getCatalogocuenta().getIdCatalogoCuenta()==1){
+        Set<Integer> ejerciciosIds = new HashSet<Integer>();
+        for (Cuenta r : createQuery) {
+            if (r.getCatalogocuenta().getIdCatalogoCuenta() == 1) {
                 ejerciciosIds.add(r.getRegcuenta().getIdRegCuenta());
             }
         }
-        List<Regcuenta> resp=new LinkedList<Regcuenta>();
+        List<Regcuenta> resp = new LinkedList<Regcuenta>();
         List<Regcuenta> createQuery1 = DAO.createQuery(Regcuenta.class, null);
-        for(Regcuenta r:createQuery1){
-            if(ejerciciosIds.contains(r.getIdRegCuenta())){
+        for (Regcuenta r : createQuery1) {
+            if (ejerciciosIds.contains(r.getIdRegCuenta())) {
                 resp.add(r);
             }
         }
         return resp;
     }
-    
+
 }

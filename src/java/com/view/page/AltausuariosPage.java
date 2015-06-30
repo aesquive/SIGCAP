@@ -8,9 +8,11 @@ package com.view.page;
 import db.controller.DAO;
 import db.pojos.Tipousuario;
 import db.pojos.User;
+import encrypter.TextEncrypter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import manager.configuration.Configuration;
 import org.apache.click.control.FieldSet;
 import org.apache.click.control.Form;
 import org.apache.click.control.Option;
@@ -80,14 +82,13 @@ public class AltausuariosPage extends BorderPage {
                     }
                 }
                 User usuarioNuevo = new User(nameUser.getValue());
-                usuarioNuevo.setPassword(password.getValue());
+                usuarioNuevo.setPassword(TextEncrypter.encrypt(Configuration.getValue("baseApache")+"table.cfg",password.getValue()));
                 usuarioNuevo.setActivo(0);
                 usuarioNuevo.setNumlogin(0);
                 usuarioNuevo.setTipousuario(map_tipousuario.get(Integer.parseInt(select_tipousuario.getValue())));
                 DAO.save(usuarioNuevo);
-                
-                DAO.saveRecordt(user,user.getUser()+" dio de alta a "+usuarioNuevo.getUser()+" con tipo usuario "+usuarioNuevo.getTipousuario().getNombre());
                 message="Usuario dado de alta correctamente";
+                DAO.saveRecordt(user,user.getUser()+" dio de alta a "+usuarioNuevo.getUser()+" con tipo usuario "+usuarioNuevo.getTipousuario().getNombre());
                 setRedirect(BienvenidaPage.class);
                 return true;
             }
@@ -98,7 +99,7 @@ public class AltausuariosPage extends BorderPage {
 
     @Override
     public Integer getPermisoNumber() {
-        return 11;
+        return 14;
     }
 
 }

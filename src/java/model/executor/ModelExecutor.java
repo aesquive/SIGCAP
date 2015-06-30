@@ -6,6 +6,7 @@ import db.pojos.Cuenta;
 import db.pojos.Moneda;
 import db.pojos.Operacion;
 import db.pojos.Regcuenta;
+import db.pojos.Valores;
 import interpreter.MathInterpreter;
 import interpreter.MathInterpreterException;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import model.wrappers.BaseModeloMathInterpreter;
 import org.hibernate.criterion.Criterion;
 
@@ -182,7 +184,7 @@ public class ModelExecutor {
      * @throws MathInterpreterException
      */
     public static void main(String[] args) throws MathInterpreterException, IOException {
-        int regCuenta = 23;
+        int regCuenta = 72;
         List<Regcuenta> createQuery = DAO.createQuery(Regcuenta.class, null);
         Regcuenta c = new Regcuenta();
         for (Regcuenta r : createQuery) {
@@ -190,11 +192,14 @@ public class ModelExecutor {
                 c = r;
             }
         }
-        ModelExecutor m = new ModelExecutor(c,true);
+ ModelExecutor m = new ModelExecutor(c,true);
         Map<String, Cuenta> start = m.start();
-        System.out.println("acabo y el valor de 1 es :");
-        System.out.println(start.get("1").getValor());
-        System.out.println(start.get("93916").getValor());
+         System.out.println("acabo y el valor de 1 es :");
+         System.out.println(start.get("20458").getValor());
+         
+         System.out.println(start.get("20458").getValor());
+         System.out.println(start.get("1").getValor());
+        // System.out.println(start.get("93916").getValor());
     }
 
 }

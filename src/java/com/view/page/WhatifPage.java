@@ -62,17 +62,17 @@ public class WhatifPage extends BorderPage {
         selectProject = new Select("Ejercicio Base", true);
         selectProject.setDefaultOption(new Option("-1", "--Seleccione--"));
         selectView = new Select("Ejercicio", true);
-        
+
         selectView.setDefaultOption(new Option("-1", "--Seleccione--"));
         nameSimulation = new TextField("Nombre de la Simulación", true);
         selectProject.setId("selectwhatif");
         user = (User) getSessionVar("user");
         List<Regcuenta> createQuery = DAO.getEjerciciosCalculados();
         for (Regcuenta ru : createQuery) {
-            
-                selectProject.add(new Option(ru.getIdRegCuenta(), ru.getDesRegCuenta()));
-                selectView.add(new Option(ru.getIdRegCuenta(), ru.getDesRegCuenta()));
-            
+
+            selectProject.add(new Option(ru.getIdRegCuenta(), ru.getDesRegCuenta()));
+            selectView.add(new Option(ru.getIdRegCuenta(), ru.getDesRegCuenta()));
+
         }
         form.add(selectProject);
         form.add(nameSimulation);
@@ -101,23 +101,20 @@ public class WhatifPage extends BorderPage {
             if (onceClicked) {
                 try {
                     Regcuenta nuevoEjercicio = copiarProyecto();
-                    List<Regcuenta> createQuery = DAO.getEjerciciosCalculados();
-                    for (Regcuenta r : createQuery) {
-                        if (r.getIdRegCuenta() == nuevoEjercicio.getIdRegCuenta()) {
-                            ModelExecutor executor = new ModelExecutor(r, true);
-                            Map<String, Cuenta> start = executor.start();
-                            addSessionVar("prySim", r);
-                            System.out.println("termina de calcular y el icap es " + start.get("1").getValor());
-                            setRedirect(SimulacioninicialPage.class);
-                        }
-                    }
+                    DAO.refresh(nuevoEjercicio);
+                    ModelExecutor executor = new ModelExecutor(nuevoEjercicio, true);
+                    Map<String, Cuenta> start = executor.start();
+                    addSessionVar("prySim", nuevoEjercicio);
+                    DAO.saveRecordt(user, "Genera una simulación llamada " + nameSimulation);
+                    System.out.println("termina de calcular y el icap es " + start.get("1").getValor());
+                    setRedirect(SimulacioninicialPage.class);
+                    return true;
                 } catch (Exception ex) {
                     message = "Ocurrio algun error " + ex;
                     Logger.getLogger(WhatifPage.class.getName()).log(Level.INFO, null, ex);
                     return false;
                 }
             }
-            return true;
         }
         message = "Favor de completar los campos";
         return false;
@@ -139,10 +136,11 @@ public class WhatifPage extends BorderPage {
                 }
             }
             addSessionVar("prySim", regCta);
+            DAO.saveRecordt(user, "Acceso a editar simulación sobre " + regCta.getDesRegCuenta());
             setRedirect(SimulacioninicialPage.class);
             return true;
         }
-        message="Favor de completar los campos";
+        message = "Favor de completar los campos";
         return false;
     }
 
@@ -172,7 +170,6 @@ public class WhatifPage extends BorderPage {
             }
             Regcuentauser rUser = new Regcuentauser(regCuenta, user);
             DAO.save(rUser);
-            DAO.saveRecordt(user, "Creo una simulación de " + selected.getDesRegCuenta() + " llamada " + regCuenta.getDesRegCuenta());
             return regCuenta;
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(WhatifPage.class.getName()).log(Level.FINE, null, ex);
@@ -228,7 +225,7 @@ public class WhatifPage extends BorderPage {
             items.add(nueva);
         }
         for (Ingresosnetos c : ingresos) {
-            Ingresosnetos nueva = new Ingresosnetos(regNuevo, c.getFecha(), c.getNumeroMes(), c.getIngresoNeto(),c.getReqMerCred());
+            Ingresosnetos nueva = new Ingresosnetos(regNuevo, c.getFecha(), c.getNumeroMes(), c.getIngresoNeto(), c.getReqMerCred());
             items.add(nueva);
         }
         for (Reservas c : reservas) {
@@ -241,6 +238,7 @@ public class WhatifPage extends BorderPage {
         }
         for (Valores c : valores) {
             Valores nueva = new Valores(regNuevo, c.getFecha(), c.getIdCuentaContable(), c.getDescripcion(), c.getNumeroTitulos(), c.getTipoValor(), c.getEmision(), c.getSerie(), c.getFechaProximoCupon(), c.getGrupoRc10(), c.getPrecio(), c.getSobretasa(), c.getCalificacion(), c.getGrupoRc07(), c.getPonderador(), c.getPlazo(), c.getFechaVencimiento(), c.getMoneda(), c.getGradoRiesgo());
+            nueva.setMapeado(c.getMapeado());
             items.add(nueva);
         }
         for (Prestamo c : prestamos) {
@@ -252,7 +250,7 @@ public class WhatifPage extends BorderPage {
 
     @Override
     public Integer getPermisoNumber() {
-        return 10;
+        return 13;
     }
 
 }

@@ -64,6 +64,6 @@ public class EditarusuariosPage extends BorderPage {
 
     @Override
     public Integer getPermisoNumber() {
-        return 12;
+        return 15;
     }
 }

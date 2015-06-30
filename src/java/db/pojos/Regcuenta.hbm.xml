@@ -14,68 +14,68 @@
         <property name="fecha" type="timestamp">
             <column name="fecha" length="19" />
         </property>
-        <set name="catalogominimos" table="catalogominimo" inverse="true" lazy="true" fetch="select">
+        <set name="catalogominimos" table="catalogominimo" inverse="true" lazy="false" fetch="select">
             <key>
                 <column name="IdRegCuenta" />
             </key>
             <one-to-many class="db.pojos.Catalogominimo" />
         </set>
-        <set name="disponibilidads" table="disponibilidad" inverse="true" lazy="true" fetch="select">
+        <set name="disponibilidads" table="disponibilidad" inverse="true" lazy="false" fetch="select">
             <key>
                 <column name="IdRegCuenta" />
             </key>
             <one-to-many class="db.pojos.Disponibilidad" />
         </set>
-        <set name="ingresosnetoses" table="ingresosnetos" inverse="true" lazy="true" fetch="select">
+        <set name="ingresosnetoses" table="ingresosnetos" inverse="true" lazy="false" fetch="select">
             <key>
                 <column name="IdRegCuenta" />
             </key>
             <one-to-many class="db.pojos.Ingresosnetos" />
         </set>
-        <set name="valoreses" table="valores" inverse="true" lazy="true" fetch="select">
+        <set name="valoreses" table="valores" inverse="true" lazy="false" fetch="select">
             <key>
                 <column name="IdRegCuenta" />
             </key>
             <one-to-many class="db.pojos.Valores" />
         </set>
-        <set name="tarjetacreditos" table="tarjetacredito" inverse="true" lazy="true" fetch="select">
+        <set name="tarjetacreditos" table="tarjetacredito" inverse="true" lazy="false" fetch="select">
             <key>
                 <column name="IdRegCuenta" />
             </key>
             <one-to-many class="db.pojos.Tarjetacredito" />
         </set>
-        <set name="reservases" table="reservas" inverse="true" lazy="true" fetch="select">
+        <set name="reservases" table="reservas" inverse="true" lazy="false" fetch="select">
             <key>
                 <column name="IdRegCuenta" />
             </key>
             <one-to-many class="db.pojos.Reservas" />
         </set>
-        <set name="prestamos" table="prestamo" inverse="true" lazy="true" fetch="select">
+        <set name="prestamos" table="prestamo" inverse="true" lazy="false" fetch="select">
             <key>
                 <column name="IdRegCuenta" />
             </key>
             <one-to-many class="db.pojos.Prestamo" />
         </set>
-        <set name="regcuentausers" table="regcuentauser" inverse="true" lazy="true" fetch="select">
+        <set name="regcuentausers" table="regcuentauser" inverse="true" lazy="false" fetch="select">
             <key>
                 <column name="IdRegCuenta" not-null="true" />
             </key>
             <one-to-many class="db.pojos.Regcuentauser" />
         </set>
-        <set name="cuentas" table="cuenta" inverse="true" lazy="true" fetch="select">
+        <set name="cuentas" table="cuenta" inverse="true" lazy="false" fetch="select">
             <key>
                 <column name="idRegCuenta" not-null="true" />
             </key>
             <one-to-many class="db.pojos.Cuenta" />
         </set>
         
-        <set name="consistencias" table="consistencia" inverse="true" lazy="true" fetch="select">
+        <set name="consistencias" table="consistencia" inverse="true" lazy="false" fetch="select">
             <key>
                 <column name="IdRegCuenta" />
             </key>
             <one-to-many class="db.pojos.Consistencia" />
         </set>
-        <set name="captacions" table="captacion" inverse="true" lazy="true" fetch="select">
+        <set name="captacions" table="captacion" inverse="true" lazy="false" fetch="select">
             <key>
                 <column name="IdRegCuenta" />
             </key>

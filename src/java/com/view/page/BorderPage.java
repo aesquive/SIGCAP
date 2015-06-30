@@ -86,11 +86,11 @@ public abstract class BorderPage extends Page {
         //indica los menus principales a mostrar
         String[] menuPrincipal = new String[]{"DataWarehouse", "Generador de Reportes", "Gestión de Capital", "Auditor", "Simulación de Capital", "Administrador de SIGCAP"};
         //indica los submenus a mostrar, en caso de que no existan submenus debera ponerse ""
-        String[] subMenus = new String[]{"Alta Ejercicio|Baja Ejercicio|Mapeo de Datos", "Generador RC's|Reporte de Tenencia|Reporte de Consistencia|Reporte de Congruencia|Reporte de Integridad", "", "Análisis Comparativo|Tracking Log", "", "Alta Usuarios|Editar Usuario|Alta de Rol de Usuario|Editar Rol de Usuario"};
+        String[] subMenus = new String[]{"Alta Ejercicio|Baja Ejercicio|Mapeo de Datos", "Generador RC's|Reporte de Tenencia|Reporte de Consistencia|Reporte de Congruencia|Reporte de Integridad", "Análisis de Cuentas|Reporte Banxico", "Análisis Comparativo|Tracking Log", "", "Alta Usuarios|Editar Usuario|Alta de Rol de Usuario|Editar Rol de Usuario"};
         //indica la ruta a la que apunta ya sea el menu principal o los submenus si es que los tiene
-        String[] path = new String[]{"cargadatos.htm|bajadatos.htm|menumapeo.htm", "reportes.htm|menutenencia.htm|reportecons.htm|reportecongruencia.htm|reporteintegridad.htm", "icap.htm", "reportecambios.htm|trackinglog.htm", "whatif.htm", "altausuarios.htm|editarusuarios.htm|altatipousuario.htm|editartipousuarioselectPage.htm",};
+        String[] path = new String[]{"cargadatos.htm|bajadatos.htm|menumapeo.htm", "reportes.htm|menutenencia.htm|reportecons.htm|reportecongruencia.htm|reporteintegridad.htm", "icap.htm|reportebanxico.htm", "reportecambios.htm|trackinglog.htm", "whatif.htm", "altausuarios.htm|editarusuarios.htm|altatipousuario.htm|editartipousuarioselectPage.htm",};
         //identificador de los submenus dentro del sistema
-        String[] identSUbs = new String[]{"1|2|3", "4|5|6|7|8", "", "9|10", "", "11|12|13|14"};
+        String[] identSUbs = new String[]{"1|2|3", "4|5|6|7|8", "9|10", "11|12", "", "13|14|15|16"};
 
         for (int t = 0; t < menuPrincipal.length; t++) {
             Menu pestania = null;

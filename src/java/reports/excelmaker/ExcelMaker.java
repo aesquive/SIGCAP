@@ -103,6 +103,9 @@ public class ExcelMaker extends Thread{
 
     private void mapGetValue(Cell cell,String substring) {
         Cuenta get = datos.get(substring);
+        if(get==null){
+            cell.setCellValue("");
+        }
         if (get != null) {
             cell.setCellValue(get.getValor());
         }

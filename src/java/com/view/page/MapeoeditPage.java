@@ -18,6 +18,7 @@ import org.apache.click.control.TextField;
 import org.apache.click.extras.control.DateField;
 import org.apache.click.extras.control.DoubleField;
 import org.apache.click.extras.control.IntegerField;
+import org.apache.click.extras.control.NumberField;
 import util.Vector;
 
 /**
@@ -35,7 +36,7 @@ public class MapeoeditPage extends BorderPage {
     TextField serie;
     DateField fechaProximoCupon;
     Select vencimiento;
-    IntegerField numeroTitulos;
+    NumberField numeroTitulos;
     DoubleField precio;
     Select sobretasa;
     Select calificacion;
@@ -60,7 +61,7 @@ public class MapeoeditPage extends BorderPage {
         String[] noStasa = new String[]{"BI", "I", "G", "MC", "SC", "MP", "SP", "3P", "4P", "3U", "4U", "6U", "CC", "IL", "M", "S", "PI", "97", "2P", "2U", "FA", "FB", "FC", "FD", "FI", "FM", "FS", "OA", "OD", "OI"};
         for (String ns : noStasa) {
             if (ns.toUpperCase().trim().equals(tipoValor.toUpperCase().trim())) {
-                sobretasa.setValue("NO");
+                sobretasa.setValue("No");
                 sobretasa.setDisabled(true);
                 sobretasa.setStyle("background-color", "white");
                 message = "Por definición el instrumento no tiene sobretasa";
@@ -78,6 +79,11 @@ public class MapeoeditPage extends BorderPage {
     }
 
     public boolean guardarTenencia() {
+        List<Calificacion> createQueryCals = DAO.createQuery(Calificacion.class,null);
+        Map<String,String> mapPlazo=new HashMap<String, String>();
+        for(Calificacion c:createQueryCals){
+            mapPlazo.put(c.getCalificadoraReferencia(), c.getPlazo());
+        }
         if (form.isValid()) {
             Vector vec = new Vector(tipoValor.getValue() + emision.getValue() + serie.getValue(),
                     precio.getDouble(), fechaVencimiento.getDate(), Integer.parseInt(moneda.getValue()), calificacion.getValue(), calificacion.getValue(), calificacion.getValue(), calificacion.getValue(), sobretasa.getValue());
@@ -86,21 +92,24 @@ public class MapeoeditPage extends BorderPage {
             vec.setPonderador(ponderador.getDouble()/100);
             vec.setSp(calificacion.getValue());
             vec.setMapeada(1);
-            Map<String, Vector> sessionVar = (Map<String, Vector>) getSessionVar("mapeoVector");
-            sessionVar.put(tipoValor.getValue() + emision.getValue() + serie.getValue(), vec);
-            addSessionVar("mapeoVector", sessionVar);
             valor.setSerie(serie.getValue());
             valor.setFechaProximoCupon(fechaProximoCupon.getDate());
             valor.setGrupoRc10(vencimiento.getValue());
-            valor.setNumeroTitulos(numeroTitulos.getInteger());
+            valor.setNumeroTitulos(numeroTitulos.getNumber().intValue());
             valor.setSobretasa(sobretasa.getValue());
             valor.setPrecio(precio.getDouble());
-            valor.setMoneda(moneda.getValue());
+            String value = moneda.getValue();
+            String mon="MXN";
+            if(value.equals("1")){
+                mon="UDI";
+            }
+            valor.setMoneda(mon);
             valor.setCalificacion(calificacion.getValue());
             valor.setFechaVencimiento(fechaVencimiento.getDate());
             valor.setGradoRiesgo(Integer.parseInt(gradoRiesgo.getValue()));
             valor.setPonderador(ponderador.getDouble()/100);
             valor.setGrupoRc07(grupoRiesgosEmision.getValue());
+            valor.setPlazo(mapPlazo.get(valor.getCalificacion())==null ? "Largo":mapPlazo.get(valor.getCalificacion()));
             valor.setMapeado(1);
             DAO.update(valor);
             List<Valores> createQuery = DAO.createQuery(Valores.class, null);
@@ -130,16 +139,15 @@ public class MapeoeditPage extends BorderPage {
         emision.setDisabled(true);
         serie = new TextField("ser", "Serie", true);
         fechaProximoCupon = new DateField("prxCpn", "Fecha Proximo Cupón", true);
-        vencimiento = new Select("selven", "Se mantiene a vencimiento", true);
+        vencimiento = new Select("selven", "Es Bursatilizado", true);
         vencimiento.setDefaultOption(new Option("-1", "Seleccionar"));
         vencimiento.add(new Option("SI", "Si"));
         vencimiento.add(new Option("NO", "No"));
         numeroTitulos = new IntegerField("tit", "Número de Títulos", true);
-        numeroTitulos.setPattern("###,###,###");
         sobretasa = new Select("stasa", "Tiene sobretasa ", true);
         sobretasa.setDefaultOption(new Option("-1", "Seleccionar"));
-        sobretasa.add(new Option("SI", "SI"));
-        sobretasa.add(new Option("NO", "NO"));
+        sobretasa.add(new Option("Si", "Si"));
+        sobretasa.add(new Option("No", "No"));
         grupoRiesgosEmision = new Select("remi", "Grupo de Riesgo de Emisión", true);
         String[] valuesRiesgos = new String[]{"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"};
         for (String s : valuesRiesgos) {
@@ -155,7 +163,7 @@ public class MapeoeditPage extends BorderPage {
         fechaProximoCupon.setFormatPattern("dd/MM/yyyy");
 
         vencimiento.setValue(valor.getGrupoRc10());
-        numeroTitulos.setInteger(valor.getNumeroTitulos());
+        numeroTitulos.setNumber(valor.getNumeroTitulos());
 
         form.add(fechaEjercicio);
         form.add(tipoValor);

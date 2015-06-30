@@ -55,7 +55,7 @@ public class BajadatosPage extends BorderPage {
 
     @Override
     public Integer getPermisoNumber() {
-        return 2;
+        return 3;
     }
 
 }

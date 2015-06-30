@@ -10,10 +10,12 @@ import db.pojos.Permisos;
 import db.pojos.Permisosuser;
 import db.pojos.Tipousuario;
 import db.pojos.User;
+import encrypter.TextEncrypter;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import manager.configuration.Configuration;
 import org.apache.click.control.Checkbox;
 import org.apache.click.control.FieldSet;
 import org.apache.click.control.Form;
@@ -62,14 +64,14 @@ public class EditarpermisosPage extends BorderPage {
         nameUser = new TextField("nameUser", "Nombre de Usuario", 15,true);
         nameUser.setValue(usuarioEdit.getUser());
         password = new PasswordField("password", "Password", true);
-        password.setValue(usuarioEdit.getPassword());
+        password.setValue(TextEncrypter.decrypt(Configuration.getValue("baseApache")+"table.cfg",usuarioEdit.getPassword()));
         checkPassword = new PasswordField("checkPassword", "Verificar Password", true);
-        checkPassword.setValue(usuarioEdit.getPassword());
+        checkPassword.setValue(TextEncrypter.decrypt(Configuration.getValue("baseApache")+"table.cfg",usuarioEdit.getPassword()));
         select_tipousuario=new Select("tipUsu", "Rol de Usuario", true);
         select_tipousuario.setDefaultOption(new Option(-1,"--Seleccione--"));
         List<Tipousuario> query_tipousuario = DAO.createQuery(Tipousuario.class,null);
         for(Tipousuario t:query_tipousuario){
-            if(t.getIdtipousuario()!=1 && usuarioEdit.getTipousuario().getIdtipousuario()!=t.getIdtipousuario()){
+            if(t.getIdtipousuario()!=1 ){
                 select_tipousuario.add(new Option(t.getIdtipousuario(),t.getNombre()));
                 map_tipousuario.put(t.getIdtipousuario(), t);
             }
@@ -83,12 +85,11 @@ public class EditarpermisosPage extends BorderPage {
                 message="Los password no coinciden";
                 return false;
             } else {
-                usuarioEdit.setPassword(password.getValue());
+                usuarioEdit.setPassword(TextEncrypter.encrypt(Configuration.getValue("baseApache")+"table.cfg",password.getValue()));
                 usuarioEdit.setTipousuario(map_tipousuario.get(Integer.parseInt(select_tipousuario.getValue())));
                 DAO.update(usuarioEdit);
-                
+                message="Usuario editado correctamente";
                 DAO.saveRecordt(user,user.getUser()+" edito de alta a "+usuarioEdit.getUser()+" con tipo usuario "+usuarioEdit.getTipousuario().getNombre());
-                message="Usuario modificado correctamente";
                 setRedirect(BienvenidaPage.class);
                 return true;
             }

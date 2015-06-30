@@ -1,5 +1,6 @@
 package com.view.page;
 
+import encrypter.*;
 import db.controller.DAO;
 import db.pojos.Cuenta;
 import db.pojos.User;
@@ -64,9 +65,7 @@ public class LoginPage extends Page {
         loginForm = new Form("form");
         passwordField = new PasswordField("password", " Password ", true);
         userField = new TextField("usuario", " Usuario ", true);
-        passwordField.setMaxLength(10);
-        userField.setMaxLength(10);
-        passwordField.setMinLength(2);
+        
     }
 
     /**
@@ -122,7 +121,7 @@ public class LoginPage extends Page {
     private User verifyUser(String user, String pass) {
         List<User> createQuery = DAO.createQuery(User.class, null);
         for(User u:createQuery){
-            if(u.getUser().equals(user) && u.getPassword().equals(pass)){
+            if(u.getUser().equals(user) && TextEncrypter.decrypt(Configuration.getValue("baseApache")+"table.cfg",u.getPassword()).equals(pass)){
                 return u;
             }
         }
